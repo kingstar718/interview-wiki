@@ -1,0 +1,61 @@
+name: Deploy Quartz site
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build-deploy:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # 完整历史,供 created-modified-date 插件取 git 时间戳
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+
+      - name: Force github ssh → https
+        # package-lock 里两个 @quartz-community/* 依赖是 git+ssh:// 解析的,
+        # GA runner 无 SSH key 会失败;改写成 https(公开仓库免凭据)即可。
+        run: |
+          git config --global url."https://github.com/".insteadOf "ssh://git@github.com/"
+          git config --global url."https://github.com/".insteadOf "git@github.com:"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Install Quartz plugins
+        run: npx quartz plugin install
+
+      - name: Build site
+        run: npx quartz build
+
+      - name: Configure Pages
+        uses: actions/configure-pages@v4
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: public
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
