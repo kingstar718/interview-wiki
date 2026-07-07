@@ -17,6 +17,7 @@ interview-wiki/
 │   ├── interview/       # 社招八股 30 篇
 │   └── algorithms/      # 算法刷题(数组已填,其余专题待补)
 ├── CLAUDE.md           # 本文件(Claude 项目指引)
+├── README.md           # 仓库说明(GitHub 展示用)
 └── DEPLOY.md           # 部署指引
 ```
 
@@ -26,6 +27,9 @@ interview-wiki/
 # 本地预览(任选其一,改完 md 刷新即生效,无构建步骤)
 npx docsify-cli serve .     # http://localhost:3000
 python -m http.server 8000  # http://localhost:8000
+
+# 索引自检(改完目录/索引/分类后必跑,纯标准库,退出码非 0 即有问题)
+python3 scripts/check_index.py
 ```
 
 ## 内容约定
@@ -43,9 +47,16 @@ python -m http.server 8000  # http://localhost:8000
 
 - 同目录:`[JVM](JVM.md)`
 - 上级:`[社招问题知识点](../社招问题知识点.md)`
-- 下级:`[算法题索引](indexes/01-算法题索引.md)`
+- 下级:`[算法题索引](indexes/算法题索引.md)`
 
 侧栏在 `content/_sidebar.md`,链接相对 `content/`(basePath)。
+
+## 命名与索引约定(AI 快速定位/校验/修改)
+
+- **权威源**:`content/_sidebar.md` 是分类的唯一权威源;`社招问题知识点.md`、`indexes/高频题目索引.md` 等是它的「视图」,改分类先改侧栏,再同步视图。
+- **文件名 = 稳定语义 ID**:`interview/`、`indexes/` 下用语义名(`MySQL.md`、`算法题索引.md`),**禁止位置型数字前缀**(`01-`);顺序只在 `_sidebar.md`/索引表里表达,不编进文件名,以免重排断链。
+- **例外**:`algorithms/` 下的题号(`1-two-sum.md`)与固定专题序号(`01-数组与字符串/`)是稳定 ID,允许保留;新增专题往后加号(22、23…),不重编中间。
+- 改完跑 `python3 scripts/check_index.py`,校验死链/命名/文件集/分类一致。
 
 ## 部署
 
