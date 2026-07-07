@@ -222,6 +222,44 @@ Object value = field.get(obj);
 | 构造器 | 有 | 无 |
 | 设计意图 | is-a 关系，代码复用 | has-a/can-do 能力，定义规范 |
 
+### 11. 泛型是如何实现的？为什么说是"伪泛型"？
+
+**是什么**：Java 泛型只存在于**编译期**，编译器做完类型检查后会**擦除**成原始类型（Type Erasure），运行时字节码里根本没有泛型信息——这就是常说的"伪泛型"，区别于 C++ 模板（真的为每个类型生成一份代码）。
+
+**擦除规则**：
+
+```java
+public class Box<T> { T value; }              // 编译后 T 被擦成 Object
+public class NumBox<T extends Number> { T v; } // 编译后 T 被擦成 Number(擦成上界)
+
+List<String> list = new ArrayList<>();
+List<Integer> list2 = new ArrayList<>();
+System.out.println(list.getClass() == list2.getClass()); // true —— 运行时都是 ArrayList,没有 <String>/<Integer> 之分
+```
+
+**桥接方法（源码验证擦除的证据）**：
+
+```java
+class MyComparator implements Comparator<String> {
+    public int compare(String a, String b) { return a.length() - b.length(); }
+}
+```
+用 `javap -p MyComparator` 反编译能看到编译器**额外生成**了一个方法：
+```java
+// 编译器生成的桥接方法(bridge method),字节码层面才存在
+public int compare(Object a, Object b) {
+    return compare((String) a, (String) b);   // 强转后调用真正的实现
+}
+```
+接口 `Comparator<T>` 擦除后方法签名是 `compare(Object, Object)`，但子类写的是 `compare(String, String)`——两者签名不同，**不构成重写**。编译器靠生成桥接方法伪造出一个 `compare(Object,Object)` 覆盖接口方法，内部再强转调用真正实现，才让擦除后的多态继续成立。
+
+**常见追问**
+- 为什么不能 `new T[10]`？→ 擦除后 `T` 变成 `Object`，`new T[10]` 实际会创建 `Object[]`；但调用方赋值给 `String[]` 之类的具体数组类型引用时，运行时**数组是有类型信息的**（不像泛型集合），会在别的地方触发 `ClassCastException`。所以 JDK 禁止直接写这行代码，要用 `(T[]) new Object[10]` 强转（不安全但能过编译，本质是绕过检查）或 `Array.newInstance(clazz, 10)`。
+- 泛型擦除会带来什么运行时开销问题？→ 基本类型泛型会被迫**自动装箱**（`List<Integer>` 存的是 `Integer` 对象不是 `int`），大量数据场景有装箱拆箱和内存开销，这也是 JDK 一直没有 `List<int>` 的根因；Java 21 的 Value Types（Project Valhalla）目标之一就是解决这个问题。
+- 通配符 `? extends T` 和 `? super T` 怎么记？→ **PECS 原则**（Producer Extends, Consumer Super）：只读取（生产数据给你用）就用 `extends`，如 `List<? extends Number> src` 你能读出 Number 但不能往里加；只写入（消费你给的数据）就用 `super`，如 `List<? super Integer> dest` 你能加 Integer 但读出来只能当 Object 用。
+
+**通用概念**：类型擦除是**编译期多态、运行期单态**的一种权衡——在保证向后兼容（Java 5 引入泛型时，老代码用 `List` 不用 `List<T>` 也能和新代码互相调用）和不修改 JVM 字节码规范的前提下实现类型安全检查。C# 的泛型是运行时具体化（reified），没有这个问题，但代价是不能像 Java 一样直接对老字节码保持兼容。
+
 ---
 
 ## 四、Java 8+ 新特性
