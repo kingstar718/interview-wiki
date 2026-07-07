@@ -43,13 +43,14 @@ python3 scripts/check_index.py
 
 ## 链接约定
 
-用**标准 Markdown 相对链接** `[文本](相对路径.md)`(已从 `[[双链]]` 批量转换)。
+正文用**标准 Markdown 相对链接** `[文本](相对路径.md)`(已从 `[[双链]]` 批量转换)。
 
 - 同目录:`[JVM](JVM.md)`
 - 上级:`[社招问题知识点](../社招问题知识点.md)`
 - 下级:`[算法题索引](indexes/算法题索引.md)`
 
-侧栏在 `content/_sidebar.md`,链接相对 `content/`(basePath)。
+`_sidebar.md` **必须用根绝对路径**(`/` 开头,如 `[JVM](/interview/JVM.md)`),不能用相对路径。
+原因:`index.html` 开了 `relativePath: true`,docsify 会把"不以 `/` 开头"的链接解析为**相对当前页面目录**;侧栏是每页面常驻渲染的,若写成相对路径,在非根目录页面点击就会把当前目录拼进去(如 `indexes/indexes/...`)导致 404。正文链接因为本来就该相对自身所在目录,不受影响,维持相对写法。
 
 ## 命名与索引约定(AI 快速定位/校验/修改)
 
