@@ -43,4 +43,4 @@ public void merge(int[] nums1, int m, int[] nums2, int n) {
 
 ---
 
-[[社招算法训练计划#第 1 周数组基础|← 返回训练计划]]
+[← 返回训练计划](../社招算法训练计划.md)

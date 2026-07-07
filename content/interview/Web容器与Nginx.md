@@ -1,6 +1,6 @@
 # Web容器与Nginx
 
-[[社招问题知识点|← 返回知识点]]
+[← 返回知识点](../社招问题知识点.md)
 
 ---
 
@@ -23,7 +23,7 @@ Servlet 通常是单例，多线程共享，因此不要把请求级可变状态
 - 将请求映射到目标 Servlet。
 - 提供 Session、安全、异步请求等规范能力。
 
-Spring MVC 的 `DispatcherServlet` 本质上也是 Servlet，后续流程见 [[Spring#九、SpringMVC]]。
+Spring MVC 的 `DispatcherServlet` 本质上也是 Servlet，后续流程见 [Spring](Spring.md)。
 
 ### 3. Filter、Servlet、Interceptor 的执行顺序？
 
@@ -229,4 +229,4 @@ Web 链路题应能完整描述“客户端 → Nginx → Tomcat → Filter → 
 
 ---
 
-[[社招问题知识点|← 返回知识点]]
+[← 返回知识点](../社招问题知识点.md)

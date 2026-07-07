@@ -46,4 +46,4 @@ public int firstMissingPositive(int[] nums) {
 
 ---
 
-[[社招算法训练计划#第 1 周数组基础|← 返回训练计划]]
+[← 返回训练计划](../社招算法训练计划.md)
