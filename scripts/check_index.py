@@ -14,6 +14,8 @@
                     (algorithms/ 例外: 题号/固定专题序号是稳定 ID，允许)
     C. 文件集    —— interview/*.md 实际文件 == 侧栏收录 == 枢纽「专题文件清单」收录
     D. 分类一致  —— 同一 interview 文件在 _sidebar.md 与 社招问题知识点.md 的所属分类相同
+    E. 无孤儿题解 —— algorithms/<专题>/ 下每个题解文件都必须被本专题 README 链接
+                    (防止「有文件却无本地导航入口」的断点)
 
 任一检查失败 -> 退出码 1，可直接接入 CI / pre-commit / AI 改完自检。
 """
@@ -26,6 +28,7 @@ CONTENT = os.path.join(ROOT, "content")
 SIDEBAR = os.path.join(CONTENT, "_sidebar.md")
 HUB = os.path.join(CONTENT, "社招问题知识点.md")
 INTERVIEW = os.path.join(CONTENT, "interview")
+ALGORITHMS = os.path.join(CONTENT, "algorithms")
 
 LINK_RE = re.compile(r"\[[^\]]*\]\(([^)]+)\)")
 NUM_PREFIX_RE = re.compile(r"^\d+[-_]")
@@ -126,6 +129,26 @@ def check_category(side, hub):
     return errors
 
 
+def check_orphan_solutions():
+    """E. algorithms/<专题>/ 下的题解文件必须被本专题 README 链接。"""
+    errors = []
+    for topic in sorted(os.listdir(ALGORITHMS)):
+        tdir = os.path.join(ALGORITHMS, topic)
+        readme = os.path.join(tdir, "README.md")
+        if not os.path.isdir(tdir) or not os.path.isfile(readme):
+            continue
+        solutions = {f for f in os.listdir(tdir) if f.endswith(".md") and f != "README.md"}
+        if not solutions:
+            continue
+        linked = {
+            m.group(1).split("#")[0].strip()
+            for m in LINK_RE.finditer(read(readme))
+        }
+        for f in sorted(solutions - linked):
+            errors.append(f"algorithms/{topic}/{f} 未被本专题 README 链接(孤儿题解)")
+    return errors
+
+
 def main():
     side = parse_sidebar()
     hub = parse_hub_table()
@@ -134,6 +157,7 @@ def main():
         ("B. 命名规范(无位置型数字前缀)", check_naming()),
         ("C. 文件集一致(实际==侧栏==枢纽)", check_file_set(side, hub)),
         ("D. 分类一致(侧栏==枢纽)", check_category(side, hub)),
+        ("E. 无孤儿题解(题解都被专题 README 链接)", check_orphan_solutions()),
     ]
     failed = False
     for name, errors in checks:
