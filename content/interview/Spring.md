@@ -157,12 +157,83 @@ public void method() {
 public void method() {}
 ```
 
-**传播行为：**
-- REQUIRED（默认）：有事务就加入，没有就新建
-- REQUIRES_NEW：总是新建事务
-- NESTED：嵌套事务，支持 savepoint
-- NOT_SUPPORTED：非事务执行
-- NEVER：必须非事务，否则报错
+**七种传播行为**（按「当前有事务时的表现」记忆）：
+
+| 传播行为 | 当前有事务 | 当前无事务 |
+|---------|-----------|-----------|
+| REQUIRED（默认） | 加入 | 新建 |
+| REQUIRES_NEW | **挂起**当前，新建独立事务 | 新建 |
+| NESTED | 创建 **savepoint** 嵌套执行 | 新建 |
+| SUPPORTS | 加入 | 非事务执行 |
+| NOT_SUPPORTED | 挂起当前，非事务执行 | 非事务执行 |
+| MANDATORY | 加入 | **抛异常** |
+| NEVER | **抛异常** | 非事务执行 |
+
+**REQUIRES_NEW vs NESTED（高频场景题）**：
+
+```java
+@Transactional
+public void placeOrder(Order order) {
+    orderMapper.insert(order);          // 外层事务
+    try {
+        logService.saveLog(order);      // 记日志失败不能影响下单
+    } catch (Exception ignored) { }
+    pointsService.addPoints(order);     // 加积分失败要整体回滚吗？看业务
+}
+```
+
+| | REQUIRES_NEW | NESTED |
+|---|---|---|
+| 实现 | 挂起外层，**新连接新事务** | 同一事务里打 **savepoint**（JDBC `Connection.setSavepoint`） |
+| 内层失败 | 只回滚自己，外层可 catch 后继续 | 回滚到 savepoint，外层可继续 |
+| **外层失败** | **内层已提交，不回滚**（日志留下了） | **内层跟着全部回滚** |
+| 提交时机 | 内层方法结束立即提交 | 跟外层一起提交 |
+
+- 记操作日志、发通知——失败不影响主流程且**主流程失败日志也要保留** → REQUIRES_NEW
+- 批量处理中单条失败只跳过该条，但整批取消时全部回滚 → NESTED
+
+**源码：事务是怎么“传播”起来的**
+
+调用链：`TransactionInterceptor.invoke()` → `invokeWithinTransaction()` → `AbstractPlatformTransactionManager.getTransaction()`：
+
+```java
+// AbstractPlatformTransactionManager#getTransaction（Spring 6，节选简化）
+public final TransactionStatus getTransaction(TransactionDefinition def) {
+    Object transaction = doGetTransaction();     // 从 ThreadLocal 取当前连接
+    if (isExistingTransaction(transaction)) {
+        // 已有事务 → 传播行为的分歧点全在这里
+        return handleExistingTransaction(def, transaction);
+    }
+    // 没有事务：MANDATORY 直接抛异常；REQUIRED/REQUIRES_NEW/NESTED 开新事务
+    if (def.getPropagationBehavior() == PROPAGATION_MANDATORY) {
+        throw new IllegalTransactionStateException("...");
+    }
+    ...
+}
+
+private TransactionStatus handleExistingTransaction(TransactionDefinition def, Object transaction) {
+    if (def.getPropagationBehavior() == PROPAGATION_NEVER) {
+        throw new IllegalTransactionStateException("...");
+    }
+    if (def.getPropagationBehavior() == PROPAGATION_REQUIRES_NEW) {
+        SuspendedResourcesHolder suspended = suspend(transaction); // 挂起：把连接从 ThreadLocal 摘下来存好
+        return startTransaction(def, transaction, ...);            // 拿新连接开新事务
+    }
+    if (def.getPropagationBehavior() == PROPAGATION_NESTED) {
+        DefaultTransactionStatus status = prepareTransactionStatus(def, transaction, ...);
+        status.createAndHoldSavepoint();                           // 同一连接上打 savepoint
+        return status;
+    }
+    return prepareTransactionStatus(def, transaction, false, ...); // REQUIRED 等：直接加入
+}
+```
+
+三个关键点：
+1. **"当前事务"= 绑定在 ThreadLocal 上的数据库连接**（`TransactionSynchronizationManager`）——这就是多线程/异步方法里事务失效的根源：新线程的 ThreadLocal 里没有连接
+2. **挂起（suspend）**= 把连接从 ThreadLocal 摘下暂存，恢复时再放回；REQUIRES_NEW 会占用**第二个连接**，嵌套层数深时可能耗尽连接池造成自死锁
+3. NESTED 不换连接，靠 JDBC savepoint 部分回滚——所以要求 DataSource 支持 savepoint，且 JTA 分布式事务下不可用
+
+**通用概念**：传播行为本质是**上下文传递策略**的枚举——"跟随现有上下文 / 新开上下文 / 拒绝"。同样的模式出现在线程上下文（`InheritableThreadLocal`）、Go 的 `context`、分布式链路追踪的 span 传递中。
 
 ---
 
