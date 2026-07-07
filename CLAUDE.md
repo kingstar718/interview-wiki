@@ -12,8 +12,7 @@ interview-wiki/
 ├── content/           # 笔记源码(Docsify 渲染此目录)
 │   ├── index.md         # 站点首页
 │   ├── _sidebar.md      # 侧栏导航
-│   ├── 社招问题知识点.md  # 个人八股总枢纽
-│   ├── indexes/         # 两大索引:算法题/高频题目
+│   ├── indexes/         # 三大索引:知识点/算法题/高频题目
 │   ├── interview/       # 社招八股 30 篇
 │   └── algorithms/      # 算法刷题(数组已填,其余专题待补)
 ├── CLAUDE.md           # 本文件(Claude 项目指引)
@@ -46,7 +45,7 @@ python3 scripts/check_index.py
 正文用**标准 Markdown 相对链接** `[文本](相对路径.md)`(已从 `[[双链]]` 批量转换)。
 
 - 同目录:`[JVM](JVM.md)`
-- 上级:`[社招问题知识点](../社招问题知识点.md)`
+- 跨兄弟目录(`interview/` → `indexes/`):`[社招问题知识点](../indexes/知识点索引.md)`
 - 下级:`[算法题索引](indexes/算法题索引.md)`
 
 `_sidebar.md` **必须用根绝对路径**(`/` 开头,如 `[JVM](/interview/JVM.md)`),不能用相对路径。
@@ -54,7 +53,7 @@ python3 scripts/check_index.py
 
 ## 命名与索引约定(AI 快速定位/校验/修改)
 
-- **权威源**:`content/_sidebar.md` 是分类的唯一权威源;`社招问题知识点.md`、`indexes/高频题目索引.md` 等是它的「视图」,改分类先改侧栏,再同步视图。
+- **权威源**:`content/_sidebar.md` 是分类的唯一权威源;`indexes/知识点索引.md`、`indexes/高频题目索引.md` 等是它的「视图」,改分类先改侧栏,再同步视图。
 - **文件名 = 稳定语义 ID**:`interview/`、`indexes/` 下用语义名(`MySQL.md`、`算法题索引.md`),**禁止位置型数字前缀**(`01-`);顺序只在 `_sidebar.md`/索引表里表达,不编进文件名,以免重排断链。
 - **例外**:`algorithms/` 下的题号(`1-two-sum.md`)与固定专题序号(`01-数组与字符串/`)是稳定 ID,允许保留;新增专题往后加号(22、23…),不重编中间。
 - 改完跑 `python3 scripts/check_index.py`,校验死链/命名/文件集/分类一致/无孤儿题解。

@@ -26,14 +26,14 @@ import sys
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 CONTENT = os.path.join(ROOT, "content")
 SIDEBAR = os.path.join(CONTENT, "_sidebar.md")
-HUB = os.path.join(CONTENT, "社招问题知识点.md")
+HUB = os.path.join(CONTENT, "indexes", "知识点索引.md")
 INTERVIEW = os.path.join(CONTENT, "interview")
 ALGORITHMS = os.path.join(CONTENT, "algorithms")
 
 LINK_RE = re.compile(r"\[[^\]]*\]\(([^)]+)\)")
 NUM_PREFIX_RE = re.compile(r"^\d+[-_]")
 SIDEBAR_CAT_RE = re.compile(r"^\s*-\s*\*\*(.+?)\*\*\s*$")
-INTERVIEW_LINK_RE = re.compile(r"\]\(/?interview/([^)#]+\.md)")
+INTERVIEW_LINK_RE = re.compile(r"\]\((?:/|\.\./)?interview/([^)#]+\.md)")
 
 
 def read(path):
