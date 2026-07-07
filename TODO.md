@@ -7,15 +7,7 @@
 
 ### 高优先级（★★★★★/★★★★ 高频且明显缺失）
 
-- [ ] 并发编程：AQS 源码级拆解 — 现有仅 9 行概念。补 state + CLH 变体队列结构、`acquire/release` 模板方法源码、独占/共享模式、Condition 等待队列转移（追问地图已承诺但正文缺失）
-- [ ] Netty与RPC：内存池 — `PooledByteBufAllocator`、jemalloc 分级（Chunk/Page/SubPage）、Arena 竞争、通用概念可链 Buffer Pool/对象池
-- [ ] 并发编程：线程池源码 — `execute()` 的 ctl 位运算与三步提交逻辑、`Worker` 继承 AQS 的原因（先 grep 评估现有深度）
-- [ ] MySQL：join 算法 — 0 覆盖。NLJ/BNL/8.0 hash join、驱动表选择（小表驱动大表的准确含义）、被驱动表索引的作用，EXPLAIN 追问链标配
-- [ ] 消息队列：RocketMQ 存储模型 — 0 覆盖。CommitLog 顺序写 + ConsumeQueue/IndexFile 两级索引、mmap 与 page cache、刷盘策略，与 Kafka 分区存储对比
-- [ ] 工程实践：数据库连接池原理 — 0 覆盖（HikariCP 无命中）。为什么快（ConcurrentBag/FastList/代理）、连接数公式（核数*2+磁盘数）、maxLifetime/idleTimeout 参数体系，可衔接生产排障的连接池耗尽
-- [ ] 系统设计：Feed 流 — 0 覆盖。推模式/拉模式/推拉结合、大 V 问题、收件箱存储选型，字节/快手高频
-- [ ] 系统设计：库存扣减防超卖 — 秒杀已有但扣减细节 0。DB 乐观锁 vs Redis Lua 预扣减 vs 分段库存，超卖/少卖的边界分析
-- [ ] Java基础：泛型擦除 — 0 覆盖，必考基础。擦除到上界、桥接方法源码（javap 演示）、为什么不能 `new T[]`、通配符 PECS 原则
+（暂无，2026-07-07 已清空，见已完成）
 
 ### 中优先级
 
@@ -56,6 +48,15 @@
 
 ## 已完成
 
+- [x] Netty与RPC：内存池 — PooledByteBufAllocator 分级(Arena/Chunk/Subpage)、伙伴算法满二叉树、线程绑定 Arena 减少竞争（待 commit）
+- [x] Java基础：泛型擦除 — 擦除到上界、桥接方法源码(javap)、为什么不能 new T[]、PECS 原则（待 commit）
+- [x] 系统设计：Feed 流 — 推/拉/推拉结合三方案对比、大 V 阈值、收件箱只存 ID（待 commit）
+- [x] 系统设计：库存扣减防超卖 — DB 乐观锁/Redis Lua 预扣减/分段库存三方案、超卖 vs 少卖优先级（待 commit）
+- [x] 工程实践：数据库连接池原理 — HikariCP ConcurrentBag/FastList/字节码代理、连接数公式、maxLifetime 与 wait_timeout 陷阱（待 commit，写入 MySQL.md）
+- [x] 消息队列：RocketMQ 存储模型 — CommitLog/ConsumeQueue/IndexFile、mmap、刷盘策略、与 Kafka 分区存储对比（待 commit）
+- [x] MySQL：JOIN 算法 — NLJ/BNL/8.0 Hash Join、小表驱动大表的真实含义（待 commit）
+- [x] 并发编程：线程池源码 — execute 三步提交/ctl 位运算(状态+线程数压一个 int)/Worker 继承 AQS 实现不可重入锁（待 commit）
+- [x] 并发编程：AQS 源码级拆解 — state/CLH 变体队列/acquire-release 主干源码/独占-共享区别/Condition 队列转移（待 commit）
 - [x] JVM：三色标记/G1 原理/四种引用/安全点/OOM 盘点（dd617d0）
 - [x] 消息队列：Kafka ISR-HW-LEO/rebalance/exactly-once/读写分离与分区数（dd617d0）
 - [x] 网络：TCP 重传/流量 vs 拥塞控制/keepalive；数据结构：时间轮（dd617d0）
