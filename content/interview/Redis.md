@@ -170,6 +170,70 @@ Slave1                     Slave2                           Slave3
 - **全量同步**：首次连接、从库数据丢失、差异过大时触发。主库生成 RDB 快照传给从库。
 - **增量同步**：断线重连时通过 PSYNC 命令 + offset 继续同步。主库根据 repl_backlog_buffer（环形缓冲区，默认 1M）中的差异数据发送给从库。若数据已被覆盖则退化为全量同步。
 
+### 3. PSYNC 如何判定走全量还是增量？（源码级）
+
+从库发 `PSYNC <replid> <offset>`，主库在 `replication.c` 的 `masterTryPartialResynchronization` 里做两个判断：
+
+```c
+/* replication.c（Redis 7，节选简化）*/
+int masterTryPartialResynchronization(client *c, long long psync_offset) {
+    /* 判断 1：复制 ID 是否匹配（replid 不匹配说明认错主了/主已换代） */
+    if (strcasecmp(master_replid, server.replid) &&
+        (strcasecmp(master_replid, server.replid2) ||     /* replid2：故障转移前的旧 ID */
+         psync_offset > server.second_replid_offset)) {
+        goto need_full_resync;                            /* → +FULLRESYNC */
+    }
+    /* 判断 2：请求的 offset 是否还在积压缓冲区里 */
+    if (!server.repl_backlog ||
+        psync_offset < server.repl_backlog->offset ||     /* 太旧，已被环形覆盖 */
+        psync_offset > server.repl_backlog->offset + server.repl_backlog->histlen) {
+        goto need_full_resync;
+    }
+    /* 两关都过 → +CONTINUE，只补发 backlog 里 offset 之后的部分 */
+    replicationSetupSlaveForFullResync(...);  /* 略 */
+}
+```
+
+**通用概念**：这里的 `repl_backlog` 是典型的**环形缓冲区**（ring buffer）——固定大小、写满从头覆盖，用「基准偏移 + 长度」判断历史数据是否还在。Kafka 消费者按 offset 补拉、TCP 滑动窗口的思路同源：**增量追赶的前提是"落后的部分还留着"**。
+
+**常见追问**
+- 为什么有 replid2？→ 故障转移后新主保留旧主的 replid，老从库拿旧 replid 来 PSYNC 也能走增量，避免主切换引发全量同步风暴（Redis 4.0 的 PSYNC2 优化）。
+- backlog 设多大？→ `平均写入量/秒 × 期望容忍的断线秒数`，再留余量；默认 1MB 在生产上通常太小。
+
+### 4. 哨兵怎么判定故障、怎么选主？
+
+**故障判定分两级**（防误判）：
+
+| 阶段 | 名字 | 条件 |
+|------|------|------|
+| 主观下线 | SDOWN | 单个哨兵 ping 超过 `down-after-milliseconds` 无有效回复 |
+| 客观下线 | ODOWN | 询问其他哨兵，**≥ quorum** 个都认为主挂了 |
+
+**故障转移流程**：
+1. 判定 ODOWN 后，哨兵们先**选举 Leader 哨兵**来执行转移：每轮（epoch）每个哨兵只能投一票（先到先得），获得 `max(quorum, 哨兵数/2+1)` 票者当选——拿不到多数派就换 epoch 重来
+2. Leader 按规则挑新主（过滤失联 → slave-priority 最高 → 复制 offset 最大 → runid 最小）
+3. 对选中从库发 `SLAVEOF NO ONE`，其余从库 `SLAVEOF 新主`，旧主恢复后被降级为从库
+
+**通用概念**：这就是一次简化版 **Raft 选举**——任期（epoch）、每任期一票、多数派当选；「主观/客观下线」则是分布式系统里**用多数派意见对抗单点视角误判**（网络抖动 ≠ 节点死亡）的通用手法，与 [分布式系统](分布式系统.md) 的 Raft、脑裂多数派一脉相承。
+
+**常见追问**：哨兵至少部署几个？→ 3 个且奇数、跨机器/机房：1 个无法客观下线，2 个挂一个就凑不齐多数派选不出 Leader。
+
+### 5. 主从延迟与数据丢失窗口
+
+Redis 复制是**异步**的：主库写完立刻回客户端 OK，再异步传给从库。两个后果：
+
+- **故障转移丢数据**：主库刚确认的写还没到从库就宕机 → 新主没有这批数据，旧主恢复后被强制全量对齐新主，**这批写永久丢失**
+- **脑裂丢数据**：旧主被网络隔离但没死，客户端还在往它写；哨兵已提拔新主 → 分区恢复后旧主降级清空，隔离期间的写全丢
+
+**缓解**（不能根治）：
+
+```text
+min-replicas-to-write 1      # 至少 1 个从库在线才接受写
+min-replicas-max-lag 10      # 从库复制延迟超 10s 视为不在线
+```
+
+本质是把"完全异步"收紧为"半同步"：不满足条件时主库拒绝写入，用可用性换更小的丢失窗口。**通用概念**：这与 Kafka 的 `min.insync.replicas`（见[消息队列](消息队列.md)）、MySQL 半同步复制是同一个取舍——**异步复制系统的确认点放在哪，决定了丢失窗口的大小**。所以"钱"的强一致场景不要依赖 Redis 主从，见 [RedLock 争议](分布式系统.md)。
+
 ---
 
 ## 四、缓存三大问题
