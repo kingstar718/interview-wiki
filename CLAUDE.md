@@ -16,6 +16,8 @@ interview-wiki/
 │   ├── interview/       # 社招八股 30 篇
 │   └── algorithms/      # 算法刷题(数组已填,其余专题待补)
 ├── CLAUDE.md           # 本文件(Claude 项目指引)
+├── CONTRIBUTING.md     # 内容规范(小节模板/整合规范/同步清单)
+├── TODO.md             # 内容待办(领任务/登记缺口/完成归档)
 ├── README.md           # 仓库说明(GitHub 展示用)
 └── DEPLOY.md           # 部署指引
 ```
@@ -30,6 +32,13 @@ python -m http.server 8000  # http://localhost:8000
 # 索引自检(改完目录/索引/分类后必跑,纯标准库,退出码非 0 即有问题)
 python3 scripts/check_index.py
 ```
+
+## 内容工作流(新增/修改必读)
+
+1. **先领任务**:内容任务统一记录在 [TODO.md](./TODO.md)。动手前从「待办」领取;发现新缺口**先登记再做**,不要直接写。
+2. **按模板写**:小节结构、修改整合规范、写作要求见 [CONTRIBUTING.md](./CONTRIBUTING.md)(是什么 → 为什么 → 源码⭕ → 对比⭕ → 常见追问 → 通用概念⭕)。
+3. **同步三处**:正文写完后同步追问地图行、`indexes/知识点索引.md` 条目、相关篇目互链。
+4. **收尾**:跑 `python3 scripts/check_index.py`;完成项移到 TODO.md「已完成」并附 commit 短哈希。
 
 ## 内容约定
 
