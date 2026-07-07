@@ -33,7 +33,7 @@ ALGORITHMS = os.path.join(CONTENT, "algorithms")
 LINK_RE = re.compile(r"\[[^\]]*\]\(([^)]+)\)")
 NUM_PREFIX_RE = re.compile(r"^\d+[-_]")
 SIDEBAR_CAT_RE = re.compile(r"^\s*-\s*\*\*(.+?)\*\*\s*$")
-INTERVIEW_LINK_RE = re.compile(r"\]\(interview/([^)#]+\.md)")
+INTERVIEW_LINK_RE = re.compile(r"\]\(/?interview/([^)#]+\.md)")
 
 
 def read(path):
@@ -59,7 +59,10 @@ def check_dead_links():
                     continue
                 if not target.endswith(".md"):
                     continue
-                resolved = os.path.normpath(os.path.join(os.path.dirname(path), target))
+                if target.startswith("/"):
+                    resolved = os.path.normpath(os.path.join(CONTENT, target.lstrip("/")))
+                else:
+                    resolved = os.path.normpath(os.path.join(os.path.dirname(path), target))
                 if not os.path.isfile(resolved):
                     rel = os.path.relpath(path, ROOT)
                     errors.append(f"{rel}:{lineno} -> {target} (目标不存在)")
