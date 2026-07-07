@@ -18,7 +18,7 @@
 
 ---
 
-[← 返回知识点](../社招问题知识点.md)
+[← 返回知识点](../indexes/知识点索引.md)
 
 ---
 
@@ -161,4 +161,4 @@ try (FileInputStream fis = new FileInputStream("file.txt")) {
 | `-XX:+UseZGC` | 启用 ZGC 收集器 |
 | `-XX:+PrintGCDetails` | 打印 GC 详细日志 |
 
-[← 返回知识点](../社招问题知识点.md)
+[← 返回知识点](../indexes/知识点索引.md)
