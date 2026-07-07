@@ -1,37 +1,35 @@
 # 部署指引
 
-Docsify 是纯静态站点(运行时 CDN 渲染,无构建)。`index.html` 在根目录,`content/` 是笔记。
-直接把仓库根目录当静态站点托管即可。
+站点由 [Quartz 4](https://quartz.jzhao.xyz/) 静态生成:`content/` 是笔记源码,
+`npx quartz build` 产出 `public/`(已 gitignore),把 `public/` 当静态站点托管即可。
 
-## GitHub Pages(推荐)
+## GitHub Pages(当前方式)
 
-1. 推到 `main` 分支。
-2. 仓库 **Settings → Pages → Source = Deploy from a branch** → 分支 `main` / 文件夹 `/root`。
-3. 保存,几分钟后站点上线:`https://<user>.github.io/<repo>/`。
+1. 推到 `main` 分支,[.github/workflows/deploy.yml](.github/workflows/deploy.yml) 自动构建并发布。
+2. 仓库 **Settings → Pages → Source = GitHub Actions**(只需设置一次)。
+3. 自定义域名 `wiki.wujinxing.site` 在 Pages 设置中配置,根目录 `CNAME` 文件仅作备份记录。
 
-**无需 GitHub Actions workflow**。`.nojekyll` 已在根目录(防止 Jekyll 忽略 `_sidebar.md` 等 `_` 开头文件)。
-
-> 若之前用 Actions 部署(Source = GitHub Actions),改成 "Deploy from a branch" 即可。
+workflow 要点:`fetch-depth: 0`(Quartz 用 git 历史生成"最后修改时间")、
+Node 22+、构建前先跑 `python3 scripts/check_index.py` 拦截死链/索引漂移。
 
 ## 本地预览
 
 ```bash
-npx docsify-cli serve .     # http://localhost:3000
-# 或
-python -m http.server 8000  # http://localhost:8000
+npm ci                      # 首次
+npx quartz build --serve    # http://localhost:8080,改 md 自动热重载
 ```
 
 ## Cloudflare Pages / Vercel / Netlify
 
-连 Git 仓库 → 框架预设 `None` / `Other` → **无 build 命令** → 输出目录 `.`(根)→ 部署。
+连 Git 仓库 → build 命令 `npx quartz build` → 输出目录 `public` → Node 22+。
 
 ## 自建 nginx
 
-把仓库根目录当静态根:
+先 `npx quartz build`,再把 `public/` 当静态根:
 
 ```nginx
 location / {
-    root /path/to/interview-wiki;
-    try_files $uri $uri/ /index.html;
+    root /path/to/interview-wiki/public;
+    try_files $uri $uri.html $uri/ =404;
 }
 ```

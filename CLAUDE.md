@@ -1,33 +1,35 @@
 # CLAUDE.md — interview-wiki
 
-本项目是「后端工程师面大厂」知识库,使用 [Docsify 4](https://docsify.js.org/) 渲染。
-Docsify 是运行时渲染(CDN 加载,无构建步骤),Markdown 即内容。
+本项目是「后端工程师面大厂」知识库,使用 [Quartz 4](https://quartz.jzhao.xyz/) 静态生成。
+Markdown 即内容(`content/`),`npx quartz build` 产出 `public/` 静态站点。
 
 ## 目录结构
 
 ```text
 interview-wiki/
-├── index.html         # Docsify 入口(CDN + 侧栏 + 搜索,basePath: content/)
-├── .nojekyll          # 让 GitHub Pages 不走 Jekyll(不忽略 _sidebar.md)
-├── content/           # 笔记源码(Docsify 渲染此目录)
-│   ├── index.md         # 站点首页
-│   ├── _sidebar.md      # 侧栏导航
-│   ├── indexes/         # 三大索引:知识点/算法题/高频题目
-│   ├── interview/       # 社招八股 30 篇
-│   └── algorithms/      # 算法刷题(数组已填,其余专题待补)
-├── CLAUDE.md           # 本文件(Claude 项目指引)
-├── CONTRIBUTING.md     # 内容规范(小节模板/整合规范/同步清单)
-├── TODO.md             # 内容待办(领任务/登记缺口/完成归档)
-├── README.md           # 仓库说明(GitHub 展示用)
-└── DEPLOY.md           # 部署指引
+├── quartz/              # Quartz 框架源码(vendor 自 jackyzha0/quartz v4 分支,勿随意改)
+├── quartz.config.ts     # 站点配置(插件/主题/baseUrl,中文站点设置在此)
+├── quartz.layout.ts     # 页面布局(组件编排;Explorer 分类排序表在此,新增篇目要登记)
+├── .github/workflows/deploy.yml  # CI:校验 → 构建 → 发布 GitHub Pages
+├── content/             # 笔记源码(Quartz 渲染此目录)
+│   ├── index.md           # 站点首页
+│   ├── indexes/           # 三大索引:知识点/算法题/高频题目
+│   ├── interview/         # 社招八股 30 篇,按分类分目录(Java/框架/数据库/中间件/
+│   │                      #   计算机基础/分布式与架构/工程实践/面试)
+│   └── algorithms/        # 算法刷题(数组已填,其余专题待补)
+├── CLAUDE.md            # 本文件(Claude 项目指引)
+├── CONTRIBUTING.md      # 内容规范(小节模板/整合规范/同步清单)
+├── TODO.md              # 内容待办(领任务/登记缺口/完成归档)
+├── README.md            # 仓库说明(GitHub 展示用)
+└── DEPLOY.md            # 部署指引
 ```
 
 ## 常用命令
 
 ```bash
-# 本地预览(任选其一,改完 md 刷新即生效,无构建步骤)
-npx docsify-cli serve .     # http://localhost:3000
-python -m http.server 8000  # http://localhost:8000
+# 本地预览(改完 md 自动热重载)
+npm ci                      # 首次装依赖(Node ≥22)
+npx quartz build --serve    # http://localhost:8080
 
 # 索引自检(改完目录/索引/分类后必跑,纯标准库,退出码非 0 即有问题)
 python3 scripts/check_index.py
@@ -37,7 +39,7 @@ python3 scripts/check_index.py
 
 1. **先领任务**:内容任务统一记录在 [TODO.md](./TODO.md)。动手前从「待办」领取;发现新缺口**先登记再做**,不要直接写。
 2. **按模板写**:小节结构、修改整合规范、写作要求见 [CONTRIBUTING.md](./CONTRIBUTING.md)(是什么 → 为什么 → 源码⭕ → 对比⭕ → 常见追问 → 通用概念⭕)。
-3. **同步三处**:正文写完后同步追问地图行、`indexes/知识点索引.md` 条目、相关篇目互链。
+3. **同步三处**:正文写完后同步追问地图行、`indexes/知识点索引.md` 条目、相关篇目互链;新增篇目还要在 `quartz.layout.ts` 的 Explorer 排序表登记位置。
 4. **收尾**:跑 `python3 scripts/check_index.py`;完成项移到 TODO.md「已完成」并附 commit 短哈希。
 
 ## 内容约定
@@ -49,25 +51,26 @@ python3 scripts/check_index.py
   - 算法题(固定小节,顺序不变):题目 → 思路 → 代码 → 复杂度 → 边界条件 → 变式 → 易错点 → 面试追问
   - 知识点:是什么 → 为什么这么设计 → 对比同类 → 常见追问 → 代码/图示
 
-## 链接约定
+## 链接约定(Quartz shortest 语义)
 
-正文用**标准 Markdown 相对链接** `[文本](相对路径.md)`(已从 `[[双链]]` 批量转换)。
+Quartz 的 `CrawlLinks` 配置为 `markdownLinkResolution: "shortest"`(Obsidian 同款),
+链接**按文件名全库唯一匹配**,不按相对路径:
 
-- 同目录:`[JVM](JVM.md)`
-- 跨兄弟目录(`interview/` → `indexes/`):`[社招问题知识点](../indexes/知识点索引.md)`
-- 下级:`[算法题索引](indexes/算法题索引.md)`
-
-`_sidebar.md` **必须用根绝对路径**(`/` 开头,如 `[JVM](/interview/JVM.md)`),不能用相对路径。
-原因:`index.html` 开了 `relativePath: true`,docsify 会把"不以 `/` 开头"的链接解析为**相对当前页面目录**;侧栏是每页面常驻渲染的,若写成相对路径,在非根目录页面点击就会把当前目录拼进去(如 `indexes/indexes/...`)导致 404。正文链接因为本来就该相对自身所在目录,不受影响,维持相对写法。
+- **首选纯文件名**:`[JVM](JVM.md)`、`[MySQL](MySQL.md#索引)` —— 无论源文件在哪个目录都能解析
+- **双链可用**:`[[JVM]]`、`[[MySQL#索引|MySQL 索引]]`(ObsidianFlavoredMarkdown 已启用),与标准链接等价,都计入反链/图谱
+- **文件名不唯一时写 content 根全路径**:目前只有各专题 `README.md`,如 `[数组](algorithms/01-数组与字符串/README.md)`
+- **禁止相对路径多段链接**(`../interview/JVM.md`、`01-数组与字符串/1-two-sum.md`):Quartz 会把多段路径当作从 content 根出发解析,相对写法必死链。`check_index.py` 检查项 A 会拦截
+- 代码块/行内代码里的 `[[...]]` 不会被转换,不算链接
 
 ## 命名与索引约定(AI 快速定位/校验/修改)
 
-- **权威源**:`content/_sidebar.md` 是分类的唯一权威源;`indexes/知识点索引.md`、`indexes/高频题目索引.md` 等是它的「视图」,改分类先改侧栏,再同步视图。
-- **文件名 = 稳定语义 ID**:`interview/`、`indexes/` 下用语义名(`MySQL.md`、`算法题索引.md`),**禁止位置型数字前缀**(`01-`);顺序只在 `_sidebar.md`/索引表里表达,不编进文件名,以免重排断链。
+- **权威源**:`interview/<分类>/` 目录结构是分类的唯一权威源(Explorer 侧栏直接反映目录树);`indexes/知识点索引.md` 底部「专题文件清单」等是它的「视图」,改分类先移动文件,再同步视图。
+- **文件名 = 稳定语义 ID**:`interview/`、`indexes/` 下用语义名(`MySQL.md`、`算法题索引.md`),**禁止位置型数字前缀**(`01-`);顺序在 `quartz.layout.ts` 的 Explorer 排序表里表达,不编进文件名。
+- **文件名全库唯一**(README.md/index.md 除外):纯文件名链接方案的前提,新文件重名会被校验 B 拦截。
 - **例外**:`algorithms/` 下的题号(`1-two-sum.md`)与固定专题序号(`01-数组与字符串/`)是稳定 ID,允许保留;新增专题往后加号(22、23…),不重编中间。
-- 改完跑 `python3 scripts/check_index.py`,校验死链/命名/文件集/分类一致/无孤儿题解。
-- **专题 README 是本地导航入口**:`algorithms/<专题>/` 下新增题解后,必须在本专题 README 补上链接(校验 E 会拦截漏链)。
+- 改完跑 `python3 scripts/check_index.py`,校验死链/文件名唯一/命名/文件集/分类一致/无孤儿题解。
+- **专题 README 是本地导航入口**:`algorithms/<专题>/` 下新增题解后,必须在本专题 README 补上链接(校验 F 会拦截漏链)。
 
 ## 部署
 
-见 [DEPLOY.md](./DEPLOY.md)。GitHub Pages 直接 serve `main` 分支根,无需 Actions。
+见 [DEPLOY.md](./DEPLOY.md)。push `main` 后 GitHub Actions 自动构建发布(Pages Source = GitHub Actions)。

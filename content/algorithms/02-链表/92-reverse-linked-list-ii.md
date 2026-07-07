@@ -68,4 +68,4 @@ public ListNode reverseBetween(ListNode head, int left, int right) {
 
 ---
 
-[← 返回训练计划](../社招算法训练计划.md)
+[← 返回训练计划](社招算法训练计划.md)

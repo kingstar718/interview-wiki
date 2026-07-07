@@ -66,4 +66,4 @@ public int subarraySum(int[] nums, int k) {
 
 ---
 
-[← 返回训练计划](../社招算法训练计划.md)
+[← 返回训练计划](社招算法训练计划.md)

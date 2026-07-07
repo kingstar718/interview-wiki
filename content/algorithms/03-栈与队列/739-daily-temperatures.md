@@ -63,4 +63,4 @@ public int[] dailyTemperatures(int[] temperatures) {
 
 ---
 
-[← 返回训练计划](../社招算法训练计划.md)
+[← 返回训练计划](社招算法训练计划.md)

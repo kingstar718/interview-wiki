@@ -70,4 +70,4 @@ public List<List<Integer>> generate(int numRows) {
 
 ---
 
-[← 返回训练计划](../社招算法训练计划.md)
+[← 返回训练计划](社招算法训练计划.md)
