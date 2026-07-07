@@ -2,10 +2,129 @@
 <html lang="zh-CN">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <title>Interview Wiki · 后端工程师面大厂</title>
   <meta name="description" content="Java 系后端面大厂知识库" />
+  <meta name="theme-color" content="#42b983" />
+  <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#1a1b1e" />
+  <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin />
   <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/docsify@4/lib/themes/vue.css" />
+  <style>
+    :root {
+      --base-font: 16px;
+      --content-max: 860px;
+    }
+    /* ---------- 阅读排版 ---------- */
+    .markdown-section {
+      max-width: var(--content-max);
+      font-size: var(--base-font);
+      line-height: 1.75;
+    }
+    .markdown-section p,
+    .markdown-section li {
+      line-height: 1.8;
+      letter-spacing: 0.01em;
+    }
+    .markdown-section h1,
+    .markdown-section h2 {
+      padding-top: 0.4em;
+      margin-top: 1.4em;
+    }
+    .markdown-section h2 {
+      border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+      padding-bottom: 0.3em;
+    }
+    /* 代码块:等宽字体 + 行高 + 圆角 */
+    .markdown-section pre,
+    .markdown-section code {
+      font-family: "JetBrains Mono", "Fira Code", "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+    }
+    .markdown-section pre {
+      line-height: 1.55;
+      border-radius: 8px;
+    }
+    .markdown-section pre > code {
+      font-size: 0.86em;
+    }
+    /* 行内 code 更醒目(:not(pre) 排除代码块,标题/引用/表格里的都能命中) */
+    .markdown-section :not(pre) > code {
+      background: rgba(66, 185, 131, 0.12);
+      color: #2c8f66;
+      padding: 2px 5px;
+      border-radius: 4px;
+    }
+    /* 引用块 */
+    .markdown-section blockquote {
+      border-left: 4px solid #42b983;
+      background: rgba(66, 185, 131, 0.06);
+      border-radius: 0 6px 6px 0;
+      color: #4a5568;
+    }
+    /* ---------- 移动端 ---------- */
+    @media (max-width: 768px) {
+      :root { --base-font: 16.5px; }
+      .markdown-section {
+        padding: 16px 18px 40px;
+      }
+      /* 宽表格单元格不挤压换行,整表横向滚动(vue.css 自带 table overflow:auto);
+         桌面端不加 nowrap,让宽表格正常换行放下 */
+      .markdown-section table { white-space: nowrap; }
+      /* 侧栏遮罩点击更顺手 */
+      .sidebar { font-size: 15px; }
+    }
+    /* ---------- 暗色模式(跟随系统) ---------- */
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --docsify-dark: #1a1b1e;
+        color-scheme: dark; /* 原生滚动条/输入框/表单控件自动切暗色 */
+      }
+      body, .content, .markdown-section { background: var(--docsify-dark); }
+      #app { color: #8b949e; } /* 首屏"加载中…"占位 */
+      .sidebar { background: #202126; border-right-color: rgba(255, 255, 255, 0.06); }
+      .markdown-section,
+      .app-name-link,
+      .sidebar,
+      .sidebar ul li a {
+        color: #c9d1d9 !important;
+      }
+      /* 标题文字实际在 .anchor span 里(vue.css 单独写死了深色),必须一并覆盖 */
+      .markdown-section h1,
+      .markdown-section h2,
+      .markdown-section h3,
+      .markdown-section h4,
+      .markdown-section strong,
+      .markdown-section .anchor span { color: #e6edf3; }
+      .markdown-section h2 { border-bottom-color: rgba(255, 255, 255, 0.1); }
+      .markdown-section hr { border-bottom-color: #30363d; }
+      .markdown-section em { color: #9aa4ae; }
+      /* 代码块(vue.css 默认 #f8f8f8 浅底) */
+      .markdown-section pre,
+      .markdown-section code { background: #22252a; }
+      .markdown-section pre > code { color: #adbac7; }
+      .token.punctuation { color: #9aa4ae; } /* 默认 #525252 在暗底上看不清 */
+      /* 行内 code 提亮 */
+      .markdown-section :not(pre) > code {
+        background: rgba(66, 185, 131, 0.15);
+        color: #7ee2b8;
+      }
+      /* 表格 */
+      .markdown-section tr { background: var(--docsify-dark); border-top-color: #30363d; }
+      .markdown-section tr:nth-child(2n) { background: #202126; }
+      .markdown-section th, .markdown-section td { border-color: #30363d; }
+      .markdown-section blockquote { color: #adbac7; background: rgba(66, 185, 131, 0.08); }
+      .sidebar ul li.active > a { color: #42b983 !important; }
+      /* 侧栏底部折叠按钮(vue.css 是半透明白条) */
+      .sidebar-toggle, body.close .sidebar-toggle { background-color: rgba(26, 27, 30, 0.8); }
+      /* 搜索框 */
+      .search { border-bottom-color: #30363d; }
+      .search input { color: #c9d1d9; background: transparent; }
+      .search input::placeholder { color: #6e7681; }
+      .search .matching-post { border-bottom-color: #30363d; }
+      .search h2 { color: #e6edf3; }
+      /* 上下篇导航 */
+      .docsify-pagination-container { color: #8b949e; border-top-color: #30363d !important; }
+    }
+  </style>
 </head>
 <body>
   <div id="app">加载中…</div>
@@ -24,9 +143,33 @@
         noData: "无结果",
         depth: 3,
       },
+      copyCode: {
+        buttonText: "复制",
+        errorText: "失败",
+        successText: "已复制",
+      },
+      pagination: {
+        previousText: "上一篇",
+        nextText: "下一篇",
+        crossChapter: true,
+        crossChapterText: true,
+      },
+      // 侧栏默认只展开一级分类,点击展开;当前页所在分类自动展开
+      sidebarDisplayLevel: 1,
     };
   </script>
+  <!-- 核心 -->
   <script src="//cdn.jsdelivr.net/npm/docsify@4"></script>
+  <!-- 插件:搜索 / 复制代码 / 上下篇导航 / 侧栏折叠 -->
   <script src="//cdn.jsdelivr.net/npm/docsify@4/lib/plugins/search.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/docsify-copy-code@3/dist/docsify-copy-code.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/docsify-pagination@2/dist/docsify-pagination.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/docsify-sidebar-collapse@1/dist/docsify-sidebar-collapse.min.js"></script>
+  <!-- 语法高亮:本库以 Java 为主,另含 sql/bash/lua/json -->
+  <script src="//cdn.jsdelivr.net/npm/prismjs@1/components/prism-java.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/prismjs@1/components/prism-sql.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/prismjs@1/components/prism-bash.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/prismjs@1/components/prism-lua.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/prismjs@1/components/prism-json.min.js"></script>
 </body>
 </html>
