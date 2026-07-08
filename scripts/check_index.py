@@ -35,7 +35,7 @@
     K. 元数据一致 —— 题解元数据行是难度/频次/公司的权威源,算法题索引题单表是视图:
                     已解题必须带链接、逐行比对难度/频次/公司
     L. 题解结构  —— H1 为「# 题号. 中文题名（English Title）」+ 元数据行必填 +
-                    固定小节顺序(题目→…→面试追问[→关联题],关联题回填完成前暂为可选)
+                    固定小节顺序(题目→…→面试追问→关联题,九节必填)
 
 任一检查失败 -> 退出码 1，可直接接入 CI / pre-commit / AI 改完自检。
 """
@@ -245,8 +245,7 @@ META_PARTS = [
 COMPANIES = {"阿里", "腾讯", "字节", "美团", "百度", "京东", "拼多多", "滴滴", "网易", "快手", "全厂"}
 SOLUTION_RE = re.compile(r"^(\d+)-.+\.md$")
 ALGO_H1_RE = re.compile(r"^# \d+\. .+（.+）$")
-ALGO_SECTIONS = ["题目", "思路", "代码", "复杂度", "边界条件", "变式", "易错点", "面试追问"]
-ALGO_OPTIONAL_TAIL = "关联题"  # 存量回填完成后并入 ALGO_SECTIONS 转必填
+ALGO_SECTIONS = ["题目", "思路", "代码", "复杂度", "边界条件", "变式", "易错点", "面试追问", "关联题"]
 # 题号提及: 非行首的「数字. 」或「数字、」后跟中英文(行首是有序列表序号,不算)
 MENTION_RE = re.compile(r"(\d{1,4})[.、]\s?[A-Za-z一-龥]")
 ALGO_INDEX = os.path.join(CONTENT, "indexes", "算法题索引.md")
@@ -371,8 +370,6 @@ def check_solution_structure():
             errors.append(f"{rel} 缺少元数据行(频次/难度/高频,必填)")
         h2 = [ln[3:].strip() for ln in lines if ln.startswith("## ")]
         expect = list(ALGO_SECTIONS)
-        if h2 and h2[-1] == ALGO_OPTIONAL_TAIL:
-            expect = expect + [ALGO_OPTIONAL_TAIL]
         if h2 != expect:
             errors.append(f"{rel} 小节应为 {'→'.join(expect)},实际 {'→'.join(h2)}")
     return errors
