@@ -1,6 +1,6 @@
 # CLAUDE.md — interview-wiki
 
-本项目是「后端工程师面大厂」知识库,使用 [Quartz 4](https://quartz.jzhao.xyz/) 静态生成。
+本项目是「后端工程师面大厂」知识库,使用 [Quartz 5](https://quartz.jzhao.xyz/) 静态生成。
 Markdown 即内容(`content/`),`npx quartz build` 产出 `public/` 静态站点。
 
 ## 目录结构
