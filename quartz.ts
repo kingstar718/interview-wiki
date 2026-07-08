@@ -56,6 +56,7 @@ Explorer({
       // 中间件/
       "消息队列",
       "Elasticsearch",
+      "MongoDB",
       "ZooKeeper与注册中心",
       // 计算机基础/
       "网络",
