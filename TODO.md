@@ -11,16 +11,11 @@
 
 ### 中优先级
 
-- [ ] Redis：缓存预热 — 0 覆盖。冷启动雪崩、定时任务/双缓存/灰度放量方案，与缓存三大问题衔接
 - [ ] 并发编程：ThreadLocal 源码补深 — 现有原理够用，可补 `ThreadLocalMap` 开放寻址、魔数 0x61c88647、`expungeStaleEntry` 清理时机（评估性价比后再做）
-- [ ] 网络：TLS 1.3 握手 — 追问地图提到但正文只有 TLS 1.2；1-RTT/0-RTT、与 QUIC 衔接
 - [ ] 操作系统：页表/TLB — 多级页表为什么省内存、TLB miss 代价、大页（HugePage）与数据库/JVM 的关系
-- [ ] Spring：容器启动 refresh() 源码 — 0 覆盖。十二步骨架、`onRefresh` 与 SpringBoot 内嵌 Tomcat 启动的衔接点、`finishBeanFactoryInitialization` 与 Bean 生命周期呼应
-- [ ] Spring：@Autowired 注入原理 — 0 覆盖。`AutowiredAnnotationBeanPostProcessor` 时机、byType/byName 与 @Resource 区别、字段注入为什么不推荐
 - [ ] Java基础：SPI 源码 — `ServiceLoader` 懒加载迭代器源码、与双亲委派破坏的衔接（JVM 篇已有）、Dubbo SPI 为什么重写（按需加载/IoC/AOP）
 - [ ] Redis：Cluster 深挖 — MOVED/ASK 仅在追问地图提及。gossip 协议、槽迁移完整流程、为什么是 16384 槽（CRC16 + 心跳包大小）
 - [ ] 消息队列：Kafka 日志存储 — 0 覆盖。分段（segment）、稀疏索引 .index/.timeindex、按 offset 二分查找流程，可与 MySQL B+树对比"为什么 MQ 不需要稠密索引"
-- [ ] Redis：pipeline vs mget vs Lua — 0 覆盖。往返次数、原子性差异、pipeline 太长的风险
 - [ ] 分布式系统：一致性哈希虚拟节点 — 概念散在各篇但虚拟节点 0 覆盖。数据倾斜问题、TreeMap 实现示例代码、与哈希槽（Redis Cluster）对比
 - [ ] 系统设计：限流算法实现 — 算法名已有但实现 0。滑动窗口计数代码、Redis+Lua 分布式限流脚本、令牌桶 Guava RateLimiter 预热
 - [ ] 微服务：链路追踪原理 — traceId/spanId 仅零星提及。生成与跨进程传播（HTTP header/MQ）、与 MDC 日志串联、采样率取舍
@@ -48,6 +43,11 @@
 
 ## 已完成
 
+- [x] Redis：缓存预热 — 冷启动=全量雪崩、定时任务/双缓存/灰度放量对比、预热刷满内存追问（待 commit）
+- [x] Redis：pipeline vs mget vs Lua — RTT/原子性/Cluster 跨槽三维对比、pipeline 过长风险、批处理摊薄固定开销通用概念（待 commit）
+- [x] Spring：容器启动 refresh() 源码 — 十二步骨架注释版、onRefresh 与内嵌 Tomcat、BFPP/BPP/getBean 三锚点（待 commit）
+- [x] Spring：@Autowired 注入原理 — AutowiredAnnotationBPP 两段式、@Resource 对比表、字段注入四宗罪（待 commit）
+- [x] 网络：TLS 1.3 握手 — 1-RTT 三个配套设计、0-RTT 重放风险、与 QUIC 建连衔接（待 commit）
 - [x] Netty与RPC：内存池 — PooledByteBufAllocator 分级(Arena/Chunk/Subpage)、伙伴算法满二叉树、线程绑定 Arena 减少竞争（待 commit）
 - [x] Java基础：泛型擦除 — 擦除到上界、桥接方法源码(javap)、为什么不能 new T[]、PECS 原则（待 commit）
 - [x] 系统设计：Feed 流 — 推/拉/推拉结合三方案对比、大 V 阈值、收件箱只存 ID（待 commit）
