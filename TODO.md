@@ -15,15 +15,15 @@
 
 ### 低优先级 / 待评估
 
-- [ ] 集合框架：HashMap resize 源码检查 — 已有 8 处 resize/putVal 命中，先评估现有深度是否够，不够再逐行补
+- [x] 集合框架：HashMap resize 源码检查 — 已有 putVal/resize 源码逐行解析，深度足够 ✅
+- [x] 系统设计：Seata AT 模式深挖 — 已补充 undo log/全局锁/脏写/AT vs TCC 对比
+- [x] 集合框架：LinkedHashMap 实现 LRU — 已补充 accessOrder/removeEldestEntry 源码 + 算法题互链
+- [x] 并发编程：ForkJoinPool 工作窃取 — 已补充原理/代码示例/commonPool 坑
+- [x] 安全认证：水平/垂直越权 — 已补充 IDOR 定义/防御方案/注解示例
+- [x] Elasticsearch：选主机制 — 已补充 7.x 前后选主流程/脑裂关联
+- [x] Elasticsearch：段合并与 forcemerge — 已补充合并过程/对写入的影响
+- [x] 锁升级细节评估 — 偏向锁已有"JDK 15 起已默认禁用"覆盖 ✅
 - [ ] MongoDB：是否值得新增专题（部分公司考，非主流必考，需要用户确认）
-- [ ] Elasticsearch：段合并与 forcemerge 对写入性能的影响（现有 12 节已较全，补充性）
-- [ ] 并发编程：ForkJoinPool 工作窃取 — 工作窃取 0 覆盖。双端队列偷任务、`CompletableFuture` 默认用 commonPool 的坑（IO 任务饿死）
-- [ ] 集合框架：LinkedHashMap 实现 LRU — 0 覆盖。accessOrder、`removeEldestEntry` 钩子、手写 LRU 题衔接（算法题已有则互链）
-- [ ] Elasticsearch：选主机制 — 0 覆盖。7.x 前 minimum_master_nodes 脑裂参数、7.x 后基于 quorum 的选举演变
-- [ ] 系统设计：Seata AT 模式深挖 — 仅一处提及。undo log 反向补偿、全局锁与脏写、AT vs TCC 的侵入性对比
-- [ ] 安全认证：水平/垂直越权 — 越权仅一笔带过。资源归属校验的通用做法、IDOR 案例
-- [ ] 锁升级细节评估 — 偏向锁已有命中，确认是否覆盖"JDK 15 废弃偏向锁及原因"，缺则补
 
 ### 站点侧（非内容）
 
