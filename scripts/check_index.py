@@ -24,6 +24,12 @@
     E. 分类一致  —— interview/<分类>/ 目录名 == 枢纽清单中该文件的分类名
     F. 无孤儿题解 —— algorithms/<专题>/ 下每个题解文件都必须被本专题 README 链接
                     (防止「有文件却无本地导航入口」的断点)
+    G. 地图置顶  —— interview/ 专题第一个 H2 必须是无章号的「## 面试追问地图」,
+                    且含返回知识点链接(面试问题深挖指南豁免)
+    H. 标题无编号 —— interview/ 的 H3-H6 小节标题禁止数字编号开头(^数字[.、]):
+                    小节标题是稳定语义 ID,同 C 项原则(401/502 等状态码开头合法)
+    I. 元数据行  —— 「频次 ★ · 难度 🟡 · 高频：公司」行出现即校验:
+                    ★ 1~5 个、难度限 🟢🟡🔴、公司限约定清单、段序固定
 
 任一检查失败 -> 退出码 1，可直接接入 CI / pre-commit / AI 改完自检。
 """
@@ -219,6 +225,92 @@ def check_orphan_solutions():
     return errors
 
 
+MAP_HEADING = "## 面试追问地图"
+BACK_LINK = "[← 返回知识点](知识点索引.md)"
+MAP_EXEMPT = {"面试问题深挖指南.md"}
+H2_RE = re.compile(r"^##\s")
+NUM_SECTION_RE = re.compile(r"^#{3,6}\s+\d+[.、．]\s")
+META_TRIGGER_RE = re.compile(r"^(频次 |难度 )")
+META_PARTS = [
+    ("频次", re.compile(r"^频次 ★{1,5}$")),
+    ("难度", re.compile(r"^难度 [🟢🟡🔴]$")),
+    ("高频", None),  # 公司清单单独校验
+]
+COMPANIES = {"阿里", "腾讯", "字节", "美团", "百度", "京东", "拼多多", "滴滴", "网易", "快手"}
+
+
+def interview_files():
+    for root, _dirs, files in os.walk(INTERVIEW):
+        for f in sorted(files):
+            if f.endswith(".md"):
+                yield os.path.join(root, f)
+
+
+def check_map_on_top():
+    """G. 专题第一个 H2 必须是无章号地图,且全文含返回链接。"""
+    errors = []
+    for path in interview_files():
+        if os.path.basename(path) in MAP_EXEMPT:
+            continue
+        rel = os.path.relpath(path, ROOT)
+        lines = strip_code(read(path))
+        first_h2 = next(((i, ln) for i, ln in enumerate(lines, 1) if H2_RE.match(ln)), None)
+        if first_h2 is None or first_h2[1].strip() != MAP_HEADING:
+            got = first_h2[1].strip() if first_h2 else "(无 H2)"
+            errors.append(f"{rel} 第一个 H2 应为「{MAP_HEADING}」,实际是「{got}」")
+        if not any(BACK_LINK in ln for ln in lines):
+            errors.append(f"{rel} 缺少返回链接「{BACK_LINK}」")
+    return errors
+
+
+def check_section_naming():
+    """H. H3-H6 小节标题禁止数字编号开头(小节标题是稳定语义 ID)。"""
+    errors = []
+    for path in interview_files():
+        rel = os.path.relpath(path, ROOT)
+        for lineno, line in enumerate(strip_code(read(path)), 1):
+            if NUM_SECTION_RE.match(line):
+                errors.append(f"{rel}:{lineno} 「{line.strip()}」(位置型编号,应改用问法式语义标题)")
+    return errors
+
+
+def check_meta_line():
+    """I. 元数据行出现即校验格式: 频次 ★~★★★★★ · 难度 🟢🟡🔴 · 高频：公司/公司。"""
+    errors = []
+    for path in interview_files():
+        rel = os.path.relpath(path, ROOT)
+        for lineno, line in enumerate(strip_code(read(path)), 1):
+            s = line.strip()
+            if not META_TRIGGER_RE.match(s):
+                continue
+            parts = s.split(" · ")
+            order = []
+            bad = []
+            for p in parts:
+                if p.startswith("频次"):
+                    order.append("频次")
+                    if not META_PARTS[0][1].match(p):
+                        bad.append(f"「{p}」应为「频次 ★」~「频次 ★★★★★」")
+                elif p.startswith("难度"):
+                    order.append("难度")
+                    if not META_PARTS[1][1].match(p):
+                        bad.append(f"「{p}」难度只能用 🟢/🟡/🔴")
+                elif p.startswith("高频"):
+                    order.append("高频")
+                    names = re.sub(r"^高频[：:]", "", p)
+                    unknown = [n for n in names.split("/") if n and n not in COMPANIES]
+                    if names == p or unknown:
+                        bad.append(f"「{p}」公司需在约定清单内(CLAUDE.md),未识别: {unknown or '缺冒号'}")
+                else:
+                    bad.append(f"「{p}」不是合法段(频次/难度/高频)")
+            expected = [k for k, _ in META_PARTS if k in order]
+            if order != expected:
+                bad.append(f"段序应为 频次 → 难度 → 高频,实际 {' → '.join(order)}")
+            for b in bad:
+                errors.append(f"{rel}:{lineno} {b}")
+    return errors
+
+
 def main():
     by_name = build_name_map()
     actual = actual_categories()
@@ -230,6 +322,9 @@ def main():
         ("D. 文件集一致(实际==枢纽)", check_file_set(actual, hub)),
         ("E. 分类一致(目录==枢纽)", check_category(actual, hub)),
         ("F. 无孤儿题解(题解都被专题 README 链接)", check_orphan_solutions()),
+        ("G. 追问地图置顶(无章号+返回链接)", check_map_on_top()),
+        ("H. 小节标题无编号(标题是稳定语义 ID)", check_section_naming()),
+        ("I. 元数据行格式(频次/难度/高频)", check_meta_line()),
     ]
     failed = False
     for name, errors in checks:

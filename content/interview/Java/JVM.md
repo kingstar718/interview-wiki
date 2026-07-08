@@ -1,6 +1,6 @@
 # JVM
 
-## 三、面试追问地图
+## 面试追问地图
 
 | 主问题 | 必讲关键点 | 下一层追问 |
 |--------|------------|------------|
@@ -41,7 +41,9 @@
 
 ### 高频面试题
 
-#### 1. JVM 垃圾回收机制和调优？（难度：Hard）
+#### JVM 垃圾回收机制和调优？
+
+难度 🔴
 
 **快答**
 - GC 通过可达性分析（reference chain）判断对象是否存活
@@ -83,7 +85,7 @@ try (FileInputStream fis = new FileInputStream("file.txt")) {
 
 ## 二、JVM 补充
 
-### 1. 对象创建过程
+### 对象创建过程
 
 1. **类加载检查**：检查类是否已加载、解析、初始化
 2. **分配内存**：根据类信息计算对象大小，从堆中分配（指针碰撞或空闲列表）
@@ -91,7 +93,7 @@ try (FileInputStream fis = new FileInputStream("file.txt")) {
 4. **设置对象头**：存储类元数据信息、哈希码、GC 分代年龄、锁状态等
 5. **执行 `<init>` 方法**：按程序员意图初始化对象
 
-### 2. 对象在内存中的布局
+### 对象在内存中的布局
 
 对象头（Header） + 实例数据（Instance Data） + 对齐填充（Padding）
 
@@ -99,7 +101,7 @@ try (FileInputStream fis = new FileInputStream("file.txt")) {
 - **实例数据**：对象中定义的各种字段
 - **对齐填充**：JVM 要求对象大小是 8 字节的整数倍
 
-### 3. GC Roots 有哪些？
+### GC Roots 有哪些？
 
 - 虚拟机栈（栈帧中的本地变量表）中引用的对象
 - 方法区中类静态属性引用的对象
@@ -107,20 +109,20 @@ try (FileInputStream fis = new FileInputStream("file.txt")) {
 - 本地方法栈中 JNI 引用的对象
 - 活跃线程对象
 
-### 4. 对象什么时候会从新生代晋升到老年代？
+### 对象什么时候会从新生代晋升到老年代？
 
 - **年龄阈值**：对象在 Survivor 区熬过一次 Minor GC 年龄 +1，达到 `MaxTenuringThreshold`（默认 15）时晋升
 - **大对象直接进入**：超过 `-XX:PretenureSizeThreshold` 的大对象直接分配到老年代
 - **动态年龄判定**：Survivor 区中同一年龄的对象大小总和超过 Survivor 区的一半时，大于等于该年龄的对象直接晋升
 
-### 5. 双亲委派的破坏场景
+### 双亲委派的破坏场景
 
 以下场景需要打破双亲委派：
 - **SPI 机制**：如 JDBC 驱动加载，父加载器（Bootstrap）需要加载子加载器（Application）路径下的类，通过 `Thread.currentThread().getContextClassLoader()` 解决
 - **Tomcat**：每个 Web 应用有自己的 ClassLoader，优先加载自己的类（WebappClassLoader），实现应用隔离
 - **热部署/热替换**：自定义 ClassLoader 每次加载新版本 class 文件
 
-### 6. 如何排查内存泄漏？
+### 如何排查内存泄漏？
 
 **步骤**：
 1. 添加 JVM 参数：`-XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath=./heapdump.hprof`
@@ -134,14 +136,14 @@ try (FileInputStream fis = new FileInputStream("file.txt")) {
 - ThreadLocal 未 remove
 - 事件监听器未注销
 
-### 7. 类卸载的苛刻条件
+### 类卸载的苛刻条件
 
 需要 **同时满足** 三点：
 1. 该类所有实例都已被回收
 2. 加载该类的 ClassLoader 已被回收
 3. 该类的 Class 对象无任何引用
 
-### 8. 什么时候该用什么 GC 收集器？
+### 什么时候该用什么 GC 收集器？
 
 | 收集器 | 适用场景 |
 |--------|---------|
@@ -153,7 +155,7 @@ try (FileInputStream fis = new FileInputStream("file.txt")) {
 
 > CMS 和 ParNew 已在 JDK 14 被移除，不再适用于现代环境。
 
-### 9. JVM 常用调优参数
+### JVM 常用调优参数
 
 | 参数 | 作用 |
 |------|------|
@@ -164,7 +166,7 @@ try (FileInputStream fis = new FileInputStream("file.txt")) {
 | `-XX:+UseZGC` | 启用 ZGC 收集器 |
 | `-XX:+PrintGCDetails` | 打印 GC 详细日志 |
 
-### 10. 三色标记：并发标记为什么会漏标？怎么解决？
+### 三色标记：并发标记为什么会漏标？怎么解决？
 
 **是什么**：并发标记阶段给对象染三种颜色描述扫描进度。
 
@@ -192,7 +194,7 @@ try (FileInputStream fis = new FileInputStream("file.txt")) {
 - 为什么 G1 选 SATB 而 CMS 选增量更新？→ SATB 重新标记只需扫屏障记录的旧引用，停顿更短更可控（G1 的卖点是可预测停顿）；代价是快照视角产生更多浮动垃圾。增量更新要重扫黑色对象，重新标记停顿更长。
 - ZGC 为什么不用这套？→ ZGC 用**读屏障 + 染色指针**（把标记位存在 64 位指针的高位上），加载引用时通过读屏障自愈修正，标记/转移全程并发，停顿与堆大小无关。
 
-### 11. G1 收集器原理
+### G1 收集器原理
 
 **是什么**：JDK 9+ 默认收集器。把堆划分为约 2048 个大小相等的 **Region**（1~32MB），Eden/Survivor/Old 不再物理连续，而是 Region 的逻辑集合；超过 Region 一半的大对象放 **Humongous** 区。
 
@@ -211,7 +213,7 @@ try (FileInputStream fis = new FileInputStream("file.txt")) {
 - G1 什么时候会退化成 Full GC？→ Mixed GC 回收速度赶不上分配速度（并发模式失败）、Humongous 分配失败、转移时 Survivor/Old 装不下（to-space exhausted）。退化后是单线程/多线程的整堆压缩（JDK 10+ 并行化），停顿秒级。排查方向：增大堆、调低 IHOP 让并发标记提早、排查大对象。
 - 为什么大对象是"半个 Region"为界？→ 连续 Region 分配 Humongous 开销大且回收时机特殊（Young GC / Full GC / 并发清理才回收），大量短命大对象是 G1 的典型性能杀手。
 
-### 12. 强软弱虚四种引用
+### 强软弱虚四种引用
 
 | 引用 | 回收时机 | 典型场景 |
 |------|---------|---------|
@@ -224,7 +226,7 @@ try (FileInputStream fis = new FileInputStream("file.txt")) {
 - ThreadLocal 为什么用弱引用还会泄漏？→ key（ThreadLocal 对象）是弱引用会被回收，但 **value 是强引用**，线程不死（线程池）value 就一直挂在 ThreadLocalMap 里 → 必须手动 `remove()`。弱引用只解决了 key 的泄漏，还留下 key 为 null 的 stale entry。
 - 软引用适合做缓存吗？→ 谨慎。回收时机由 JVM 决定，接近 OOM 时集中清空导致缓存雪崩 + Full GC 变长；生产缓存更推荐 Caffeine 这类带容量/过期策略的库。
 
-### 13. 安全点与安全区域
+### 安全点与安全区域
 
 **是什么**：GC 需要 STW 时，线程不能停在任意位置——**安全点（Safepoint）** 是线程状态确定、栈上引用关系明确的位置（方法调用、循环回跳、异常跳转处）。
 
@@ -234,7 +236,7 @@ try (FileInputStream fis = new FileInputStream("file.txt")) {
 - 大循环为什么会拖长 STW？→ 可数循环（int 计数）默认**不在循环内插安全点轮询**，一个千万次的纯计算循环会让其他所有线程干等它跑完才能开始 GC。JDK 10+ 的 Loop Strip Mining 缓解；排查用 `-XX:+PrintSafepointStatistics` 看 sync 时间。
 - 线程 sleep/blocked 了走不到安全点怎么办？→ **安全区域（Safe Region）**：进入该区域前声明"这段代码不改引用关系"，GC 不必等它；线程离开安全区域时检查 GC 是否完成，未完成则挂起。
 
-### 14. OOM 有哪几种？分别怎么排查？
+### OOM 有哪几种？分别怎么排查？
 
 | OOM 类型 | 报错信息 | 常见原因 | 排查 |
 |---------|---------|---------|------|
@@ -246,5 +248,7 @@ try (FileInputStream fis = new FileInputStream("file.txt")) {
 | GC 开销超限 | `GC overhead limit exceeded` | 98% 时间在 GC 但只回收 2% 内存，堆接近满 | 同堆溢出 |
 
 **答题要点**：先说 OOM ≠ 只有堆，报错信息直接指向区域；再按区域给排查工具链。可衔接[生产排障](生产排障.md)的内存上涨排查流程。
+
+---
 
 [← 返回知识点](知识点索引.md)
