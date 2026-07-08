@@ -37,12 +37,12 @@
 
 ## 已完成
 
-- [x] 并发编程：ThreadLocal 源码补深 — ThreadLocalMap 开放寻址、魔数 0x61c88647 斐波那契散列、expungeStaleEntry 顺手清理、TTL 传递（hash 待回填）
-- [x] 系统设计：限流算法实现 — 固定窗口临界问题、滑动窗口环形分桶代码、Redis+Lua ZSET 脚本、RateLimiter 预热（hash 待回填）
-- [x] 微服务：链路追踪原理 — traceId/spanId 生成与 HTTP/MQ 传播、MDC 串联、头部 vs 尾部采样（hash 待回填）
-- [x] 网络：HTTPS 证书校验 — 证书链逐级验签、中间人三条路逐条堵死、OCSP Stapling、mTLS 场景（hash 待回填）
-- [x] 网络：服务端推送选型 — 长轮询/SSE/WebSocket 对比表、SSE 内建续传、网关缓冲与超时的坑（hash 待回填）
-- [x] 操作系统：page cache 与 OOM killer — 脏页回写参数、direct IO 与双重缓存、cgroup OOM 与容器 137 排查（hash 待回填）
+- [x] 并发编程：ThreadLocal 源码补深 — ThreadLocalMap 开放寻址、魔数 0x61c88647 斐波那契散列、expungeStaleEntry 顺手清理、TTL 传递（9886056）
+- [x] 系统设计：限流算法实现 — 固定窗口临界问题、滑动窗口环形分桶代码、Redis+Lua ZSET 脚本、RateLimiter 预热（9886056）
+- [x] 微服务：链路追踪原理 — traceId/spanId 生成与 HTTP/MQ 传播、MDC 串联、头部 vs 尾部采样（9886056）
+- [x] 网络：HTTPS 证书校验 — 证书链逐级验签、中间人三条路逐条堵死、OCSP Stapling、mTLS 场景（9886056）
+- [x] 网络：服务端推送选型 — 长轮询/SSE/WebSocket 对比表、SSE 内建续传、网关缓冲与超时的坑（9886056）
+- [x] 操作系统：page cache 与 OOM killer — 脏页回写参数、direct IO 与双重缓存、cgroup OOM 与容器 137 排查（9886056）
 
 - [x] 分布式系统：一致性哈希虚拟节点 — 哈希环、虚拟节点治倾斜与级联压垮、TreeMap 实现、与哈希槽取舍对比（e6f4fab）
 - [x] 消息队列：Kafka 日志存储 — segment 三件套、稀疏索引三步查找、与 MySQL B+树"索引密度匹配访问模式"对比（e6f4fab）
