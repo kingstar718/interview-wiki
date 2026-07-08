@@ -57,7 +57,7 @@ private void inorder(TreeNode node, int k) {
 ## 易错点
 
 - 递归找到第 k 个后要**提前返回**，否则 count 会继续增加。这里用全局变量 + return 后递归继续但没有副作用；更严谨的做法是递归函数返回 boolean 并短路
-- 不要和 215. 数组中的第K大搞混——数组第 K 大是 Partition/堆，BST 第 K 小是中序遍历
+- 不要和[215. 数组中的第K大](215-kth-largest-element-in-an-array.md)搞混——数组第 K 大是 Partition/堆，BST 第 K 小是中序遍历
 
 ## 面试追问
 

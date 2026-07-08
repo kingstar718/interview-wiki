@@ -59,7 +59,7 @@ private void swap(int[] nums, int i, int j) {
 
 - **归并排序**：稳定的 O(n log n)，需 O(n) 辅助空间
 - **堆排序**：O(n log n) 原地排序
-- **215. 数组中的第K大**：快排的 partition 思想
+- **[215. 数组中的第K大](215-kth-largest-element-in-an-array.md)**：快排的 partition 思想
 
 ## 易错点
 
