@@ -56,7 +56,7 @@ private void dfs(int[][] graph, int cur, List<Integer> path, List<List<Integer>>
 ## 变式
 
 - **加权图版**：除了收集路径还要计算路径权值和
-- **79. 单词搜索**：在网格中找路径，需 visited 标记
+- **[79. 单词搜索](79-word-search.md)**：在网格中找路径，需 visited 标记
 
 ## 易错点
 
