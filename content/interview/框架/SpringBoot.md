@@ -90,7 +90,7 @@ refresh 刷新容器
 1. 推断应用类型和主配置类。
 2. 加载配置文件、环境变量和命令行参数。
 3. 发布启动阶段事件。
-4. 创建并刷新 Spring 容器。
+4. 创建并刷新 Spring 容器（refresh() 十二步骨架见[Spring](Spring.md)容器启动一节，内嵌 Tomcat 在其中 `onRefresh()` 一步创建）。
 5. 执行自动配置和 Bean 生命周期。
 6. 启动内嵌服务器。
 7. 执行 `ApplicationRunner`、`CommandLineRunner`。

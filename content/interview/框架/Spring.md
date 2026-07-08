@@ -5,6 +5,8 @@
 | 主问题 | 必讲关键点 | 下一层追问 |
 |--------|------------|------------|
 | IoC/DI | BeanDefinition、容器创建、依赖注入 | 构造器 vs 字段注入、FactoryBean |
+| 容器启动 | refresh() 十二步、BFPP → BPP → 单例实例化 | onRefresh 与内嵌 Tomcat、启动失败销毁 |
+| @Autowired | AutowiredAnnotationBPP、属性填充阶段注入 | byType/byName、@Resource 区别、字段注入缺点 |
 | Bean 生命周期 | 实例化、属性填充、Aware、前后处理器 | BeanPostProcessor 执行时机、代理何时生成 |
 | AOP | 切点、通知、代理调用 | JDK/CGLIB 选择、自调用为何失效 |
 | 事务 | 代理、传播、隔离、回滚规则 | checked 异常、this 调用、事务边界 |
@@ -121,6 +123,125 @@ public void method() {
 - **反射**：运行时动态加载类、创建实例、调用方法
 - **工厂模式**：BeanFactory/ApplicationContext 作为工厂管理 Bean 创建和生命周期
 - **依赖注入**：容器负责管理组件间依赖关系
+
+### 4. 容器启动 refresh() 做了什么？（源码级，难度：Hard）
+
+**是什么**：`AbstractApplicationContext#refresh()` 是 Spring 容器启动的总入口，十二步模板方法把"读配置 → 准备容器 → 执行扩展点 → 实例化单例 → 发布就绪事件"串成固定流程。
+
+**源码骨架**（Spring Framework 5.3+，`AbstractApplicationContext.java`，只留主干）：
+
+```java
+public void refresh() throws BeansException {
+    synchronized (this.startupShutdownMonitor) {
+        // 1. 准备刷新：记录启动时间、初始化占位符属性源、校验必需属性
+        prepareRefresh();
+
+        // 2. 获取 BeanFactory：XML 版在这里解析配置创建新工厂;
+        //    注解版(GenericApplicationContext)工厂早已创建,这里只做校验
+        ConfigurableListableBeanFactory beanFactory = obtainFreshBeanFactory();
+
+        // 3. 准备 BeanFactory：设置类加载器、SpEL 解析器、
+        //    注册环境 Bean(environment/systemProperties)、忽略 Aware 接口的自动装配
+        prepareBeanFactory(beanFactory);
+
+        try {
+            // 4. 子类扩展点(空实现)：Web 容器在此注册 request/session 作用域
+            postProcessBeanFactory(beanFactory);
+
+            // 5. 执行 BeanFactoryPostProcessor：
+            //    ConfigurationClassPostProcessor 在这里解析 @Configuration/
+            //    @ComponentScan/@Import,把扫到的类注册成 BeanDefinition
+            invokeBeanFactoryPostProcessors(beanFactory);
+
+            // 6. 注册 BeanPostProcessor(只注册不执行)：
+            //    AutowiredAnnotationBeanPostProcessor、AOP 的
+            //    AnnotationAwareAspectJAutoProxyCreator 都在此就位
+            registerBeanPostProcessors(beanFactory);
+
+            // 7/8. 初始化国际化(MessageSource)和事件广播器
+            initMessageSource();
+            initApplicationEventMulticaster();
+
+            // 9. 子类扩展点(空实现)：
+            //    SpringBoot 的 ServletWebServerApplicationContext 重写此方法,
+            //    在这里创建并启动内嵌 Tomcat —— 所以"Tomcat 在单例实例化之前启动"
+            onRefresh();
+
+            // 10. 注册事件监听器
+            registerListeners();
+
+            // 11. 实例化所有非懒加载单例 Bean(最重的一步)：
+            //     preInstantiateSingletons() 循环 getBean(),
+            //     走完"实例化→属性填充→初始化"完整生命周期(见第一章)
+            finishBeanFactoryInitialization(beanFactory);
+
+            // 12. 收尾：初始化 LifecycleProcessor、发布 ContextRefreshedEvent
+            finishRefresh();
+        } catch (BeansException ex) {
+            destroyBeans();      // 失败时销毁已创建的单例
+            cancelRefresh(ex);
+            throw ex;
+        }
+    }
+}
+```
+
+**答题要点**：十二步不用逐一背，抓住三个关键锚点——**第 5 步**执行 BeanFactoryPostProcessor（`@ComponentScan` 扫描发生在这里，操作的是 BeanDefinition 而非 Bean 实例）；**第 6 步**只注册 BeanPostProcessor，真正执行在第 11 步创建 Bean 时；**第 11 步** `finishBeanFactoryInitialization` 才开始实例化业务 Bean。能说清"先改图纸（BeanDefinition），再装流水线（BPP），最后生产（getBean）"就是理解而非背题。
+
+**与 SpringBoot 的衔接**（高频追问）：`SpringApplication.run()` 最终调用的就是 refresh()（见[SpringBoot](SpringBoot.md)启动流程一节）。内嵌 Tomcat 在第 9 步 `onRefresh()` 创建，但 Connector 真正开始接收请求是在第 12 步之后的 `finishRefresh` → `WebServerStartStopLifecycle`——保证流量进来时单例已全部就绪。
+
+**常见追问**：
+- BeanFactoryPostProcessor 和 BeanPostProcessor 的区别？→ 前者第 5 步执行、加工 **BeanDefinition**（配置元数据）；后者第 6 步注册、第 11 步创建每个 Bean 时执行、加工 **Bean 实例**（AOP 代理就在这生成）
+- 为什么 AOP 代理创建器要在第 6 步就注册？→ 它必须在任何业务 Bean 创建之前就位，否则先创建的 Bean 会错过代理时机
+- refresh() 失败会怎样？→ catch 中 `destroyBeans()` 销毁已创建单例并取消刷新，这就是启动报错时看到"应用上下文关闭"日志的原因
+
+**通用概念**：refresh() 是**模板方法模式**的教科书实现——父类定死骨架顺序，`postProcessBeanFactory`/`onRefresh` 留空给子类扩展。同一模式：Servlet 容器的生命周期回调、[JVM](JVM.md) 类加载器的 loadClass 骨架（双亲委派也是模板方法）。
+
+### 5. @Autowired 是怎么完成注入的？（难度：Hard）
+
+**是什么**：`@Autowired` 的注入不是"容器启动时统一扫一遍"，而是由 **`AutowiredAnnotationBeanPostProcessor`**（一个 BeanPostProcessor）在**每个 Bean 创建过程中的属性填充阶段**完成的。
+
+**源码时机**（Spring Framework 5.3+，两步走）：
+
+```java
+// 第一步：实例化后、属性填充前,收集注入点(哪些字段/方法标了 @Autowired)
+// AutowiredAnnotationBeanPostProcessor#postProcessMergedBeanDefinition
+//   → buildAutowiringMetadata() 反射扫描字段和方法,缓存为 InjectionMetadata
+
+// 第二步：属性填充阶段(populateBean),真正执行注入
+// AutowiredAnnotationBeanPostProcessor#postProcessProperties
+public PropertyValues postProcessProperties(PropertyValues pvs, Object bean, String beanName) {
+    InjectionMetadata metadata = findAutowiringMetadata(beanName, bean.getClass(), pvs);
+    metadata.inject(bean, beanName, pvs);  // 对每个注入点:
+    // 1. resolveDependency() 按类型从容器找候选 Bean
+    // 2. 多个候选 → @Primary → @Priority → 按字段名匹配 beanName
+    // 3. field.setAccessible(true); field.set(bean, value) 反射赋值
+    return pvs;
+}
+```
+
+**@Autowired vs @Resource**（必考对比）：
+
+| 维度 | @Autowired | @Resource |
+|------|-----------|-----------|
+| 来源 | Spring 自带 | JSR-250 标准注解（JDK/Jakarta） |
+| 处理器 | AutowiredAnnotationBeanPostProcessor | CommonAnnotationBeanPostProcessor |
+| 匹配顺序 | **先 byType**，多候选再按 @Primary/@Qualifier/字段名 | **先 byName**（默认取字段名），找不到才 byType |
+| 指定名称 | 配合 `@Qualifier("name")` | 直接 `@Resource(name = "xxx")` |
+| 可标位置 | 构造器、字段、setter、方法参数 | 字段、setter（不能标构造器） |
+
+**字段注入为什么不推荐**（IDEA 会警告，高频追问）：
+- **隐藏依赖**：依赖不出现在构造器签名里，类的协作关系不可见，容易演变成一个类注入十几个依赖而无察觉
+- **脱离容器不可用**：单测想 new 出来手动塞依赖只能靠反射；构造器注入直接传参即可
+- **无法声明 final**：不能表达"依赖不可变"，存在 NPE 窗口期（对象已构造但尚未注入）
+- **掩盖循环依赖**：构造器注入的循环依赖启动即报错（暴露设计问题），字段注入靠三级缓存"救活"（见下文循环依赖一章），坏味道被隐藏
+
+**常见追问**：
+- @Autowired 标在构造器上还需要 AutowiredAnnotationBeanPostProcessor 吗？→ 需要，但走的是另一个入口 `determineCandidateConstructors()`（SmartInstantiationAwareBeanPostProcessor 接口），在**实例化阶段**就介入，比属性填充更早；单构造器时注解可省略
+- byType 找到多个候选又没有 @Primary 会怎样？→ 尝试按字段名匹配 beanName，仍无法唯一则抛 `NoUniqueBeanDefinitionException`
+- static 字段能注入吗？→ 不能，`buildAutowiringMetadata` 里显式跳过 static 成员（类级状态不该绑定到单个实例）
+
+**通用概念**：注入的本质是**依赖解析 + 反射赋值**，"先收集元数据并缓存、再统一执行"的两段式也是通用优化模式——对照 [MyBatis](MyBatis.md) 启动时解析 XML 缓存 MappedStatement、[JVM](JVM.md) JIT 先 profile 再编译。
 
 ---
 
