@@ -43,11 +43,11 @@
 
 ## 已完成
 
-- [x] 分布式系统：一致性哈希虚拟节点 — 哈希环、虚拟节点治倾斜与级联压垮、TreeMap 实现、与哈希槽取舍对比（hash 待回填）
-- [x] 消息队列：Kafka 日志存储 — segment 三件套、稀疏索引三步查找、与 MySQL B+树"索引密度匹配访问模式"对比（hash 待回填）
-- [x] Redis：Cluster 深挖 — gossip 扩散/PFAIL→FAIL、16384 槽两笔账、槽迁移五步与 MOVED vs ASK 对比（hash 待回填）
-- [x] Java基础：SPI 源码 — ServiceLoader LazyIterator 懒加载、上下文类加载器破坏双亲委派衔接、Dubbo ExtensionLoader 对比（hash 待回填）
-- [x] 操作系统：页表/TLB — 四级页表按需分配省内存、TLB miss 五次访存代价、HugePage/THP 对比与 Redis 关 THP 互链（hash 待回填）
+- [x] 分布式系统：一致性哈希虚拟节点 — 哈希环、虚拟节点治倾斜与级联压垮、TreeMap 实现、与哈希槽取舍对比（e6f4fab）
+- [x] 消息队列：Kafka 日志存储 — segment 三件套、稀疏索引三步查找、与 MySQL B+树"索引密度匹配访问模式"对比（e6f4fab）
+- [x] Redis：Cluster 深挖 — gossip 扩散/PFAIL→FAIL、16384 槽两笔账、槽迁移五步与 MOVED vs ASK 对比（e6f4fab）
+- [x] Java基础：SPI 源码 — ServiceLoader LazyIterator 懒加载、上下文类加载器破坏双亲委派衔接、Dubbo ExtensionLoader 对比（e6f4fab）
+- [x] 操作系统：页表/TLB — 四级页表按需分配省内存、TLB miss 五次访存代价、HugePage/THP 对比与 Redis 关 THP 互链（e6f4fab）
 - [x] Redis：缓存预热 — 冷启动=全量雪崩、定时任务/双缓存/灰度放量对比、预热刷满内存追问（bd82b57）
 - [x] Redis：pipeline vs mget vs Lua — RTT/原子性/Cluster 跨槽三维对比、pipeline 过长风险、批处理摊薄固定开销通用概念（bd82b57）
 - [x] Spring：容器启动 refresh() 源码 — 十二步骨架注释版、onRefresh 与内嵌 Tomcat、BFPP/BPP/getBean 三锚点（bd82b57）
