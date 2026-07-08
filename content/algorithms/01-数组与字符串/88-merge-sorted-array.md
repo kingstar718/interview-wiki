@@ -1,4 +1,6 @@
-# 88. Merge Sorted Array (Easy)
+# 88. 合并两个有序数组（Merge Sorted Array）
+
+频次 ★★★ · 难度 🟢 · 高频：全厂
 
 ## 题目
 

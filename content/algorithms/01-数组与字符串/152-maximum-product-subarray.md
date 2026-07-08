@@ -1,4 +1,6 @@
-# 152. Maximum Product Subarray (Medium)
+# 152. 乘积最大子数组（Maximum Product Subarray）
+
+频次 ★★★ · 难度 🟡 · 高频：字节
 
 ## 题目
 

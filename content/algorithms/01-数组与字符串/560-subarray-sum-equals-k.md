@@ -1,4 +1,6 @@
-# 560. Subarray Sum Equals K (Medium)
+# 560. 和为 K 的子数组（Subarray Sum Equals K）
+
+频次 ★★★★ · 难度 🟡 · 高频：字节/美团
 
 ## 题目
 

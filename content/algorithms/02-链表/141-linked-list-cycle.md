@@ -1,4 +1,6 @@
-# 141. Linked List Cycle (Easy)
+# 141. 环形链表I（Linked List Cycle）
+
+频次 ★★★★★ · 难度 🟢 · 高频：全厂
 
 ## 题目
 

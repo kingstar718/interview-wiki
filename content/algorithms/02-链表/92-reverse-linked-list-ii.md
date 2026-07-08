@@ -1,4 +1,6 @@
-# 92. Reverse Linked List II (Medium)
+# 92. 反转链表II（Reverse Linked List II）
+
+频次 ★★★★ · 难度 🟡 · 高频：字节/美团
 
 ## 题目
 

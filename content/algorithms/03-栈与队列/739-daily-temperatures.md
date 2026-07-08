@@ -1,4 +1,6 @@
-# 739. Daily Temperatures (Medium)
+# 739. 每日温度（Daily Temperatures）
+
+频次 ★★★★ · 难度 🟡 · 高频：字节/美团
 
 ## 题目
 

@@ -1,4 +1,6 @@
-# 142. Linked List Cycle II (Medium)
+# 142. 环形链表II（Linked List Cycle II）
+
+频次 ★★★★★ · 难度 🟡 · 高频：字节/腾讯
 
 ## 题目
 

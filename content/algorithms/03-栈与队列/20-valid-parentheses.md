@@ -1,4 +1,6 @@
-# 20. Valid Parentheses (Easy)
+# 20. 有效的括号（Valid Parentheses）
+
+频次 ★★★★★ · 难度 🟢 · 高频：全厂
 
 ## 题目
 

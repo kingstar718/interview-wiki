@@ -1,4 +1,6 @@
-# 26. Remove Duplicates from Sorted Array (Easy)
+# 26. 删除有序数组中的重复项（Remove Duplicates from Sorted Array）
+
+频次 ★★★ · 难度 🟢 · 高频：全厂
 
 ## 题目
 

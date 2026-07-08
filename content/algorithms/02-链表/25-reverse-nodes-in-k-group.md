@@ -1,4 +1,6 @@
-# 25. Reverse Nodes in k-Group (Hard)
+# 25. K个一组翻转链表（Reverse Nodes in k-Group）
+
+频次 ★★★★★ · 难度 🔴 · 高频：字节/阿里/腾讯
 
 ## 题目
 

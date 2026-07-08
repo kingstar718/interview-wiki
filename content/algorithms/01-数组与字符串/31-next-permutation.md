@@ -1,4 +1,6 @@
-# 31. Next Permutation (Medium)
+# 31. 下一个排列（Next Permutation）
+
+频次 ★★★ · 难度 🟡 · 高频：阿里
 
 ## 题目
 

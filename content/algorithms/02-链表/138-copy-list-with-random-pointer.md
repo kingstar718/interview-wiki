@@ -1,4 +1,6 @@
-# 138. Copy List with Random Pointer (Medium)
+# 138. 复制带随机指针的链表（Copy List with Random Pointer）
+
+频次 ★★★★ · 难度 🟡 · 高频：字节/美团
 
 ## 题目
 

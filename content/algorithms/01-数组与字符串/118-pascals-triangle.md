@@ -1,4 +1,6 @@
-# 118. Pascal's Triangle (Easy)
+# 118. 杨辉三角（Pascal's Triangle）
+
+频次 ★★ · 难度 🟢 · 高频：全厂
 
 ## 题目
 

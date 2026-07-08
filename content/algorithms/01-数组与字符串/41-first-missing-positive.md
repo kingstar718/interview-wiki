@@ -1,4 +1,6 @@
-# 41. First Missing Positive (Hard)
+# 41. 缺失的第一个正数（First Missing Positive）
+
+频次 ★★★★ · 难度 🔴 · 高频：字节/阿里
 
 ## 题目
 

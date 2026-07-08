@@ -1,4 +1,6 @@
-# 876. Middle of the Linked List (Easy)
+# 876. 链表的中间结点（Middle of the Linked List）
+
+频次 ★★ · 难度 🟢 · 高频：美团
 
 ## 题目
 

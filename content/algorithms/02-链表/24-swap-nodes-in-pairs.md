@@ -1,4 +1,6 @@
-# 24. Swap Nodes in Pairs (Medium)
+# 24. 两两交换链表结点（Swap Nodes in Pairs）
+
+频次 ★★★ · 难度 🟡 · 高频：美团
 
 ## 题目
 

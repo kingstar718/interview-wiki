@@ -1,4 +1,6 @@
-# 150. Evaluate Reverse Polish Notation (Medium)
+# 150. 逆波兰表达式求值（Evaluate Reverse Polish Notation）
+
+频次 ★★★ · 难度 🟡 · 高频：百度
 
 ## 题目
 
