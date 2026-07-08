@@ -72,7 +72,7 @@ public boolean isValid(String s) {
 ## 关联题
 
 - 同套路：[394. 字符串解码](394-decode-string.md)、[150. 逆波兰表达式求值](150-evaluate-reverse-polish-notation.md) —— 栈处理嵌套/后缀结构三件套
-- 进阶：32. 最长有效括号 —— 栈存下标或 DP；856. 括号的分数
+- 进阶：[32. 最长有效括号](32-longest-valid-parentheses.md) —— 栈存下标或 DP；856. 括号的分数
 - 知识点：括号匹配是编译器语法检查的最小模型；栈与递归等价——本题的栈就是递归下降解析的显式化
 
 ---

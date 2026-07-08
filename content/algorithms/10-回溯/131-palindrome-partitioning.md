@@ -78,7 +78,7 @@ private boolean isPalindrome(String s, int l, int r) {
 ## 关联题
 
 - 同套路：[93. 复原 IP 地址](93-restore-ip-addresses.md) —— 字符串分割类回溯
-- 进阶：5. 最长回文子串 —— 回文的动态规划解法
+- 进阶：[5. 最长回文子串](5-longest-palindromic-substring.md) —— 回文的动态规划解法
 - 知识点：字符串分割类回溯模板见[回溯](algorithms/10-回溯/README.md)
 
 ---
