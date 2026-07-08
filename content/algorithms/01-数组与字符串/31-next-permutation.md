@@ -87,7 +87,7 @@ private void reverse(int[] nums, int start, int end) {
 ## 关联题
 
 - 同套路：[189. 轮转数组](189-rotate-array.md) —— 复用"区间反转"子操作
-- 进阶：46. 全排列（回溯枚举全部）、60. 排列序列（数学法直接定位第 k 个）
+- 进阶：[46. 全排列](46-permutations.md)（回溯枚举全部）、60. 排列序列（数学法直接定位第 k 个）
 - 知识点："从右找第一个升序对 → 交换 → 反转尾部"就是 C++ STL next_permutation 的实现
 
 ---
