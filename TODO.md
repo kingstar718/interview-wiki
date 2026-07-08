@@ -16,12 +16,6 @@
 - [ ] 算法:关联题回填第三批(栈与队列 8 篇)— 单调栈 739/84、栈模拟 20/394/150、双结构互实现 225/232/155
 - [ ] 算法:三批回填完成后,check_index.py 校验 L 的「关联题」小节由可选转必填(改 ALGO_SECTIONS)
 
-- [ ] 并发编程：ThreadLocal 源码补深 — 现有原理够用，可补 `ThreadLocalMap` 开放寻址、魔数 0x61c88647、`expungeStaleEntry` 清理时机（评估性价比后再做）
-- [ ] 系统设计：限流算法实现 — 算法名已有但实现 0。滑动窗口计数代码、Redis+Lua 分布式限流脚本、令牌桶 Guava RateLimiter 预热
-- [ ] 微服务：链路追踪原理 — traceId/spanId 仅零星提及。生成与跨进程传播（HTTP header/MQ）、与 MDC 日志串联、采样率取舍
-- [ ] 网络：HTTPS 证书校验细节 — 证书链 0 覆盖。信任链逐级验签、为什么中间人拿不到有效证书、自签名/双向 TLS（mTLS）场景
-- [ ] 网络：服务端推送方案选型 — SSE 0 覆盖。长轮询 vs SSE vs WebSocket 对比表、各自适用场景与网关/LB 配合的坑
-- [ ] 操作系统：page cache 与 OOM killer — 0 覆盖。脏页回写参数、direct IO 适用场景、cgroup 内存限制与容器里 JVM 被杀的关系（衔接 Linux与工程化的容器内存）
 
 ### 低优先级 / 待评估
 
@@ -42,6 +36,13 @@
 - [ ] vue.css 首行 Google Fonts `@import` 国内阻塞：本地化 vue.css 并删除该行
 
 ## 已完成
+
+- [x] 并发编程：ThreadLocal 源码补深 — ThreadLocalMap 开放寻址、魔数 0x61c88647 斐波那契散列、expungeStaleEntry 顺手清理、TTL 传递（hash 待回填）
+- [x] 系统设计：限流算法实现 — 固定窗口临界问题、滑动窗口环形分桶代码、Redis+Lua ZSET 脚本、RateLimiter 预热（hash 待回填）
+- [x] 微服务：链路追踪原理 — traceId/spanId 生成与 HTTP/MQ 传播、MDC 串联、头部 vs 尾部采样（hash 待回填）
+- [x] 网络：HTTPS 证书校验 — 证书链逐级验签、中间人三条路逐条堵死、OCSP Stapling、mTLS 场景（hash 待回填）
+- [x] 网络：服务端推送选型 — 长轮询/SSE/WebSocket 对比表、SSE 内建续传、网关缓冲与超时的坑（hash 待回填）
+- [x] 操作系统：page cache 与 OOM killer — 脏页回写参数、direct IO 与双重缓存、cgroup OOM 与容器 137 排查（hash 待回填）
 
 - [x] 分布式系统：一致性哈希虚拟节点 — 哈希环、虚拟节点治倾斜与级联压垮、TreeMap 实现、与哈希槽取舍对比（e6f4fab）
 - [x] 消息队列：Kafka 日志存储 — segment 三件套、稀疏索引三步查找、与 MySQL B+树"索引密度匹配访问模式"对比（e6f4fab）

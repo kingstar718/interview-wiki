@@ -140,7 +140,7 @@ traceroute example.com
 - Code Cache。
 - JVM 和 native 库。
 
-因此不能把 `-Xmx` 设置为容器内存上限，应为非堆和系统开销预留空间，并监控容器 RSS。
+因此不能把 `-Xmx` 设置为容器内存上限，应为非堆和系统开销预留空间，并监控容器 RSS。超限后被 cgroup OOM kill（退出码 137、JVM 无异常日志）的机制与排查见[操作系统](操作系统.md)"page cache 与 OOM killer"一节。
 
 ---
 
