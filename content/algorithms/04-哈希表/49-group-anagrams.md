@@ -49,7 +49,7 @@ public List<List<String>> groupAnagrams(String[] strs) {
 
 - **计数键版**：`int[26]` 统计后拼接 `"1#0#2#..."`，注意必须带分隔符
 - 字符集不限小写字母（Unicode）时：排序键仍然通用；计数键要换成 `Map<Character,Integer>`，得不偿失
-- 438. 找到字符串中所有字母异位词：把"分组"换成"在长串里找异位词子串"，解法变滑动窗口
+- [438. 找到字符串中所有字母异位词](438-find-all-anagrams-in-a-string.md)：把"分组"换成"在长串里找异位词子串"，解法变滑动窗口
 
 ## 易错点
 
@@ -65,7 +65,7 @@ public List<List<String>> groupAnagrams(String[] strs) {
 ## 关联题
 
 - 同套路：242. 有效的字母异位词 —— 单对判断版，本题是它的批量聚合
-- 进阶：438. 找到字符串中所有字母异位词 —— 规范化思想 + 滑动窗口
+- 进阶：[438. 找到字符串中所有字母异位词](438-find-all-anagrams-in-a-string.md) —— 规范化思想 + 滑动窗口
 - 知识点：HashMap 的 hashCode/equals 契约与 O(1) 查找，见[集合框架](集合框架.md)
 
 ---
