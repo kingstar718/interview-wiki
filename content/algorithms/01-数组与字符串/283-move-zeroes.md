@@ -69,7 +69,7 @@ public void moveZeroes(int[] nums) {
 ## 关联题
 
 - 同套路：[27. 移除元素](27-remove-element.md)、[26. 删除有序数组中的重复项](26-remove-duplicates.md) —— 快慢双指针原地压缩三件套
-- 进阶：75. 颜色分类 —— 升级为三指针分区（荷兰国旗问题）
+- 进阶：[75. 颜色分类](75-sort-colors.md) —— 升级为三指针分区（荷兰国旗问题）
 - 知识点：慢指针始终是"已处理区边界"的循环不变量，双指针专题见[双指针](algorithms/05-双指针/README.md)
 
 ---
