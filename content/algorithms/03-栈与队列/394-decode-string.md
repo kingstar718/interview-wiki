@@ -1,4 +1,6 @@
-# 394. Decode String (Medium)
+# 394. 字符串解码（Decode String）
+
+频次 ★★★★ · 难度 🟡 · 高频：腾讯/字节
 
 ## 题目
 

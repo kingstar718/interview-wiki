@@ -1,4 +1,6 @@
-# 84. Largest Rectangle in Histogram (Hard)
+# 84. 柱状图中最大矩形（Largest Rectangle in Histogram）
+
+频次 ★★★★ · 难度 🔴 · 高频：阿里/字节
 
 ## 题目
 

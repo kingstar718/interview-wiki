@@ -28,8 +28,14 @@
                     且含返回知识点链接(面试问题深挖指南豁免)
     H. 标题无编号 —— interview/ 的 H3-H6 小节标题禁止数字编号开头(^数字[.、]):
                     小节标题是稳定语义 ID,同 C 项原则(401/502 等状态码开头合法)
-    I. 元数据行  —— 「频次 ★ · 难度 🟡 · 高频：公司」行出现即校验:
-                    ★ 1~5 个、难度限 🟢🟡🔴、公司限约定清单、段序固定
+    I. 元数据行  —— 「频次 ★ · 难度 🟡 · 高频：公司」行出现即校验(interview + 算法题解):
+                    ★ 1~5 个、难度限 🟢🟡🔴、公司限约定清单(算法侧可用「全厂」)、段序固定
+    J. 关联题欠链 —— 题解正文提到已收录题号(如「148. 排序链表」)却全文无链接 -> 报警,
+                    保证关联网络随收录自动趋于完整(行首序号列表不算提及)
+    K. 元数据一致 —— 题解元数据行是难度/频次/公司的权威源,算法题索引题单表是视图:
+                    已解题必须带链接、逐行比对难度/频次/公司
+    L. 题解结构  —— H1 为「# 题号. 中文题名（English Title）」+ 元数据行必填 +
+                    固定小节顺序(题目→…→面试追问[→关联题],关联题回填完成前暂为可选)
 
 任一检查失败 -> 退出码 1，可直接接入 CI / pre-commit / AI 改完自检。
 """
@@ -236,7 +242,14 @@ META_PARTS = [
     ("难度", re.compile(r"^难度 [🟢🟡🔴]$")),
     ("高频", None),  # 公司清单单独校验
 ]
-COMPANIES = {"阿里", "腾讯", "字节", "美团", "百度", "京东", "拼多多", "滴滴", "网易", "快手"}
+COMPANIES = {"阿里", "腾讯", "字节", "美团", "百度", "京东", "拼多多", "滴滴", "网易", "快手", "全厂"}
+SOLUTION_RE = re.compile(r"^(\d+)-.+\.md$")
+ALGO_H1_RE = re.compile(r"^# \d+\. .+（.+）$")
+ALGO_SECTIONS = ["题目", "思路", "代码", "复杂度", "边界条件", "变式", "易错点", "面试追问"]
+ALGO_OPTIONAL_TAIL = "关联题"  # 存量回填完成后并入 ALGO_SECTIONS 转必填
+# 题号提及: 非行首的「数字. 」或「数字、」后跟中英文(行首是有序列表序号,不算)
+MENTION_RE = re.compile(r"(\d{1,4})[.、]\s?[A-Za-z一-龥]")
+ALGO_INDEX = os.path.join(CONTENT, "indexes", "算法题索引.md")
 
 
 def interview_files():
@@ -244,6 +257,125 @@ def interview_files():
         for f in sorted(files):
             if f.endswith(".md"):
                 yield os.path.join(root, f)
+
+
+def solution_files():
+    """(path, 题号, basename) —— algorithms/<专题>/<题号>-slug.md"""
+    for topic in sorted(os.listdir(ALGORITHMS)):
+        tdir = os.path.join(ALGORITHMS, topic)
+        if not os.path.isdir(tdir):
+            continue
+        for f in sorted(os.listdir(tdir)):
+            m = SOLUTION_RE.match(f)
+            if m:
+                yield os.path.join(tdir, f), m.group(1), f
+
+
+def meta_files():
+    yield from interview_files()
+    for path, _num, _base in solution_files():
+        yield path
+
+
+def parse_solution_meta(path):
+    """题解元数据行 -> (频次, 难度, 公司集合) 或 None。取 H1 后前几行。"""
+    for line in strip_code(read(path))[:6]:
+        s = line.strip()
+        if META_TRIGGER_RE.match(s):
+            stars = re.search(r"频次 (★{1,5})", s)
+            diff = re.search(r"难度 ([🟢🟡🔴])", s)
+            comp = re.search(r"高频[：:]([^ ·]+)", s)
+            return (
+                stars.group(1) if stars else None,
+                diff.group(1) if diff else None,
+                set(comp.group(1).split("/")) if comp else set(),
+            )
+    return None
+
+
+def check_related_links():
+    """J. 题解正文提到已收录题号却全文无链接 -> 欠链。"""
+    solved = {num: base for _p, num, base in solution_files()}
+    errors = []
+    for path, own_num, _base in solution_files():
+        rel = os.path.relpath(path, ROOT)
+        text_lines = strip_code(read(path))
+        linked = set()
+        for line in text_lines:
+            for m in LINK_RE.finditer(line):
+                lm = SOLUTION_RE.match(os.path.basename(m.group(1).split("#")[0]))
+                if lm:
+                    linked.add(lm.group(1))
+        for lineno, line in enumerate(text_lines, 1):
+            bare = LINK_RE.sub("", line)
+            for m in MENTION_RE.finditer(bare):
+                num = m.group(1)
+                if bare[: m.start()].strip() == "":
+                    continue  # 行首序号(有序列表),不算题号提及
+                if num == own_num or num not in solved or num in linked:
+                    continue
+                errors.append(
+                    f"{rel}:{lineno} 提到「{num}.」但未链接 {solved[num]}(已收录题必须带链接)"
+                )
+    return errors
+
+
+def check_algo_meta_sync():
+    """K. 题解元数据行(权威源) vs 算法题索引题单表(视图) 逐行比对。"""
+    errors = []
+    actual = {base: (path, num) for path, num, base in solution_files()}
+    # 索引里带链接的行: basename -> [(难度, 频次, 公司集合, 行号)]
+    index_rows = defaultdict(list)
+    for lineno, line in enumerate(read(ALGO_INDEX).splitlines(), 1):
+        if not line.startswith("|"):
+            continue
+        cells = [c.strip() for c in line.strip("|").split("|")]
+        if len(cells) < 5:
+            continue
+        m = LINK_RE.search(cells[1])
+        if m:
+            base = os.path.basename(m.group(1).split("#")[0])
+            index_rows[base].append((cells[2], cells[3], set(cells[4].split()), lineno))
+        elif cells[0].isdigit() and f"{cells[0]}-" in " ".join(actual):
+            hit = next((b for b in actual if b.startswith(cells[0] + "-")), None)
+            if hit:
+                errors.append(f"索引:{lineno} 题 {cells[0]} 已有题解 {hit} 但题名未带链接(已解=带链接)")
+    for base, rows in sorted(index_rows.items()):
+        if base not in actual:
+            continue  # 链接目标不存在由 A 兜底
+        meta = parse_solution_meta(actual[base][0])
+        rel = os.path.relpath(actual[base][0], ROOT)
+        if meta is None:
+            errors.append(f"{rel} 缺少元数据行(题解是难度/频次/公司的权威源,必填)")
+            continue
+        stars, diff, comps = meta
+        for idx_diff, idx_stars, idx_comps, lineno in rows:
+            if diff and idx_diff != diff:
+                errors.append(f"索引:{lineno} {base} 难度 {idx_diff} != 题解 {diff}(以题解为准)")
+            if stars and idx_stars != stars:
+                errors.append(f"索引:{lineno} {base} 频次 {idx_stars} != 题解 {stars}(以题解为准)")
+            if comps and idx_comps != comps:
+                errors.append(f"索引:{lineno} {base} 公司 {sorted(idx_comps)} != 题解 {sorted(comps)}(以题解为准)")
+    return errors
+
+
+def check_solution_structure():
+    """L. H1 格式 + 元数据行必填 + 固定小节顺序。"""
+    errors = []
+    for path, _num, _base in solution_files():
+        rel = os.path.relpath(path, ROOT)
+        lines = strip_code(read(path))
+        if not lines or not ALGO_H1_RE.match(lines[0]):
+            errors.append(f"{rel} H1 应为「# 题号. 中文题名（English Title）」,实际「{lines[0] if lines else ''}」")
+        if parse_solution_meta(path) is None:
+            errors.append(f"{rel} 缺少元数据行(频次/难度/高频,必填)")
+        h2 = [ln[3:].strip() for ln in lines if ln.startswith("## ")]
+        expect = list(ALGO_SECTIONS)
+        if h2 and h2[-1] == ALGO_OPTIONAL_TAIL:
+            expect = expect + [ALGO_OPTIONAL_TAIL]
+        if h2 != expect:
+            errors.append(f"{rel} 小节应为 {'→'.join(expect)},实际 {'→'.join(h2)}")
+    return errors
 
 
 def check_map_on_top():
@@ -277,7 +409,7 @@ def check_section_naming():
 def check_meta_line():
     """I. 元数据行出现即校验格式: 频次 ★~★★★★★ · 难度 🟢🟡🔴 · 高频：公司/公司。"""
     errors = []
-    for path in interview_files():
+    for path in meta_files():
         rel = os.path.relpath(path, ROOT)
         for lineno, line in enumerate(strip_code(read(path)), 1):
             s = line.strip()
@@ -325,6 +457,9 @@ def main():
         ("G. 追问地图置顶(无章号+返回链接)", check_map_on_top()),
         ("H. 小节标题无编号(标题是稳定语义 ID)", check_section_naming()),
         ("I. 元数据行格式(频次/难度/高频)", check_meta_line()),
+        ("J. 关联题欠链(提到已收录题号必须链接)", check_related_links()),
+        ("K. 元数据一致(题解权威源==索引视图)", check_algo_meta_sync()),
+        ("L. 题解结构(H1/元数据行/固定小节)", check_solution_structure()),
     ]
     failed = False
     for name, errors in checks:

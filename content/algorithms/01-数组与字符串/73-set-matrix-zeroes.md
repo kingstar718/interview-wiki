@@ -1,4 +1,6 @@
-# 73. Set Matrix Zeroes (Medium)
+# 73. 矩阵置零（Set Matrix Zeroes）
+
+频次 ★★★ · 难度 🟡 · 高频：百度
 
 ## 题目
 

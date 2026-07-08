@@ -1,4 +1,6 @@
-# 189. Rotate Array (Medium)
+# 189. 轮转数组（Rotate Array）
+
+频次 ★★★ · 难度 🟡 · 高频：美团/京东
 
 ## 题目
 

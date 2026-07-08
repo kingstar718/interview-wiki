@@ -1,4 +1,6 @@
-# 448. Find All Numbers Disappeared in an Array (Easy)
+# 448. 找到所有数组中消失的数字（Find All Numbers Disappeared in an Array）
+
+频次 ★★★ · 难度 🟢 · 高频：百度
 
 ## 题目
 

@@ -1,4 +1,6 @@
-# 238. Product of Array Except Self (Medium)
+# 238. 除自身以外数组的乘积（Product of Array Except Self）
+
+频次 ★★★★ · 难度 🟡 · 高频：字节/阿里
 
 ## 题目
 

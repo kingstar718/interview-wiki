@@ -1,4 +1,6 @@
-# 19. Remove Nth Node From End of List (Medium)
+# 19. 删除倒数第N个结点（Remove Nth Node From End of List）
+
+频次 ★★★★★ · 难度 🟡 · 高频：全厂
 
 ## 题目
 

@@ -1,4 +1,6 @@
-# 48. Rotate Image (Medium)
+# 48. 旋转图像（Rotate Image）
+
+频次 ★★★ · 难度 🟡 · 高频：腾讯/字节
 
 ## 题目
 

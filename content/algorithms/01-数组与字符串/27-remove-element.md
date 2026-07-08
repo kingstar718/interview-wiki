@@ -1,4 +1,6 @@
-# 27. Remove Element (Easy)
+# 27. 移除元素（Remove Element）
+
+频次 ★★ · 难度 🟢 · 高频：全厂
 
 ## 题目
 

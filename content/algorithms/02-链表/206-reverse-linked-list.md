@@ -1,4 +1,6 @@
-# 206. Reverse Linked List (Easy)
+# 206. 反转链表（Reverse Linked List）
+
+频次 ★★★★★ · 难度 🟢 · 高频：全厂
 
 ## 题目
 

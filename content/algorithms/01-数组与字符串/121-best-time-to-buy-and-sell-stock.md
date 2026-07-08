@@ -1,4 +1,6 @@
-# 121. Best Time to Buy and Sell Stock (Easy)
+# 121. 买卖股票的最佳时机（Best Time to Buy and Sell Stock）
+
+频次 ★★★★ · 难度 🟢 · 高频：全厂
 
 ## 题目
 

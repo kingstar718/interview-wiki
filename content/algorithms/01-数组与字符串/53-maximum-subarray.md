@@ -1,4 +1,6 @@
-# 53. Maximum Subarray (Easy)
+# 53. 最大子数组和（Maximum Subarray）
+
+频次 ★★★★★ · 难度 🟢 · 高频：全厂
 
 ## 题目
 

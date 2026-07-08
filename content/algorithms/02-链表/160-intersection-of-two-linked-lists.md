@@ -1,4 +1,6 @@
-# 160. Intersection of Two Linked Lists (Easy)
+# 160. 相交链表（Intersection of Two Linked Lists）
+
+频次 ★★★ · 难度 🟢 · 高频：快手
 
 ## 题目
 

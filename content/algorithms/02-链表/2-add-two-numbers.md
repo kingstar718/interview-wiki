@@ -1,4 +1,6 @@
-# 2. Add Two Numbers (Medium)
+# 2. 两数相加（Add Two Numbers）
+
+频次 ★★★★ · 难度 🟡 · 高频：全厂
 
 ## 题目
 

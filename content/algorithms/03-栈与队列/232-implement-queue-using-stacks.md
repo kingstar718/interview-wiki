@@ -1,4 +1,6 @@
-# 232. Implement Queue using Stacks (Easy)
+# 232. 用栈实现队列（Implement Queue using Stacks）
+
+频次 ★★★ · 难度 🟢 · 高频：全厂
 
 ## 题目
 

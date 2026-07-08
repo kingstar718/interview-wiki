@@ -1,4 +1,6 @@
-# 23. Merge k Sorted Lists (Hard)
+# 23. 合并K个排序链表（Merge k Sorted Lists）
+
+频次 ★★★★ · 难度 🔴 · 高频：阿里/字节
 
 ## 题目
 
