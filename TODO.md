@@ -43,20 +43,20 @@
 
 ## 已完成
 
-- [x] Redis：缓存预热 — 冷启动=全量雪崩、定时任务/双缓存/灰度放量对比、预热刷满内存追问（待 commit）
-- [x] Redis：pipeline vs mget vs Lua — RTT/原子性/Cluster 跨槽三维对比、pipeline 过长风险、批处理摊薄固定开销通用概念（待 commit）
-- [x] Spring：容器启动 refresh() 源码 — 十二步骨架注释版、onRefresh 与内嵌 Tomcat、BFPP/BPP/getBean 三锚点（待 commit）
-- [x] Spring：@Autowired 注入原理 — AutowiredAnnotationBPP 两段式、@Resource 对比表、字段注入四宗罪（待 commit）
-- [x] 网络：TLS 1.3 握手 — 1-RTT 三个配套设计、0-RTT 重放风险、与 QUIC 建连衔接（待 commit）
-- [x] Netty与RPC：内存池 — PooledByteBufAllocator 分级(Arena/Chunk/Subpage)、伙伴算法满二叉树、线程绑定 Arena 减少竞争（待 commit）
-- [x] Java基础：泛型擦除 — 擦除到上界、桥接方法源码(javap)、为什么不能 new T[]、PECS 原则（待 commit）
-- [x] 系统设计：Feed 流 — 推/拉/推拉结合三方案对比、大 V 阈值、收件箱只存 ID（待 commit）
-- [x] 系统设计：库存扣减防超卖 — DB 乐观锁/Redis Lua 预扣减/分段库存三方案、超卖 vs 少卖优先级（待 commit）
-- [x] 工程实践：数据库连接池原理 — HikariCP ConcurrentBag/FastList/字节码代理、连接数公式、maxLifetime 与 wait_timeout 陷阱（待 commit，写入 MySQL.md）
-- [x] 消息队列：RocketMQ 存储模型 — CommitLog/ConsumeQueue/IndexFile、mmap、刷盘策略、与 Kafka 分区存储对比（待 commit）
-- [x] MySQL：JOIN 算法 — NLJ/BNL/8.0 Hash Join、小表驱动大表的真实含义（待 commit）
-- [x] 并发编程：线程池源码 — execute 三步提交/ctl 位运算(状态+线程数压一个 int)/Worker 继承 AQS 实现不可重入锁（待 commit）
-- [x] 并发编程：AQS 源码级拆解 — state/CLH 变体队列/acquire-release 主干源码/独占-共享区别/Condition 队列转移（待 commit）
+- [x] Redis：缓存预热 — 冷启动=全量雪崩、定时任务/双缓存/灰度放量对比、预热刷满内存追问（bd82b57）
+- [x] Redis：pipeline vs mget vs Lua — RTT/原子性/Cluster 跨槽三维对比、pipeline 过长风险、批处理摊薄固定开销通用概念（bd82b57）
+- [x] Spring：容器启动 refresh() 源码 — 十二步骨架注释版、onRefresh 与内嵌 Tomcat、BFPP/BPP/getBean 三锚点（bd82b57）
+- [x] Spring：@Autowired 注入原理 — AutowiredAnnotationBPP 两段式、@Resource 对比表、字段注入四宗罪（bd82b57）
+- [x] 网络：TLS 1.3 握手 — 1-RTT 三个配套设计、0-RTT 重放风险、与 QUIC 建连衔接（bd82b57）
+- [x] Netty与RPC：内存池 — PooledByteBufAllocator 分级(Arena/Chunk/Subpage)、伙伴算法满二叉树、线程绑定 Arena 减少竞争（2eef022）
+- [x] Java基础：泛型擦除 — 擦除到上界、桥接方法源码(javap)、为什么不能 new T[]、PECS 原则（2eef022）
+- [x] 系统设计：Feed 流 — 推/拉/推拉结合三方案对比、大 V 阈值、收件箱只存 ID（2eef022）
+- [x] 系统设计：库存扣减防超卖 — DB 乐观锁/Redis Lua 预扣减/分段库存三方案、超卖 vs 少卖优先级（2eef022）
+- [x] 工程实践：数据库连接池原理 — HikariCP ConcurrentBag/FastList/字节码代理、连接数公式、maxLifetime 与 wait_timeout 陷阱（2eef022，写入 MySQL.md）
+- [x] 消息队列：RocketMQ 存储模型 — CommitLog/ConsumeQueue/IndexFile、mmap、刷盘策略、与 Kafka 分区存储对比（2eef022）
+- [x] MySQL：JOIN 算法 — NLJ/BNL/8.0 Hash Join、小表驱动大表的真实含义（2eef022）
+- [x] 并发编程：线程池源码 — execute 三步提交/ctl 位运算(状态+线程数压一个 int)/Worker 继承 AQS 实现不可重入锁（2eef022）
+- [x] 并发编程：AQS 源码级拆解 — state/CLH 变体队列/acquire-release 主干源码/独占-共享区别/Condition 队列转移（2eef022）
 - [x] JVM：三色标记/G1 原理/四种引用/安全点/OOM 盘点（dd617d0）
 - [x] 消息队列：Kafka ISR-HW-LEO/rebalance/exactly-once/读写分离与分区数（dd617d0）
 - [x] 网络：TCP 重传/流量 vs 拥塞控制/keepalive；数据结构：时间轮（dd617d0）
