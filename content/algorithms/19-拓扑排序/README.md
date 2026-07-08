@@ -1,5 +1,10 @@
 # 19-拓扑排序
 
-> 见索引:[算法题索引.md](算法题索引.md)
+> 完整题单(含难度/频次/常考公司)见 [算法题索引.md](算法题索引.md#19-拓扑排序)。
 
-<!-- TODO: 详解待填充,按索引逐条展开(思路/复杂度/Java代码/变式/易错点) -->
+## 已解题目(4)
+
+- [207. 课程表](207-course-schedule.md)
+- [210. 课程表 II](210-course-schedule-ii.md)
+- [802. 找到最终的安全状态](802-find-eventual-safe-states.md)
+- [剑指 Offer II 14. 拓扑排序模板](offer14-topological-sort.md)
