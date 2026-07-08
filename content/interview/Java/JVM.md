@@ -118,7 +118,7 @@ try (FileInputStream fis = new FileInputStream("file.txt")) {
 ### 双亲委派的破坏场景
 
 以下场景需要打破双亲委派：
-- **SPI 机制**：如 JDBC 驱动加载，父加载器（Bootstrap）需要加载子加载器（Application）路径下的类，通过 `Thread.currentThread().getContextClassLoader()` 解决
+- **SPI 机制**：如 JDBC 驱动加载，父加载器（Bootstrap）需要加载子加载器（Application）路径下的类，通过 `Thread.currentThread().getContextClassLoader()` 解决；ServiceLoader 懒加载源码与 Dubbo SPI 对比见[Java基础](Java基础.md)"SPI 机制"一节
 - **Tomcat**：每个 Web 应用有自己的 ClassLoader，优先加载自己的类（WebappClassLoader），实现应用隔离
 - **热部署/热替换**：自定义 ClassLoader 每次加载新版本 class 文件
 

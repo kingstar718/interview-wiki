@@ -17,11 +17,6 @@
 - [ ] 算法:三批回填完成后,check_index.py 校验 L 的「关联题」小节由可选转必填(改 ALGO_SECTIONS)
 
 - [ ] 并发编程：ThreadLocal 源码补深 — 现有原理够用，可补 `ThreadLocalMap` 开放寻址、魔数 0x61c88647、`expungeStaleEntry` 清理时机（评估性价比后再做）
-- [ ] 操作系统：页表/TLB — 多级页表为什么省内存、TLB miss 代价、大页（HugePage）与数据库/JVM 的关系
-- [ ] Java基础：SPI 源码 — `ServiceLoader` 懒加载迭代器源码、与双亲委派破坏的衔接（JVM 篇已有）、Dubbo SPI 为什么重写（按需加载/IoC/AOP）
-- [ ] Redis：Cluster 深挖 — MOVED/ASK 仅在追问地图提及。gossip 协议、槽迁移完整流程、为什么是 16384 槽（CRC16 + 心跳包大小）
-- [ ] 消息队列：Kafka 日志存储 — 0 覆盖。分段（segment）、稀疏索引 .index/.timeindex、按 offset 二分查找流程，可与 MySQL B+树对比"为什么 MQ 不需要稠密索引"
-- [ ] 分布式系统：一致性哈希虚拟节点 — 概念散在各篇但虚拟节点 0 覆盖。数据倾斜问题、TreeMap 实现示例代码、与哈希槽（Redis Cluster）对比
 - [ ] 系统设计：限流算法实现 — 算法名已有但实现 0。滑动窗口计数代码、Redis+Lua 分布式限流脚本、令牌桶 Guava RateLimiter 预热
 - [ ] 微服务：链路追踪原理 — traceId/spanId 仅零星提及。生成与跨进程传播（HTTP header/MQ）、与 MDC 日志串联、采样率取舍
 - [ ] 网络：HTTPS 证书校验细节 — 证书链 0 覆盖。信任链逐级验签、为什么中间人拿不到有效证书、自签名/双向 TLS（mTLS）场景
@@ -48,6 +43,11 @@
 
 ## 已完成
 
+- [x] 分布式系统：一致性哈希虚拟节点 — 哈希环、虚拟节点治倾斜与级联压垮、TreeMap 实现、与哈希槽取舍对比（hash 待回填）
+- [x] 消息队列：Kafka 日志存储 — segment 三件套、稀疏索引三步查找、与 MySQL B+树"索引密度匹配访问模式"对比（hash 待回填）
+- [x] Redis：Cluster 深挖 — gossip 扩散/PFAIL→FAIL、16384 槽两笔账、槽迁移五步与 MOVED vs ASK 对比（hash 待回填）
+- [x] Java基础：SPI 源码 — ServiceLoader LazyIterator 懒加载、上下文类加载器破坏双亲委派衔接、Dubbo ExtensionLoader 对比（hash 待回填）
+- [x] 操作系统：页表/TLB — 四级页表按需分配省内存、TLB miss 五次访存代价、HugePage/THP 对比与 Redis 关 THP 互链（hash 待回填）
 - [x] Redis：缓存预热 — 冷启动=全量雪崩、定时任务/双缓存/灰度放量对比、预热刷满内存追问（bd82b57）
 - [x] Redis：pipeline vs mget vs Lua — RTT/原子性/Cluster 跨槽三维对比、pipeline 过长风险、批处理摊薄固定开销通用概念（bd82b57）
 - [x] Spring：容器启动 refresh() 源码 — 十二步骨架注释版、onRefresh 与内嵌 Tomcat、BFPP/BPP/getBean 三锚点（bd82b57）

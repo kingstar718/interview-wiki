@@ -9,6 +9,7 @@
 | equals/hashCode | 相等契约、哈希容器定位 | 只重写 equals 会怎样、可变 Key 风险 |
 | 抽象类与接口 | 单继承、多实现、状态与行为 | default 方法冲突、如何选型 |
 | 反射与注解 | Class 元数据、运行期解析 | 性能开销、框架如何扫描、代理关系 |
+| SPI | META-INF/services、ServiceLoader 懒加载 | 上下文类加载器为何破坏双亲委派、Dubbo SPI 改进点 |
 | 泛型 | 类型擦除、编译期约束 | PECS、桥接方法、为何不能 new T |
 | Stream | 惰性求值、中间/终止操作 | 并行流线程池、副作用、性能边界 |
 | CompletableFuture | 任务编排、异常传播、线程池 | thenApply/thenCompose、超时和取消 |
@@ -201,6 +202,65 @@ Field field = clazz.getDeclaredField("privateField");
 field.setAccessible(true);
 Object value = field.get(obj);
 ```
+
+---
+
+### SPI 机制：ServiceLoader 是怎么找到实现类的？
+
+频次 ★★★ · 难度 🟡
+
+**是什么**：SPI（Service Provider Interface）是"接口在框架、实现在第三方"的服务发现机制：框架只定义接口，实现方在自己 jar 的 `META-INF/services/<接口全限定名>` 文件里登记实现类，框架用 `ServiceLoader.load(接口.class)` 在运行时发现并实例化。典型：JDBC 驱动（`java.sql.Driver`）、SLF4J 绑定、Dubbo 扩展点。
+
+**为什么这么设计**：解决"框架代码不能 import 实现类"的依赖倒置问题——JDK 的 DriverManager 不可能 import MySQL 驱动。没有 SPI 就得硬编码 `Class.forName("com.mysql...")`，换实现要改代码；SPI 把"配置文件登记 + 反射加载"这套约定标准化，是开闭原则在类加载层面的落地。
+
+**源码**（JDK 8 `java.util.ServiceLoader`，主干）：
+
+```java
+public static <S> ServiceLoader<S> load(Class<S> service) {
+    // 取线程上下文类加载器，而不是 ServiceLoader 自己的加载器（见下文双亲委派衔接）
+    ClassLoader cl = Thread.currentThread().getContextClassLoader();
+    return ServiceLoader.load(service, cl);
+}
+
+private class LazyIterator implements Iterator<S> {
+    Enumeration<URL> configs;  // 各 jar 中 META-INF/services/ 下的同名文件
+
+    public boolean hasNextService() {
+        if (configs == null)   // 第一次 hasNext 才去扫描配置文件 —— 懒加载
+            configs = loader.getResources(PREFIX + service.getName());
+        // 逐文件逐行读出实现类全限定名
+        ...
+    }
+
+    public S nextService() {
+        Class<?> c = Class.forName(cn, false, loader);  // 只加载不初始化
+        S p = service.cast(c.newInstance());            // 实例化并做类型检查
+        providers.put(cn, p);                           // LinkedHashMap 缓存已创建实例
+        return p;
+    }
+}
+```
+
+两个关键点：①**懒加载**——`load()` 只创建迭代器，不做任何 IO，遍历到哪个才加载/实例化哪个；②**只能全量顺序迭代**——想要特定实现也得从头逐个实例化再自己挑（DriverManager 就是全部实例化后靠 URL 前缀匹配）。
+
+**与双亲委派的衔接**：DriverManager 在 `java.sql` 包、由 Bootstrap 加载，按双亲委派它"看不见"应用 classpath 下的驱动实现；所以 `load()` 取**线程上下文类加载器**（默认 AppClassLoader）来加载实现类——父加载器借子加载器干活，方向反了，这是双亲委派的经典破坏场景，见[JVM](JVM.md)"双亲委派的破坏场景"。
+
+**对比 Dubbo SPI 为什么重写**：
+
+| 维度 | JDK ServiceLoader | Dubbo ExtensionLoader |
+|------|-------------------|------------------------|
+| 配置格式 | 一行一个类名 | KV：`dubbo=com.xxx.DubboProtocol` |
+| 获取方式 | 只能全量迭代 | 按名取 `getExtension("dubbo")`，**按需实例化** |
+| IoC | 无 | 扩展点之间可 setter 注入（自适应扩展） |
+| AOP | 无 | Wrapper 类自动层层包装（如 ProtocolFilterWrapper） |
+| 失败表现 | 某个实现类加载失败，整个迭代抛异常 | 单个扩展失败不影响其他，报错点名扩展名 |
+
+**常见追问**：
+- JDBC 4.0 之后为什么不用写 `Class.forName` 了？→ DriverManager 静态初始化时用 ServiceLoader 自动发现驱动；之前的 Class.forName 是靠驱动类静态块里 `registerDriver` 完成注册
+- Spring Boot 自动配置和 SPI 是什么关系？→ 思想同源："配置文件登记 + 反射加载"，只是文件换成 `spring.factories`（2.7+ 为 `AutoConfiguration.imports`），加载器换成 SpringFactoriesLoader，还叠加了条件注解按需生效，见[SpringBoot](SpringBoot.md)自动配置原理
+- ServiceLoader 线程安全吗？→ 不安全（Javadoc 明确标注），providers 缓存无同步，多线程共享要外部加锁
+
+**通用概念**：SPI 是**控制反转在"发现实现"环节的形态**——使用方不 new 具体实现，由约定/容器反向提供。同一模式：Spring IoC（见[Spring](Spring.md)）、SLF4J 日志门面找绑定、K8s 的 CNI/CSI 插件机制。
 
 ---
 
