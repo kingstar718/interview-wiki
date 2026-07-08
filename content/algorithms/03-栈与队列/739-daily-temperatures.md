@@ -65,7 +65,7 @@ public int[] dailyTemperatures(int[] temperatures) {
 
 ## 关联题
 
-- 同套路：496. 下一个更大元素 I、503. 下一个更大元素 II（循环数组：下标取模跑两圈）—— 单调栈找"下一个更大"全家桶
+- 同套路：[496. 下一个更大元素 I](496-next-greater-element-i.md)、[503. 下一个更大元素 II](503-next-greater-element-ii.md)（循环数组：下标取模跑两圈）—— 单调栈找"下一个更大"全家桶
 - 进阶：[84. 柱状图中最大矩形](84-largest-rectangle-in-histogram.md) —— 从"下一个更大"升级为"两侧第一个更小"
 - 知识点：单调栈专题见[单调栈与单调队列](algorithms/15-单调栈与单调队列/README.md)
 
