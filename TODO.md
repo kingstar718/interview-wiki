@@ -16,12 +16,12 @@
 - [x] 整改:集合框架.md 结构 — 五主题章重组、新增 CopyOnWriteArrayList/TreeMap/HashMap 并发问题三节、fail-fast 升级（3831ed7）
 - [x] 整改:并发编程.md 结构 — 六主题章重组、拆外壳、锁升级与公平锁去重改互链、CF/虚拟线程补跨篇指路（3831ed7）
 - [x] JVM:调优方法论小节 — 目标/证据链三步、GC 日志三类信息、症状→方向速查表、"为什么不能只调参数"（e894fdb）
-- [x] 整改:Spring.md 结构（框架分类首批试点）— 移出"高频面试题"外壳内的生命周期/事务失效两题归位；补追问地图承诺的"自调用为何失效"小节；合并事务失效 7 场景与最佳实践为归因表；修正 Bean 生命周期"10 步"计数错误（实为 11 步）并拆清 @PostConstruct 与 afterPropertiesSet 的顺序；删除文末孤立"最佳实践"章（待提交后补哈希）
-- [x] 整改:框架分类扫描结论 — MyBatis/SpringBoot/Netty与RPC/SpringCloud微服务 四篇已核查，结构良好、无 docsify 外壳残留，暂不需要整改；SpringCloud微服务.md 顺手给 Hystrix 标注维护模式现状（待提交后补哈希）
+- [x] 整改:Spring.md 结构（框架分类首批试点）— 移出"高频面试题"外壳内的生命周期/事务失效两题归位；补追问地图承诺的"自调用为何失效"小节；合并事务失效 7 场景与最佳实践为归因表；修正 Bean 生命周期"10 步"计数错误（实为 11 步）并拆清 @PostConstruct 与 afterPropertiesSet 的顺序；删除文末孤立"最佳实践"章（4e84f29）
+- [x] 整改:框架分类扫描结论 — MyBatis/SpringBoot/Netty与RPC/SpringCloud微服务 四篇已核查，结构良好、无 docsify 外壳残留，暂不需要整改；SpringCloud微服务.md 顺手给 Hystrix 标注维护模式现状（4e84f29）
 - [x] 整改:数据库/中间件分类扫描 — MySQL/Redis/Elasticsearch/MongoDB/ZooKeeper与注册中心/消息队列 六篇结构层面均已在此前批次整改完毕，无 docsify 外壳残留；本批聚焦事实核查与地图缺口：
   MySQL 补"为什么不用红黑树/跳表"追问；Redis 补追问地图承诺却全篇缺失的"分布式锁"专节（高频题目索引早已声称覆盖但实际是空头承诺）；
   MongoDB 修正 WiredTiger Cache 大小公式 min→max 的计算错误、补索引存储层归属追问；ZooKeeper与注册中心 补 Nacos/ZK/Eureka 一致性模型(CP/AP)对比并标注 Eureka 2.0 已停止开发；
-  Elasticsearch/消息队列两篇核查无遗留问题，未改动（待提交后补哈希）
+  Elasticsearch/消息队列两篇核查无遗留问题，未改动（4e84f29）
 
 ### 中优先级
 
