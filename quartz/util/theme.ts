@@ -49,6 +49,12 @@ export function getFontSpecificationName(spec: FontSpecification): string {
   return spec.name
 }
 
+// 含逗号说明是完整字体栈,整体加引号会被浏览器当成单个字体名而全部失配
+function toFontStack(spec: FontSpecification, fallback: string): string {
+  const name = getFontSpecificationName(spec)
+  return name.includes(",") ? `${name}, ${fallback}` : `"${name}", ${fallback}`
+}
+
 function formatFontSpecification(
   type: "title" | "header" | "body" | "code",
   spec: FontSpecification,
@@ -188,10 +194,10 @@ ${stylesheet.join("\n\n")}
   --highlight: ${theme.colors.lightMode.highlight};
   --textHighlight: ${theme.colors.lightMode.textHighlight};
 
-  --titleFont: "${getFontSpecificationName(theme.typography.title || theme.typography.header)}", ${DEFAULT_SANS_SERIF};
-  --headerFont: "${getFontSpecificationName(theme.typography.header)}", ${DEFAULT_SANS_SERIF};
-  --bodyFont: "${getFontSpecificationName(theme.typography.body)}", ${DEFAULT_SANS_SERIF};
-  --codeFont: "${getFontSpecificationName(theme.typography.code)}", ${DEFAULT_MONO};
+  --titleFont: ${toFontStack(theme.typography.title || theme.typography.header, DEFAULT_SANS_SERIF)};
+  --headerFont: ${toFontStack(theme.typography.header, DEFAULT_SANS_SERIF)};
+  --bodyFont: ${toFontStack(theme.typography.body, DEFAULT_SANS_SERIF)};
+  --codeFont: ${toFontStack(theme.typography.code, DEFAULT_MONO)};
 }
 
 :root[saved-theme="dark"] {
