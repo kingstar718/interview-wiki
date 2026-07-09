@@ -36,6 +36,10 @@
                     已解题必须带链接、逐行比对难度/频次/公司
     L. 题解结构  —— H1 为「# 题号. 中文题名（English Title）」+ 元数据行必填 +
                     固定小节顺序(题目→…→面试追问→关联题,九节必填)
+    M. 锚点死链  —— 链接的 #锚点 经 slugify 后须 ∈ 目标文件标题 slug 集合(归一化
+                    匹配,镜像 Quartz 宽松行为,放过大小写笔误,抓真死链);页内锚点
+                    校验当前文件,跨文件/双链校验目标文件。锚点 slug 由 slug.py(与
+                    Quartz 同源的 github-slugger 规则)生成,A 项只校验文件名不校验锚点
 
 任一检查失败 -> 退出码 1，可直接接入 CI / pre-commit / AI 改完自检。
 """
@@ -43,6 +47,10 @@ import os
 import re
 import sys
 from collections import defaultdict
+
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+from slug import slugify, slugify_headings  # 与 Quartz 同源的 github-slugger 规则
+from outline import parse_headings  # 跳过围栏代码块提取标题
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 CONTENT = os.path.join(ROOT, "content")
@@ -440,6 +448,69 @@ def check_meta_line():
     return errors
 
 
+WIKILINK_ANCHOR_RE = re.compile(r"(?<!!)\[\[([^\]|#]+)#([^\]|]+)(?:\|[^\]]*)?\]\]")
+
+
+def heading_slugs(path):
+    """该文件所有 H1-H6 标题的 slug 集合(含重复后缀),与 Quartz 同源。"""
+    texts = [t for _ln, _lvl, t in parse_headings(path)]
+    return {s for _t, s in slugify_headings(texts)}
+
+
+def check_anchor_links(by_name):
+    """M. 锚点死链:#锚点 经 slugify 后须 ∈ 目标文件标题 slug 集合(归一化匹配)。
+
+    归一化(双端 slugify)镜像 Quartz 宽松行为:链接里写 `#18-字典树Trie`(大写 T)
+    经 slugify → `18-字典树trie`,与目标标题 slug 一致即放过,不误报大小写笔误。
+    文件不存在/歧义由 A 项兜底,此处跳过。
+    """
+    errors = []
+    slug_cache = {}
+
+    def slugs_of(p):
+        if p not in slug_cache:
+            slug_cache[p] = heading_slugs(p)
+        return slug_cache[p]
+
+    for path in all_md_files():
+        rel = os.path.relpath(path, ROOT)
+        self_slugs = slugs_of(path)
+        for lineno, line in enumerate(strip_code(read(path)), 1):
+            # 标准链接 ](target) —— target 形如 file.md#锚点 / #锚点(页内)
+            for m in LINK_RE.finditer(line):
+                target = m.group(1)
+                if target.startswith(("http://", "https://", "mailto:")) or "#" not in target:
+                    continue
+                file_part, anchor = target.split("#", 1)
+                anchor = anchor.strip()
+                if file_part == "":
+                    if slugify(anchor) not in self_slugs and anchor not in self_slugs:
+                        errors.append(f"{rel}:{lineno} -> #{anchor} (页内锚点非本文标题 slug)")
+                    continue
+                if "/" in file_part:
+                    resolved = os.path.normpath(os.path.join(CONTENT, file_part.lstrip("/")))
+                    if not os.path.isfile(resolved):
+                        continue
+                    tgt_slugs = slugs_of(resolved)
+                else:
+                    hits = by_name.get(os.path.basename(file_part), [])
+                    if len(hits) != 1:
+                        continue
+                    tgt_slugs = slugs_of(os.path.join(CONTENT, hits[0]))
+                if slugify(anchor) not in tgt_slugs and anchor not in tgt_slugs:
+                    errors.append(f"{rel}:{lineno} -> {target} (锚点非目标文件任何标题 slug)")
+            # 双链 [[file#锚点]](带 # 才校验,纯文件名由 A 项兜底)
+            for m in WIKILINK_ANCHOR_RE.finditer(line):
+                file_part, anchor = m.group(1), m.group(2).strip()
+                hits = by_name.get(file_part + ".md", [])
+                if len(hits) != 1:
+                    continue
+                tgt_slugs = slugs_of(os.path.join(CONTENT, hits[0]))
+                if slugify(anchor) not in tgt_slugs and anchor not in tgt_slugs:
+                    errors.append(f"{rel}:{lineno} -> [[{file_part}#{anchor}]] (锚点非目标文件任何标题 slug)")
+    return errors
+
+
 def main():
     by_name = build_name_map()
     actual = actual_categories()
@@ -457,6 +528,7 @@ def main():
         ("J. 关联题欠链(提到已收录题号必须链接)", check_related_links()),
         ("K. 元数据一致(题解权威源==索引视图)", check_algo_meta_sync()),
         ("L. 题解结构(H1/元数据行/固定小节)", check_solution_structure()),
+        ("M. 锚点死链(归一化匹配)", check_anchor_links(by_name)),
     ]
     failed = False
     for name, errors in checks:

@@ -9,8 +9,8 @@
 2. 验证：python3 scripts/outline.py --grep <考点词> 确认未覆盖/深度不足，避免重复劳动
 3. 定位：python3 scripts/outline.py <目标文件> 看章节结构，决定新小节插入位置
 4. 写内容：按下方模板写入对应专题文件
-5. 同步三处：追问地图行 → indexes/知识点索引.md 条目 → 相关篇目互链
-6. 自检：python3 scripts/check_index.py 必须通过
+5. 同步：追问地图行 → 相关篇目互链；`indexes/知识点索引.md` 由 `scripts/gen_index.py` 从各篇目 H3 自动生成,改完跑脚本刷新,勿手编条目
+6. 自检：python3 scripts/gen_index.py 刷新知识点索引 → python3 scripts/check_index.py 必须通过
 7. 更新 TODO.md：该项移到「已完成」，附 commit 短哈希
 ```
 
@@ -97,7 +97,7 @@
 | 同步点 | 位置 | 说明 |
 |--------|------|------|
 | 追问地图 | 专题文件顶部表格 | 新增/修改对应行，"下一层追问"列要和正文的常见追问呼应 |
-| 知识点索引 | `content/indexes/知识点索引.md` | 加一行 `- 考点名：[关键词摘要](xx.md)` |
+| 知识点索引 | `content/indexes/知识点索引.md` | 由 `gen_index.py` 从篇目真实 H3 + github-slugger 锚点自动生成,勿手编;改完 H3 跑 `python3 scripts/gen_index.py` 刷新 |
 | 互链 | 相关篇目 | 正文提到其他专题的机制时就近加链接 |
 | 校验 | 仓库根目录 | `python3 scripts/check_index.py` 退出码为 0 |
 | 待办 | `TODO.md` | 完成项移入「已完成」，附 commit |
