@@ -129,6 +129,10 @@ db.users.find({ age: { $gt: 25 } }).explain("executionStats");
 
 关注字段：`COLLSCAN`（集合扫描）→ 应加索引、`nReturned`  vs `totalDocsExamined`、`executionTimeMillis`。
 
+### 索引是查询层还是存储引擎层的能力？
+
+索引本身由**存储引擎**（WiredTiger）维护和物理存储——索引结构也是一棵 B-Tree，与数据一样走 WiredTiger 的 MVCC、压缩和缓存机制；查询层（Query Planner）只负责根据查询条件**选择**用哪个索引、生成执行计划。这也是为什么不同存储引擎（历史上的 MMAPv1）对同一份索引定义可能有不同的物理表现和性能特征，但索引的**逻辑语义**（最左前缀、多键等）由 Server 层统一定义，与引擎无关。
+
 ---
 
 ## 四、复制集
@@ -258,7 +262,7 @@ db.orders.aggregate([
 - **Cache 淘汰**：LRU 策略，缓存不足时触发淘汰
 - **Journal**：宕机恢复时通过 journal 回放未刷盘的写入
 
-**Cache 大小**：默认 = min(50% 可用内存 - 1GB, 256MB)，写密集场景建议上调。
+**Cache 大小**：默认 = max(50% × (物理内存 - 1GB), 256MB)——内存越大，缓存拿到的份额越大，256MB 只是小内存机器的下限保底，写密集场景建议上调。
 
 ### Journal 与 Checkpoint
 
