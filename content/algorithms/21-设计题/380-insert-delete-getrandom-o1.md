@@ -56,6 +56,3 @@ class RandomizedSet {
 
 - 进阶：[381. O(1)插入删除随机-允许重复](381-insert-delete-getrandom-o1-duplicates-allowed.md)
 
----
-
-[← 返回训练计划](社招算法训练计划.md)

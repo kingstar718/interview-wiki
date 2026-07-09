@@ -81,6 +81,3 @@ private TreeNode build(int[] pre, int preL, int preR, int inL) {
 - 进阶：[124. 二叉树中的最大路径和](124-binary-tree-maximum-path-sum.md) —— 建树后的另一类树形问题
 - 知识点：二叉树遍历的性质（前序定根、中序定左右）见[二叉树](algorithms/08-二叉树/README.md)
 
----
-
-[← 返回训练计划](社招算法训练计划.md)

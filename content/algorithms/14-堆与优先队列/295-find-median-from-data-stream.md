@@ -74,6 +74,3 @@ class MedianFinder {
 - 进阶：[347. 前 K 个高频元素](347-top-k-frequent-elements.md) —— 堆 + 哈希
 - 知识点：堆 + 平衡模板见[堆与优先队列](algorithms/14-堆与优先队列/README.md)
 
----
-
-[← 返回训练计划](社招算法训练计划.md)

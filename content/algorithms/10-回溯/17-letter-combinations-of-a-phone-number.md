@@ -78,6 +78,3 @@ private void backtrack(String digits, int idx, StringBuilder sb, List<String> re
 - 进阶：[46. 全排列](46-permutations.md) —— 选择列表随路径动态变化的更复杂回溯
 - 知识点：回溯的"多叉树遍历"视角见[回溯](algorithms/10-回溯/README.md)
 
----
-
-[← 返回训练计划](社招算法训练计划.md)

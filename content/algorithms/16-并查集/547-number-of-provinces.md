@@ -81,6 +81,3 @@ private void union(int[] parent, int a, int b) {
 - 进阶：[684. 冗余连接](684-redundant-connection.md) —— 并查集检测环
 - 知识点：并查集模板 + 路径压缩见[并查集](algorithms/16-并查集/README.md)
 
----
-
-[← 返回训练计划](社招算法训练计划.md)

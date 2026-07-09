@@ -72,6 +72,3 @@ public int longestCommonSubsequence(String text1, String text2) {
 - 进阶：[300. 最长递增子序列](300-longest-increasing-subsequence.md) —— 一维 DP 可转为 LIS
 - 知识点：二维 DP + 滚动数组优化见[动态规划](algorithms/11-动态规划/README.md)
 
----
-
-[← 返回训练计划](社招算法训练计划.md)

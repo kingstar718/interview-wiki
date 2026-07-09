@@ -70,6 +70,3 @@ private void inorder(TreeNode node, int k) {
 - 进阶：[236. 二叉树的最近公共祖先](236-lowest-common-ancestor-of-a-binary-tree.md) —— BST 顺序性质在另一类问题的应用
 - 知识点：BST 中序遍历模板见[二叉树](algorithms/08-二叉树/README.md)；中序有序是这条模板的根据，见[树](树.md#二叉搜索树)
 
----
-
-[← 返回训练计划](社招算法训练计划.md)

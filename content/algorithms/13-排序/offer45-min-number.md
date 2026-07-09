@@ -52,6 +52,3 @@ public String minNumber(int[] nums) {
 - 进阶：[56. 合并区间](56-merge-intervals.md) —— 区间排序
 - 知识点：自定义比较器的全序性质见[排序](algorithms/13-排序/README.md)
 
----
-
-[← 返回训练计划](社招算法训练计划.md)

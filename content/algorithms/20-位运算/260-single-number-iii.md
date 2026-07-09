@@ -41,6 +41,3 @@ public int[] singleNumber(int[] nums) {
 
 - 基础：[136. 只出现一次的数字](136-single-number.md)
 
----
-
-[← 返回训练计划](社招算法训练计划.md)

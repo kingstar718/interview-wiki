@@ -67,6 +67,3 @@ public int removeDuplicates(int[] nums) {
 - 同套路：[27. 移除元素](27-remove-element.md)、[283. 移动零](283-move-zeroes.md) —— 同一把快慢指针
 - 进阶：80. 删除有序数组中的重复项 II —— 最多保留两个：与 slow-2 位置比较，一行改动可推广到"保留 k 个"
 
----
-
-[← 返回训练计划](社招算法训练计划.md)

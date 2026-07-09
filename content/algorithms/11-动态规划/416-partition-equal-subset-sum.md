@@ -70,6 +70,3 @@ public boolean canPartition(int[] nums) {
 - 进阶：[322. 零钱兑换](322-coin-change.md) —— 完全背包最值
 - 知识点：0-1 背包模板见[动态规划](algorithms/11-动态规划/README.md)
 
----
-
-[← 返回训练计划](社招算法训练计划.md)

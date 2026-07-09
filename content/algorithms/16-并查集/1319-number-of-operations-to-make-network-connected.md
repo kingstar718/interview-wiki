@@ -67,6 +67,3 @@ private int find(int[] parent, int x) {
 - 进阶：[684. 冗余连接](684-redundant-connection.md) —— 环检测
 - 知识点：并查集统计连通分量见[并查集](algorithms/16-并查集/README.md)
 
----
-
-[← 返回训练计划](社招算法训练计划.md)

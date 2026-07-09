@@ -67,6 +67,3 @@ public TreeNode lowestCommonAncestor(TreeNode root, TreeNode p, TreeNode q) {
 - 进阶：[98. 验证二叉搜索树](98-validate-binary-search-tree.md) —— 另一种"递归 + 返回值"的树形判断模式
 - 知识点：二叉树后序遍历的"回溯"模式见[二叉树](algorithms/08-二叉树/README.md)
 
----
-
-[← 返回训练计划](社招算法训练计划.md)

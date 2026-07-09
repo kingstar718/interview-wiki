@@ -72,6 +72,3 @@ public void moveZeroes(int[] nums) {
 - 进阶：[75. 颜色分类](75-sort-colors.md) —— 升级为三指针分区（荷兰国旗问题）
 - 知识点：慢指针始终是"已处理区边界"的循环不变量，双指针专题见[双指针](algorithms/05-双指针/README.md)
 
----
-
-[← 返回训练计划](社招算法训练计划.md)

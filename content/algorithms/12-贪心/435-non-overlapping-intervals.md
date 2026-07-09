@@ -65,6 +65,3 @@ public int eraseOverlapIntervals(int[][] intervals) {
 - 进阶：[763. 划分字母区间](763-partition-labels.md) —— 同为区间贪心
 - 知识点：区间贪心的"最早结束优先"模板见[贪心](algorithms/12-贪心/README.md)
 
----
-
-[← 返回训练计划](社招算法训练计划.md)

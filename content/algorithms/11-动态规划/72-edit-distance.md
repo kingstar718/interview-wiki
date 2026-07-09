@@ -74,6 +74,3 @@ public int minDistance(String word1, String word2) {
 - 进阶：[10. 正则表达式匹配](10-regular-expression-matching.md) —— 更复杂的字符串匹配 DP
 - 知识点：编辑距离的三种操作语义见[动态规划](algorithms/11-动态规划/README.md)
 
----
-
-[← 返回训练计划](社招算法训练计划.md)

@@ -75,6 +75,3 @@ public int[] maxSlidingWindow(int[] nums, int k) {
 - 进阶：862. 和至少为 K 的最短子数组 —— 前缀和 + 单调队列，难度再上一档
 - 知识点：单调队列专题见[单调栈与单调队列](algorithms/15-单调栈与单调队列/README.md)；堆方案见[堆与优先队列](algorithms/14-堆与优先队列/README.md)
 
----
-
-[← 返回训练计划](社招算法训练计划.md)

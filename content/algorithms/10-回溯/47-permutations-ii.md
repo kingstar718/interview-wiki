@@ -80,6 +80,3 @@ private void backtrack(int[] nums, List<Integer> path, boolean[] used, List<List
 - 进阶：[40. 组合总和 II](40-combination-sum-ii.md) —— 组合版去重，剪枝条件变为 `i > start`
 - 知识点：回溯去重的"树层去重 vs 树枝去重"见[回溯](algorithms/10-回溯/README.md)
 
----
-
-[← 返回训练计划](社招算法训练计划.md)

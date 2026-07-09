@@ -85,6 +85,3 @@ class AllOne {
 
 - 基础：[146. LRU 缓存](146-lru-cache.md)、[460. LFU 缓存](460-lfu-cache.md)
 
----
-
-[← 返回训练计划](社招算法训练计划.md)

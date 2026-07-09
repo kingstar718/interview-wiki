@@ -67,6 +67,3 @@ public TreeNode invertTree(TreeNode root) {
 - 进阶：[105. 从前序与中序遍历构造二叉树](105-construct-binary-tree-from-preorder-and-inorder-traversal.md) —— 翻转概念的逆向：通过遍历顺序重建树结构
 - 知识点：二叉树递归遍历模板见[二叉树](algorithms/08-二叉树/README.md)
 
----
-
-[← 返回训练计划](社招算法训练计划.md)

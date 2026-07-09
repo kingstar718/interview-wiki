@@ -63,6 +63,3 @@ public ListNode middleNode(ListNode head) {
 - 进阶：234. 回文链表 —— 找中点 + 反转后半段的组合应用；[148. 排序链表](148-sort-list.md) —— 归并切分靠本题找中点
 - 易混：[19. 删除倒数第N个结点](19-remove-nth-node-from-end-of-list.md) —— 同为双指针定位，但用固定间距不是速度差
 
----
-
-[← 返回训练计划](社招算法训练计划.md)

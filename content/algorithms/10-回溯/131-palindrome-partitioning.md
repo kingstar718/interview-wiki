@@ -81,6 +81,3 @@ private boolean isPalindrome(String s, int l, int r) {
 - 进阶：[5. 最长回文子串](5-longest-palindromic-substring.md) —— 回文的动态规划解法
 - 知识点：字符串分割类回溯模板见[回溯](algorithms/10-回溯/README.md)
 
----
-
-[← 返回训练计划](社招算法训练计划.md)

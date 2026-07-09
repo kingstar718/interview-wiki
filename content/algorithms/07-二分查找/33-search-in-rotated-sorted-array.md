@@ -81,6 +81,3 @@ public int search(int[] nums, int target) {
 - 进阶：[81. 搜索旋转排序数组 II](https://leetcode.cn/problems/search-in-rotated-sorted-array-ii/) —— 含重复值的退化版
 - 知识点：二分查找模板见[二分查找](algorithms/07-二分查找/README.md)
 
----
-
-[← 返回训练计划](社招算法训练计划.md)

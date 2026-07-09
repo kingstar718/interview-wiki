@@ -67,6 +67,3 @@ public int canCompleteCircuit(int[] gas, int[] cost) {
 - 进阶：[45. 跳跃游戏 II](45-jump-game-ii.md) —— 另一种贪心边界
 - 知识点：累积贪心的"负则重置"模式见[贪心](algorithms/12-贪心/README.md)
 
----
-
-[← 返回训练计划](社招算法训练计划.md)

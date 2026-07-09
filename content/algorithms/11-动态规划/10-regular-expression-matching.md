@@ -81,6 +81,3 @@ public boolean isMatch(String s, String p) {
 - 进阶：[72. 编辑距离](72-edit-distance.md) —— 字符串编辑类 DP
 - 知识点：字符串匹配 DP 模式见[动态规划](algorithms/11-动态规划/README.md)
 
----
-
-[← 返回训练计划](社招算法训练计划.md)

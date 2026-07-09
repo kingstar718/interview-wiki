@@ -75,6 +75,3 @@ private int depth(TreeNode node) {
 - 进阶：[124. 二叉树中的最大路径和](124-binary-tree-maximum-path-sum.md) —— 从边数求和升级到权值求和，需要考虑负数截断
 - 知识点：树形 DP 的"后序遍历 + 全局变量"模式见[二叉树](algorithms/08-二叉树/README.md)
 
----
-
-[← 返回训练计划](社招算法训练计划.md)

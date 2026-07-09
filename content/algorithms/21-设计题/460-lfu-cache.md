@@ -76,6 +76,3 @@ class LFUCache {
 
 - 基础：[146. LRU 缓存](146-lru-cache.md)、[380. O(1)插入删除随机](380-insert-delete-getrandom-o1.md)
 
----
-
-[← 返回训练计划](社招算法训练计划.md)

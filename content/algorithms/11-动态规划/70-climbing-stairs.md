@@ -63,6 +63,3 @@ public int climbStairs(int n) {
 - 进阶：[322. 零钱兑换](322-coin-change.md) —— 完全背包问题
 - 知识点：DP 的"递推 vs 递归"区别见[动态规划](algorithms/11-动态规划/README.md)
 
----
-
-[← 返回训练计划](社招算法训练计划.md)

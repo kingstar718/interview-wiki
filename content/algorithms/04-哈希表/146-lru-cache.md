@@ -95,6 +95,3 @@ class LRUCache {
 - 同套路：[380. O(1) 时间插入删除和获取随机元素](380-insert-delete-getrandom-o1.md) —— 同为"组合基础结构凑出全 O(1)"
 - 知识点：[Redis](Redis.md)内存淘汰(allkeys-lru 近似采样)、[集合框架](集合框架.md) LinkedHashMap
 
----
-
-[← 返回训练计划](社招算法训练计划.md)

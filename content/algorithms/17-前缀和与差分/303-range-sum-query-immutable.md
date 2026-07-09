@@ -42,6 +42,3 @@ class NumArray {
 
 - 进阶：[304. 二维区域和检索](304-range-sum-query-2d-immutable.md)、[560. 和为 K 的子数组](560-subarray-sum-equals-k.md)
 
----
-
-[← 返回训练计划](社招算法训练计划.md)

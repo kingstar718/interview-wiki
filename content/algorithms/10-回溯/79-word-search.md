@@ -79,6 +79,3 @@ private boolean dfs(char[][] board, String word, int idx, int i, int j) {
 - 进阶：[212. 单词搜索 II](https://leetcode.cn/problems/word-search-ii/) —— Trie + 回溯
 - 知识点：网格回溯模板见[回溯](algorithms/10-回溯/README.md)
 
----
-
-[← 返回训练计划](社招算法训练计划.md)

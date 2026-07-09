@@ -75,6 +75,3 @@ private void dfs(TreeNode node, int remain, List<Integer> path, List<List<Intege
 - 进阶：[437. 路径总和 III](https://leetcode.cn/problems/path-sum-iii/) —— 任意起点终点，前缀和优化
 - 知识点：DFS + 回溯模板见[二叉树](algorithms/08-二叉树/README.md)
 
----
-
-[← 返回训练计划](社招算法训练计划.md)

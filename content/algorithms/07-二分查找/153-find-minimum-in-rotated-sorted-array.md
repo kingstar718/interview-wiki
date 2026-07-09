@@ -73,6 +73,3 @@ public int findMin(int[] nums) {
 - 进阶：[154. 寻找旋转排序数组中的最小值 II](https://leetcode.cn/problems/find-minimum-in-rotated-sorted-array-ii/) —— 含重复值的退化版
 - 知识点：二分查找变体模板见[二分查找](algorithms/07-二分查找/README.md)
 
----
-
-[← 返回训练计划](社招算法训练计划.md)

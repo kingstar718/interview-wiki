@@ -82,6 +82,3 @@ private int maxGain(TreeNode node) {
 - 进阶：[105. 从前序与中序遍历构造二叉树](105-construct-binary-tree-from-preorder-and-inorder-traversal.md) —— 需要另一维度的树形分治
 - 知识点：树形 DP 框架见[二叉树](algorithms/08-二叉树/README.md)
 
----
-
-[← 返回训练计划](社招算法训练计划.md)

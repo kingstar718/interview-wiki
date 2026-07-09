@@ -68,6 +68,3 @@ public int[] nextGreaterElement(int[] nums1, int[] nums2) {
 - 进阶：[739. 每日温度](739-daily-temperatures.md) —— 距离版
 - 知识点：单调栈模板见[单调栈与单调队列](algorithms/15-单调栈与单调队列/README.md)
 
----
-
-[← 返回训练计划](社招算法训练计划.md)

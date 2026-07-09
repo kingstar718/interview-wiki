@@ -74,6 +74,3 @@ public List<List<Integer>> levelOrder(TreeNode root) {
 - 进阶：[297. 二叉树的序列化与反序列化](297-serialize-and-deserialize-binary-tree.md) —— 层序输出作为序列化格式
 - 知识点：BFS 通用模板、队列选型（ArrayDeque vs LinkedList）见[集合框架](集合框架.md)
 
----
-
-[← 返回训练计划](社招算法训练计划.md)

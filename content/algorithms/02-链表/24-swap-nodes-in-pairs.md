@@ -70,6 +70,3 @@ public ListNode swapPairs(ListNode head) {
 - 进阶：[25. K个一组翻转链表](25-reverse-nodes-in-k-group.md) —— 本题是它的 k=2 特例，面试常由此追问升级
 - 知识点：dummy 头结点技巧，同见 [19. 删除倒数第N个结点](19-remove-nth-node-from-end-of-list.md)、[92. 反转链表II](92-reverse-linked-list-ii.md)
 
----
-
-[← 返回训练计划](社招算法训练计划.md)

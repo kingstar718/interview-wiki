@@ -87,6 +87,3 @@ public boolean canFinish(int numCourses, int[][] prerequisites) {
 - 进阶：[787. K 站中转内最便宜的航班](787-cheapest-flights-within-k-stops.md) —— 带权图的最短路径
 - 知识点：拓扑排序（Kahn / DFS 两色法）见[图](algorithms/09-图/README.md)
 
----
-
-[← 返回训练计划](社招算法训练计划.md)

@@ -69,6 +69,3 @@ public int longestConsecutive(int[] nums) {
 - 易混：[560. 和为 K 的子数组](560-subarray-sum-equals-k.md) —— 同用哈希但存的是前缀和，本题存的是元素本身
 - 知识点：HashSet 底层就是 HashMap 的 key 集，见[集合框架](集合框架.md)
 
----
-
-[← 返回训练计划](社招算法训练计划.md)

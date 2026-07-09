@@ -65,6 +65,3 @@ public int removeElement(int[] nums, int val) {
 - 同套路：[26. 删除有序数组中的重复项](26-remove-duplicates.md)、[283. 移动零](283-move-zeroes.md) —— 快慢指针原地压缩
 - 变式关联：顺序可打乱时用首尾双指针，把待删元素换到末尾，写入次数更少
 
----
-
-[← 返回训练计划](社招算法训练计划.md)

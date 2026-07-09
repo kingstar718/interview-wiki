@@ -74,6 +74,3 @@ public ListNode reverseBetween(ListNode head, int left, int right) {
 - 进阶：[25. K个一组翻转链表](25-reverse-nodes-in-k-group.md) —— 本题的区间反转是它每组的子过程
 - 易混：[24. 两两交换链表结点](24-swap-nodes-in-pairs.md) —— 24 是 25 的 k=2 特例，不是本题的特例
 
----
-
-[← 返回训练计划](社招算法训练计划.md)

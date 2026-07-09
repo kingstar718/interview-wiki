@@ -74,6 +74,3 @@ public int trap(int[] height) {
 - 进阶：407. 接雨水 II —— 堆版"从最矮边界灌水"；[84. 柱状图中最大矩形](84-largest-rectangle-in-histogram.md) —— 单调栈视角的姊妹题
 - 知识点：木桶短板模型；单调栈专题见[单调栈与单调队列](algorithms/15-单调栈与单调队列/README.md)
 
----
-
-[← 返回训练计划](社招算法训练计划.md)

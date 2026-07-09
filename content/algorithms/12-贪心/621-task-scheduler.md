@@ -63,6 +63,3 @@ public int leastInterval(char[] tasks, int n) {
 - 进阶：[406. 根据身高重建队列](406-queue-reconstruction-by-height.md) —— 贪心排序
 - 知识点：贪心 + 数学推导模式见[贪心](algorithms/12-贪心/README.md)
 
----
-
-[← 返回训练计划](社招算法训练计划.md)

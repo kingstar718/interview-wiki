@@ -70,6 +70,3 @@ public boolean wordBreak(String s, List<String> wordDict) {
 - 进阶：[300. 最长递增子序列](300-longest-increasing-subsequence.md) —— 另一类子序列 DP
 - 知识点：一维 DP + 哈希集加速见[动态规划](algorithms/11-动态规划/README.md)
 
----
-
-[← 返回训练计划](社招算法训练计划.md)

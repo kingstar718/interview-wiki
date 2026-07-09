@@ -69,6 +69,3 @@ public int maxSubArray(int[] nums) {
 - 易混：[560. 和为 K 的子数组](560-subarray-sum-equals-k.md) —— 求计数不求最值，套前缀和哈希
 - 知识点：动态规划专题见[动态规划](algorithms/11-动态规划/README.md)
 
----
-
-[← 返回训练计划](社招算法训练计划.md)

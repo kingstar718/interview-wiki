@@ -61,6 +61,3 @@ public int jump(int[] nums) {
 - 进阶：[134. 加油站](134-gas-station.md) —— 另一种遍历+贪心决策
 - 知识点：贪心 BFS 步数模板见[贪心](algorithms/12-贪心/README.md)
 
----
-
-[← 返回训练计划](社招算法训练计划.md)

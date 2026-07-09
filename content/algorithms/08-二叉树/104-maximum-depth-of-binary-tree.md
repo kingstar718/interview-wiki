@@ -60,6 +60,3 @@ public int maxDepth(TreeNode root) {
 - 进阶：[543. 二叉树的直径](543-diameter-of-binary-tree.md) —— 深度求和而非取最大
 - 知识点：树递归的"分治"模式（左 + 右 + 合并）见[二叉树](algorithms/08-二叉树/README.md)
 
----
-
-[← 返回训练计划](社招算法训练计划.md)

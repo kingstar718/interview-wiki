@@ -72,6 +72,3 @@ public int lengthOfLIS(int[] nums) {
 - 进阶：[1143. 最长公共子序列](1143-longest-common-subsequence.md) —— 二维 DP 的 LCS
 - 知识点：DP 最优子结构 + 贪心二分优化见[动态规划](algorithms/11-动态规划/README.md)
 
----
-
-[← 返回训练计划](社招算法训练计划.md)

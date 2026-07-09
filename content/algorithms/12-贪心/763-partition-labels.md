@@ -69,6 +69,3 @@ public List<Integer> partitionLabels(String s) {
 - 进阶：[134. 加油站](134-gas-station.md) —— 另一种"遍历+更新边界"的贪心
 - 知识点：字符串区间合并贪心见[贪心](algorithms/12-贪心/README.md)
 
----
-
-[← 返回训练计划](社招算法训练计划.md)
