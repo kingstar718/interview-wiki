@@ -9,13 +9,13 @@
 
 存量整改（规范见 CONTRIBUTING.md「存量内容整改规范」，2026-07-09 登记）：
 
-- [x] 整改:JVM.md 试点 — 拆 docsify 外壳/删自引用"详见 JVM 专题文档"/补运行时内存区、GC 三算法、类加载五阶段三节（已完成，待提交后补哈希）
-- [x] 整改:Java基础.md 事实修正 — String byte[]、Valhalla 表述、fastjson、JDK9+ 无独立 JRE、BigDecimal 追问（已完成，待提交后补哈希）
-- [x] 整改:Java现代特性.md 事实更新 — pinning 补 JDK 24 JEP 491、Scoped Values 补 JDK 25 定稿状态（已完成，待提交后补哈希）
-- [x] 整改:Java基础.md 结构 — 六个主题章重组、拆三件套外壳、升级 BIO/NIO/AIO 与异常处理、序列化补 serialVersionUID/安全追问（已完成，待提交后补哈希）
+- [x] 整改:JVM.md 试点 — 拆 docsify 外壳/删自引用"详见 JVM 专题文档"/补运行时内存区、GC 三算法、类加载五阶段三节（e894fdb）
+- [x] 整改:Java基础.md 事实修正 — String byte[]、Valhalla 表述、fastjson、JDK9+ 无独立 JRE、BigDecimal 追问（e894fdb）
+- [x] 整改:Java现代特性.md 事实更新 — pinning 补 JDK 24 JEP 491、Scoped Values 补 JDK 25 定稿状态（e894fdb）
+- [x] 整改:Java基础.md 结构 — 六个主题章重组、拆三件套外壳、升级 BIO/NIO/AIO 与异常处理、序列化补 serialVersionUID/安全追问（e894fdb）
 - [ ] 整改:集合框架.md 结构 — 合并"一/二"两章重复的 HashMap/ConcurrentHashMap/ArrayList 内容
 - [ ] 整改:并发编程.md 结构 — 合并"一/二"两章，synchronized/volatile 新旧内容归一
-- [x] JVM:调优方法论小节 — 目标/证据链三步、GC 日志三类信息、症状→方向速查表、"为什么不能只调参数"（已完成，待提交后补哈希）
+- [x] JVM:调优方法论小节 — 目标/证据链三步、GC 日志三类信息、症状→方向速查表、"为什么不能只调参数"（e894fdb）
 
 ### 中优先级
 
