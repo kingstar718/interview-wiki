@@ -35,5 +35,5 @@ public int getSum(int a, int b) {
 
 ## 关联题
 
-- [136. 只出现一次的数字](136-single-number.md)（异或的拓展应用）
+- 同套路：[136. 只出现一次的数字](136-single-number.md)（异或的拓展应用）
 

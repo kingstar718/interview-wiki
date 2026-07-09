@@ -38,5 +38,5 @@ public int hammingDistance(int x, int y) {
 
 ## 关联题
 
-- [136. 只出现一次的数字](136-single-number.md)、[338. 比特位计数](338-counting-bits.md)
+- 同套路：[136. 只出现一次的数字](136-single-number.md)、[338. 比特位计数](338-counting-bits.md) —— 同为逐位统计/异或技巧
 
