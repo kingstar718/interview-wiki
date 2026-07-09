@@ -422,7 +422,7 @@ def check_concept_maturity():
     for path in concepts:
         base = os.path.basename(path)
         doms = {d for hits in refs[base].values() for _t, _b, d in hits}
-        content_doms = doms & gen_concepts.CONTENT_DOMAINS
+        content_doms = {d for d in doms if gen_concepts.is_content_domain(d)}
         if len(content_doms) < 2:
             errors.append(
                 f"概念/{base} 内容域入链只有 {sorted(content_doms) or '0 个'}"

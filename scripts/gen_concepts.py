@@ -34,11 +34,15 @@ LINK_RE = re.compile(r"\[[^\]]*\]\(([^)]+)\)")
 WIKILINK_RE = re.compile(r"(?<!!)\[\[([^\]|]+)(?:\|[^\]]*)?\]\]")
 FENCE_RE = re.compile(r"^(```|~~~)")
 CODE_SPAN_RE = re.compile(r"`[^`]*`")
-# 一级域:content 下的顶层目录 -> 展示名
-DOMAIN = {"interview": "八股", "algorithms": "算法", "概念": "概念", "indexes": "索引"}
-# 只有「内容域」的入链能证明概念跨域。索引页/首页链过来是导航,不是使用,
-# 计入会让「概念成色」这条判据失效(自己链一下就凑够两个域了)。
-CONTENT_DOMAINS = {"八股", "算法"}
+# 一级域 = interview 的分类目录(Java/数据库/分布式与架构/…) + 「算法」。
+#
+# 粒度必须细到 interview 的分类,不能把整个 interview 压成一个「八股」域:
+# 否则判据变成「概念必须同时出现在算法和八股两侧」,而 CAP/Raft/幂等/一致性哈希
+# 这类纯工程概念根本不会出现在算法题里,会被误判为「未成体系」——判据反过来
+# 阻止了它想促成的抽取。
+#
+# 导航域(索引页/首页/概念页互链)不算跨域证据,否则自己链一下就凑够两个域。
+NAV_DOMAINS = {"索引", "首页", "概念"}
 
 
 def read(path):
@@ -74,11 +78,21 @@ def page_title(path):
 
 
 def domain_of(path):
-    rel = os.path.relpath(path, CONTENT).replace(os.sep, "/")
-    head = rel.split("/")[0]
+    parts = os.path.relpath(path, CONTENT).replace(os.sep, "/").split("/")
+    head = parts[0]
     if head.endswith(".md"):
-        return "首页"  # content 根下的散页(index.md),不是一级域
-    return DOMAIN.get(head, head)
+        return "首页"  # content 根下的散页(index.md)
+    if head == "interview":
+        return parts[1] if len(parts) > 2 else "面试"  # 分类目录即一级域
+    if head == "algorithms":
+        return "算法"
+    if head == "indexes":
+        return "索引"
+    return head  # 概念/
+
+
+def is_content_domain(dom):
+    return dom not in NAV_DOMAINS
 
 
 def concept_files():
@@ -185,10 +199,10 @@ def main():
     # 概念成色:内容域入链 < 2 个域 -> 尚未成体系(索引/首页的导航链接不算)
     for path in concepts:
         doms = {dom for hits in refs[os.path.basename(path)].values() for _t, _b, dom in hits}
-        content_doms = doms & CONTENT_DOMAINS
+        content_doms = {d for d in doms if is_content_domain(d)}
         name = os.path.basename(path)
         mark = "✓" if len(content_doms) >= 2 else "!"
-        other = sorted(doms - CONTENT_DOMAINS)
+        other = sorted(d for d in doms if not is_content_domain(d))
         tail = f"  (另有导航入链:{'/'.join(other)})" if other else ""
         print(f"  {mark} {name:<12} 内容域 {len(content_doms)} 个 {sorted(content_doms)}{tail}")
     return 0
