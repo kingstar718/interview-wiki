@@ -13,8 +13,8 @@
 - [x] 整改:Java基础.md 事实修正 — String byte[]、Valhalla 表述、fastjson、JDK9+ 无独立 JRE、BigDecimal 追问（e894fdb）
 - [x] 整改:Java现代特性.md 事实更新 — pinning 补 JDK 24 JEP 491、Scoped Values 补 JDK 25 定稿状态（e894fdb）
 - [x] 整改:Java基础.md 结构 — 六个主题章重组、拆三件套外壳、升级 BIO/NIO/AIO 与异常处理、序列化补 serialVersionUID/安全追问（e894fdb）
-- [x] 整改:集合框架.md 结构 — 五主题章重组、新增 CopyOnWriteArrayList/TreeMap/HashMap 并发问题三节、fail-fast 升级（dd53c4d）
-- [x] 整改:并发编程.md 结构 — 六主题章重组、拆外壳、锁升级与公平锁去重改互链、CF/虚拟线程补跨篇指路（dd53c4d）
+- [x] 整改:集合框架.md 结构 — 五主题章重组、新增 CopyOnWriteArrayList/TreeMap/HashMap 并发问题三节、fail-fast 升级（3831ed7）
+- [x] 整改:并发编程.md 结构 — 六主题章重组、拆外壳、锁升级与公平锁去重改互链、CF/虚拟线程补跨篇指路（3831ed7）
 - [x] JVM:调优方法论小节 — 目标/证据链三步、GC 日志三类信息、症状→方向速查表、"为什么不能只调参数"（e894fdb）
 
 ### 中优先级
