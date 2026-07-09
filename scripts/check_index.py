@@ -11,7 +11,7 @@
 
 链接语义(与 Quartz CrawlLinks 的 markdownLinkResolution: "shortest" 一致):
     - 纯文件名链接 `[JVM](JVM.md)` / 双链 `[[JVM]]`: 按文件名全库唯一匹配
-    - 多段路径链接 `[x](algorithms/01-数组与字符串/README.md)`: 视为从
+    - 多段路径链接 `[x](algorithms/README.md)`: 视为从
       content/ 根出发的路径(不是相对当前文件!)
 
 检查项:
@@ -19,11 +19,12 @@
     B. 文件名唯一 —— 纯文件名链接方案的前提: 除 README.md/index.md 外,
                     全库 .md 文件名不得重复(重复会导致链接歧义)
     C. 命名规范  —— interview/ 与 indexes/ 下禁止位置型数字前缀 (^数字-)
-                    (algorithms/ 例外: 题号/固定专题序号是稳定 ID，允许)
+                    (algorithms/problems/ 例外: 题号是稳定 ID，允许)
     D. 文件集    —— interview/ 实际文件 == 枢纽「专题文件清单」收录
     E. 分类一致  —— interview/<分类>/ 目录名 == 枢纽清单中该文件的分类名
-    F. 无孤儿题解 —— algorithms/<专题>/ 下每个题解文件都必须被本专题 README 链接
-                    (防止「有文件却无本地导航入口」的断点)
+    F. 题解归属  —— algorithms/problems/ 下每个题解必须有非空 topics: frontmatter,
+                    且每个值都对应 algorithms/ 下存在的套路页(防止拼写错误指向
+                    不存在的套路、防止题解游离在任何套路视图之外)
     G. 地图置顶  —— interview/ 专题第一个 H2 必须是无章号的「## 面试追问地图」
                     (面试问题深挖指南豁免)
     H. 标题无编号 —— interview/ 的 H3-H6 小节标题禁止数字编号开头(^数字[.、]):
@@ -51,6 +52,8 @@
                     链接不计入,否则自己链一下就能凑够两个域,判据失效
     Q. 概念视图   —— 概念页「出现在哪里」由 gen_concepts.py 生成,内容须与全库真实
                     入链一致(手写的成员列表最终都会漂移,同 K/N 项的教训)
+    R. 套路视图   —— 套路页「已解题目」由 gen_topics.py 从题解 topics: frontmatter
+                    生成,内容须与真实 frontmatter 一致(漂移检测,镜像 Q 项之于 P 项)
 
 任一检查失败 -> 退出码 1，可直接接入 CI / pre-commit / AI 改完自检。
 """
@@ -63,12 +66,14 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from slug import slugify, slugify_headings  # 与 Quartz 同源的 github-slugger 规则
 from outline import parse_headings  # 跳过围栏代码块提取标题
 import gen_concepts  # 概念页反链的唯一实现,P/Q 项复用它,避免两套解析漂移
+import gen_topics  # 套路页题目分组的唯一实现,F/R 项复用它,避免两套解析漂移
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 CONTENT = os.path.join(ROOT, "content")
 HUB = os.path.join(CONTENT, "indexes", "知识点索引.md")
 INTERVIEW = os.path.join(CONTENT, "interview")
 ALGORITHMS = os.path.join(CONTENT, "algorithms")
+PROBLEMS = os.path.join(ALGORITHMS, "problems")
 
 LINK_RE = re.compile(r"\[[^\]]*\]\(([^)]+)\)")
 WIKILINK_RE = re.compile(r"(?<!!)\[\[([^\]|#]+)[^\]]*\]\]")
@@ -232,22 +237,19 @@ def check_category(actual, hub):
 
 
 def check_orphan_solutions():
-    """F. algorithms/<专题>/ 下的题解文件必须被本专题 README 链接。"""
+    """F. algorithms/problems/ 下的题解必须有非空 topics: frontmatter,
+    且每个值都对应 algorithms/ 下存在的套路页(复用 gen_topics,避免两套解析漂移)。"""
     errors = []
-    for topic in sorted(os.listdir(ALGORITHMS)):
-        tdir = os.path.join(ALGORITHMS, topic)
-        readme = os.path.join(tdir, "README.md")
-        if not os.path.isdir(tdir) or not os.path.isfile(readme):
+    pattern_names = {os.path.splitext(os.path.basename(p))[0] for p in gen_topics.pattern_files()}
+    for path in gen_topics.problem_files():
+        rel = os.path.relpath(path, ROOT)
+        topics = gen_topics.parse_topics(read(path))
+        if not topics:
+            errors.append(f"{rel} 缺少 topics: frontmatter(题解必须归属至少一个套路)")
             continue
-        solutions = {f for f in os.listdir(tdir) if f.endswith(".md") and f != "README.md"}
-        if not solutions:
-            continue
-        linked = {
-            os.path.basename(m.group(1).split("#")[0].strip())
-            for m in LINK_RE.finditer(read(readme))
-        }
-        for f in sorted(solutions - linked):
-            errors.append(f"algorithms/{topic}/{f} 未被本专题 README 链接(孤儿题解)")
+        for t in topics:
+            if t not in pattern_names:
+                errors.append(f"{rel} topics 里的「{t}」不对应任何 algorithms/ 套路页(拼写错误?)")
     return errors
 
 
@@ -279,15 +281,13 @@ def interview_files():
 
 
 def solution_files():
-    """(path, 题号, basename) —— algorithms/<专题>/<题号>-slug.md"""
-    for topic in sorted(os.listdir(ALGORITHMS)):
-        tdir = os.path.join(ALGORITHMS, topic)
-        if not os.path.isdir(tdir):
-            continue
-        for f in sorted(os.listdir(tdir)):
-            m = SOLUTION_RE.match(f)
-            if m:
-                yield os.path.join(tdir, f), m.group(1), f
+    """(path, 题号, basename) —— algorithms/problems/<题号>-slug.md"""
+    if not os.path.isdir(PROBLEMS):
+        return
+    for f in sorted(os.listdir(PROBLEMS)):
+        m = SOLUTION_RE.match(f)
+        if m:
+            yield os.path.join(PROBLEMS, f), m.group(1), f
 
 
 def meta_files():
@@ -296,9 +296,22 @@ def meta_files():
         yield path
 
 
+def skip_frontmatter(lines):
+    """去掉开头的 --- frontmatter 块(题解的 topics: 声明)及其后的空行,
+    不影响无 frontmatter 的文件。"""
+    if lines and lines[0].strip() == "---":
+        for i, line in enumerate(lines[1:], 1):
+            if line.strip() == "---":
+                rest = lines[i + 1 :]
+                while rest and rest[0].strip() == "":
+                    rest = rest[1:]
+                return rest
+    return lines
+
+
 def parse_solution_meta(path):
     """题解元数据行 -> (频次, 难度, 公司集合) 或 None。取 H1 后前几行。"""
-    for line in strip_code(read(path))[:6]:
+    for line in skip_frontmatter(strip_code(read(path)))[:6]:
         s = line.strip()
         if META_TRIGGER_RE.match(s):
             stars = re.search(r"频次 (★{1,5})", s)
@@ -448,6 +461,27 @@ def check_concept_view():
     return errors
 
 
+def check_topic_view():
+    """R. 套路页「已解题目」须与题解 topics: frontmatter 真实分组一致(镜像 Q 项)。"""
+    errors = []
+    patterns = list(gen_topics.pattern_files())
+    if not patterns:
+        return errors
+    names = {os.path.splitext(os.path.basename(p))[0] for p in patterns}
+    groups, _orphans = gen_topics.collect_groups(names)
+    for path in patterns:
+        name = os.path.splitext(os.path.basename(path))[0]
+        old = read(path)
+        try:
+            new = gen_topics.splice(old, gen_topics.render(groups[name]))
+        except SystemExit as e:
+            errors.append(f"algorithms/{name}.md {e}")
+            continue
+        if new != old:
+            errors.append(f"algorithms/{name}.md 的「已解题目」已过期 -> 跑 python3 scripts/gen_topics.py")
+    return errors
+
+
 def check_hot_meta_sync():
     """N. 题解元数据行(权威源) vs 高频题目索引 A 表(视图) 逐行比对。"""
     errors = []
@@ -497,7 +531,7 @@ def check_solution_structure():
     errors = []
     for path, _num, _base in solution_files():
         rel = os.path.relpath(path, ROOT)
-        lines = strip_code(read(path))
+        lines = skip_frontmatter(strip_code(read(path)))
         if not lines or not ALGO_H1_RE.match(lines[0]):
             errors.append(f"{rel} H1 应为「# 题号. 中文题名（English Title）」,实际「{lines[0] if lines else ''}」")
         if parse_solution_meta(path) is None:
@@ -645,7 +679,7 @@ def main():
         ("C. 命名规范(无位置型数字前缀)", check_naming()),
         ("D. 文件集一致(实际==枢纽)", check_file_set(actual, hub)),
         ("E. 分类一致(目录==枢纽)", check_category(actual, hub)),
-        ("F. 无孤儿题解(题解都被专题 README 链接)", check_orphan_solutions()),
+        ("F. 题解归属(topics: frontmatter 指向存在的套路页)", check_orphan_solutions()),
         ("G. 追问地图置顶(无章号)", check_map_on_top()),
         ("H. 小节标题无编号(标题是稳定语义 ID)", check_section_naming()),
         ("I. 元数据行格式(频次/难度/高频)", check_meta_line()),
@@ -657,6 +691,7 @@ def main():
         ("O. 关系类型(关联题条目带白名单前缀)", check_relation_types()),
         ("P. 概念成色(入链覆盖 ≥2 个内容域)", check_concept_maturity()),
         ("Q. 概念视图(出现在哪里与真实入链一致)", check_concept_view()),
+        ("R. 套路视图(已解题目与 topics: frontmatter 一致)", check_topic_view()),
     ]
     failed = False
     for name, errors in checks:
