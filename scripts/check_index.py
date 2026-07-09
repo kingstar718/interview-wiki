@@ -154,9 +154,9 @@ def check_unique_names(by_name):
 
 
 def check_naming():
-    """C. interview/ 与 indexes/ 下禁止位置型数字前缀(含分类子目录)。"""
+    """C. interview/、indexes/、概念/ 下禁止位置型数字前缀(含分类子目录)。"""
     errors = []
-    for folder in ("interview", "indexes"):
+    for folder in ("interview", "indexes", "概念"):
         d = os.path.join(CONTENT, folder)
         if not os.path.isdir(d):
             continue
