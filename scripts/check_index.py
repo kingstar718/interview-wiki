@@ -40,6 +40,9 @@
                     匹配,镜像 Quartz 宽松行为,放过大小写笔误,抓真死链);页内锚点
                     校验当前文件,跨文件/双链校验目标文件。锚点 slug 由 slug.py(与
                     Quartz 同源的 github-slugger 规则)生成,A 项只校验文件名不校验锚点
+    N. 高频表一致 —— 高频题目索引 A 表(高频算法题 Top N)同为题解元数据行的视图:
+                    已解题必须带链接且指向该题解、逐行比对难度/热度/公司(同 K 项口径,
+                    公司只比集合不比顺序 —— 表里按主考公司在前书写)
 
 任一检查失败 -> 退出码 1，可直接接入 CI / pre-commit / AI 改完自检。
 """
@@ -256,6 +259,7 @@ ALGO_SECTIONS = ["题目", "思路", "代码", "复杂度", "边界条件", "变
 # 题号提及: 非行首的「数字. 」或「数字、」后跟中英文(行首是有序列表序号,不算)
 MENTION_RE = re.compile(r"(\d{1,4})[.、]\s?[A-Za-z一-龥]")
 ALGO_INDEX = os.path.join(CONTENT, "indexes", "算法题索引.md")
+HOT_INDEX = os.path.join(CONTENT, "indexes", "高频题目索引.md")
 
 
 def interview_files():
@@ -362,6 +366,50 @@ def check_algo_meta_sync():
                 errors.append(f"索引:{lineno} {base} 频次 {idx_stars} != 题解 {stars}(以题解为准)")
             if comps and idx_comps != comps:
                 errors.append(f"索引:{lineno} {base} 公司 {sorted(idx_comps)} != 题解 {sorted(comps)}(以题解为准)")
+    return errors
+
+
+def check_hot_meta_sync():
+    """N. 题解元数据行(权威源) vs 高频题目索引 A 表(视图) 逐行比对。"""
+    errors = []
+    # 题号按整数归一:题解文件名允许零填充(01-two-sum.md)
+    actual = {str(int(num)): (path, base) for path, num, base in solution_files()}
+    in_section_a = False
+    for lineno, line in enumerate(read(HOT_INDEX).splitlines(), 1):
+        if line.startswith("## "):
+            in_section_a = line.startswith("## A.")
+            continue
+        if not (in_section_a and line.startswith("|")):
+            continue
+        cells = [c.strip() for c in line.strip("|").split("|")]
+        # 排名 | 题号 | 题名 | 专题 | 难度 | 热度 | 常考公司
+        if len(cells) != 7 or not cells[1].isdigit():
+            continue
+        num = str(int(cells[1]))
+        if num not in actual:
+            continue  # 未收录题解,保持纯文本
+        path, base = actual[num]
+        m = LINK_RE.search(cells[2])
+        if not m:
+            errors.append(f"高频索引:{lineno} 题 {num} 已有题解 {base} 但题名未带链接(已解=带链接)")
+            continue
+        target = os.path.basename(m.group(1).split("#")[0])
+        if target != base:
+            errors.append(f"高频索引:{lineno} 题 {num} 链接指向 {target},应为 {base}")
+            continue
+        meta = parse_solution_meta(path)
+        if meta is None:
+            continue  # 缺元数据行由 K/L 兜底
+        stars, diff, comps = meta
+        if diff and cells[4] != diff:
+            errors.append(f"高频索引:{lineno} {base} 难度 {cells[4]} != 题解 {diff}(以题解为准)")
+        if stars and cells[5] != stars:
+            errors.append(f"高频索引:{lineno} {base} 热度 {cells[5]} != 题解 {stars}(以题解为准)")
+        if comps and set(cells[6].split()) != comps:
+            errors.append(
+                f"高频索引:{lineno} {base} 公司 {sorted(set(cells[6].split()))} "
+                f"!= 题解 {sorted(comps)}(以题解为准,顺序不限)"
+            )
     return errors
 
 
@@ -526,6 +574,7 @@ def main():
         ("K. 元数据一致(题解权威源==索引视图)", check_algo_meta_sync()),
         ("L. 题解结构(H1/元数据行/固定小节)", check_solution_structure()),
         ("M. 锚点死链(归一化匹配)", check_anchor_links(by_name)),
+        ("N. 高频表一致(题解权威源==高频索引 A 表)", check_hot_meta_sync()),
     ]
     failed = False
     for name, errors in checks:
