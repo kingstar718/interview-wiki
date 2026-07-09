@@ -20,10 +20,6 @@
 
 ---
 
-[← 返回知识点](知识点索引.md)
-
----
-
 ## 一、语言基础
 
 ### JVM、JDK、JRE 三者关系？
@@ -590,6 +586,3 @@ Object obj = ois.readObject();
 - 为什么说反序列化有安全风险？→ `readObject` 会执行对象图里各类的反序列化逻辑，攻击者用 gadget chain（如 Apache Commons Collections 链）可以达成远程代码执行；JDK 9（JEP 290，后移植到 8u121）引入反序列化过滤器，原则是**永远不反序列化不可信数据**
 - transient 和 static 字段会被序列化吗？→ 都不会。transient 是显式排除；static 属于类不属于对象实例
 
----
-
-[← 返回知识点](知识点索引.md)
