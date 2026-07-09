@@ -79,5 +79,5 @@ class Skiplist {
 
 ## 关联题
 
-- [146. LRU 缓存](146-lru-cache.md)、[460. LFU 缓存](460-lfu-cache.md)
+- 同套路：[146. LRU 缓存](146-lru-cache.md)、[460. LFU 缓存](460-lfu-cache.md) —— 同属结构设计题
 

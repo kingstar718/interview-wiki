@@ -58,5 +58,5 @@ class CBTInserter {
 
 ## 关联题
 
-- [102. 二叉树的层序遍历](102-binary-tree-level-order-traversal.md)（BFS 模板）
+- 基础：[102. 二叉树的层序遍历](102-binary-tree-level-order-traversal.md)（BFS 模板）
 

@@ -43,6 +43,14 @@
     N. 高频表一致 —— 高频题目索引 A 表(高频算法题 Top N)同为题解元数据行的视图:
                     已解题必须带链接且指向该题解、逐行比对难度/热度/公司(同 K 项口径,
                     公司只比集合不比顺序 —— 表里按主考公司在前书写)
+    O. 关系类型   —— 题解「## 关联题」每条目必须以白名单类型前缀开头(同套路/进阶/
+                    基础/易混/知识点)。关系区是图的边,类型必须可机器解析;条目里
+                    是否带链接由 J 项管(未收录的题允许纯文本,收录后 J 会催回补)
+    P. 概念成色   —— 概念/<x>.md 的入链必须覆盖 ≥2 个内容域(interview + algorithms)。
+                    只在一个域出现的不算跨域概念,应回收进正文。索引页/首页的导航
+                    链接不计入,否则自己链一下就能凑够两个域,判据失效
+    Q. 概念视图   —— 概念页「出现在哪里」由 gen_concepts.py 生成,内容须与全库真实
+                    入链一致(手写的成员列表最终都会漂移,同 K/N 项的教训)
 
 任一检查失败 -> 退出码 1，可直接接入 CI / pre-commit / AI 改完自检。
 """
@@ -54,6 +62,7 @@ from collections import defaultdict
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from slug import slugify, slugify_headings  # 与 Quartz 同源的 github-slugger 规则
 from outline import parse_headings  # 跳过围栏代码块提取标题
+import gen_concepts  # 概念页反链的唯一实现,P/Q 项复用它,避免两套解析漂移
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 CONTENT = os.path.join(ROOT, "content")
@@ -369,6 +378,76 @@ def check_algo_meta_sync():
     return errors
 
 
+RELATION_TYPES = ("同套路", "进阶", "基础", "易混", "知识点")
+RELATION_RE = re.compile(r"^-\s*([^：:]{1,8})[：:]")
+
+
+def check_relation_types():
+    """O. 题解「## 关联题」条目必须带白名单类型前缀(关系是图的边,类型要可解析)。"""
+    errors = []
+    for path, _num, base in solution_files():
+        lines = strip_code(read(path))
+        try:
+            start = lines.index("## 关联题")
+        except ValueError:
+            continue  # 缺小节由 L 项兜底
+        for offset, line in enumerate(lines[start + 1 :], start + 2):
+            if line.startswith("## "):
+                break
+            s = line.strip()
+            if not s.startswith("- "):
+                continue
+            m = RELATION_RE.match(s)
+            if not m:
+                errors.append(f"{base}:{offset} 关联题条目缺类型前缀: {s[:40]}")
+            elif m.group(1) not in RELATION_TYPES:
+                errors.append(
+                    f"{base}:{offset} 关系类型「{m.group(1)}」不在白名单 {'/'.join(RELATION_TYPES)}"
+                )
+    return errors
+
+
+def _concept_refs():
+    """概念页 -> {锚点: [(标题, 文件名, 域)]},复用 gen_concepts 的解析。"""
+    concepts = list(gen_concepts.concept_files())
+    if not concepts:
+        return [], {}
+    return concepts, gen_concepts.collect_refs({os.path.basename(p) for p in concepts})
+
+
+def check_concept_maturity():
+    """P. 概念页入链须覆盖 ≥2 个内容域(导航链接不算)。"""
+    errors = []
+    concepts, refs = _concept_refs()
+    for path in concepts:
+        base = os.path.basename(path)
+        doms = {d for hits in refs[base].values() for _t, _b, d in hits}
+        content_doms = doms & gen_concepts.CONTENT_DOMAINS
+        if len(content_doms) < 2:
+            errors.append(
+                f"概念/{base} 内容域入链只有 {sorted(content_doms) or '0 个'}"
+                f"(需 ≥2 个),尚未成体系 -> 回收进正文或补足跨域引用"
+            )
+    return errors
+
+
+def check_concept_view():
+    """Q. 概念页「出现在哪里」须与全库真实入链一致(生成物不得手编/过期)。"""
+    errors = []
+    concepts, refs = _concept_refs()
+    for path in concepts:
+        base = os.path.basename(path)
+        old = read(path)
+        try:
+            new = gen_concepts.splice(old, gen_concepts.render(path, refs[base]))
+        except SystemExit as e:
+            errors.append(f"概念/{base} {e}")
+            continue
+        if new != old:
+            errors.append(f"概念/{base} 的「出现在哪里」已过期 -> 跑 python3 scripts/gen_concepts.py")
+    return errors
+
+
 def check_hot_meta_sync():
     """N. 题解元数据行(权威源) vs 高频题目索引 A 表(视图) 逐行比对。"""
     errors = []
@@ -575,6 +654,9 @@ def main():
         ("L. 题解结构(H1/元数据行/固定小节)", check_solution_structure()),
         ("M. 锚点死链(归一化匹配)", check_anchor_links(by_name)),
         ("N. 高频表一致(题解权威源==高频索引 A 表)", check_hot_meta_sync()),
+        ("O. 关系类型(关联题条目带白名单前缀)", check_relation_types()),
+        ("P. 概念成色(入链覆盖 ≥2 个内容域)", check_concept_maturity()),
+        ("Q. 概念视图(出现在哪里与真实入链一致)", check_concept_view()),
     ]
     failed = False
     for name, errors in checks:
