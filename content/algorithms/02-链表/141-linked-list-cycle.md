@@ -65,6 +65,3 @@ public boolean hasCycle(ListNode head) {
 - 易混：[160. 相交链表](160-intersection-of-two-linked-lists.md) —— 同是"双指针相遇"，但靠换轨对齐路程差，不是速度差
 - 知识点：环检测与 [JVM](JVM.md) 引用计数无法回收循环引用，是同一个"引用成环"问题
 
----
-
-[← 返回训练计划](社招算法训练计划.md)

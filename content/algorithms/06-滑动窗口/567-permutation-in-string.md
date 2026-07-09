@@ -66,6 +66,3 @@ public boolean checkInclusion(String s1, String s2) {
 - 进阶：[76. 最小覆盖子串](76-minimum-window-substring.md) —— 放宽为"包含"后窗口变长
 - 知识点：[3. 无重复字符的最长子串](3-longest-substring-without-repeating-characters.md)是变长窗口起点,本题是定长窗口起点
 
----
-
-[← 返回训练计划](社招算法训练计划.md)

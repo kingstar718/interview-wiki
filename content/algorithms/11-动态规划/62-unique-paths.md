@@ -75,6 +75,3 @@ public int uniquePaths(int m, int n) {
 - 进阶：[64. 最小路径和](64-minimum-path-sum.md) —— 加权版
 - 知识点：组合数学 vs DP 的适用场景见[动态规划](algorithms/11-动态规划/README.md)
 
----
-
-[← 返回训练计划](社招算法训练计划.md)

@@ -63,6 +63,3 @@ class WordDictionary {
 
 - 基础：[208. 实现 Trie](208-implement-trie.md)、进阶：[212. 单词搜索 II](212-word-search-ii.md)
 
----
-
-[← 返回训练计划](社招算法训练计划.md)

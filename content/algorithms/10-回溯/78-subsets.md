@@ -68,6 +68,3 @@ private void backtrack(int[] nums, int start, List<Integer> path, List<List<Inte
 - 进阶：[46. 全排列](46-permutations.md) —— 排列 vs 组合的对比
 - 知识点：回溯"组合"模板见[回溯](algorithms/10-回溯/README.md)
 
----
-
-[← 返回训练计划](社招算法训练计划.md)

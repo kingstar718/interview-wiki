@@ -40,6 +40,3 @@ public int hammingDistance(int x, int y) {
 
 - [136. 只出现一次的数字](136-single-number.md)、[338. 比特位计数](338-counting-bits.md)
 
----
-
-[← 返回训练计划](社招算法训练计划.md)

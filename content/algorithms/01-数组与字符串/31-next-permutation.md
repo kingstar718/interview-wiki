@@ -90,6 +90,3 @@ private void reverse(int[] nums, int start, int end) {
 - 进阶：[46. 全排列](46-permutations.md)（回溯枚举全部）、60. 排列序列（数学法直接定位第 k 个）
 - 知识点："从右找第一个升序对 → 交换 → 反转尾部"就是 C++ STL next_permutation 的实现
 
----
-
-[← 返回训练计划](社招算法训练计划.md)

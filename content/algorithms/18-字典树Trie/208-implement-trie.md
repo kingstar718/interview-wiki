@@ -74,6 +74,3 @@ class Trie {
 
 - 同套路：[211. 添加与搜索单词](211-design-add-and-search-words-data-structure.md)、[677. 键值映射](677-map-sum-pairs.md)
 
----
-
-[← 返回训练计划](社招算法训练计划.md)

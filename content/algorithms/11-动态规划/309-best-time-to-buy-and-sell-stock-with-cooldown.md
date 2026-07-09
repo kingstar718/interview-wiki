@@ -58,6 +58,3 @@ public int maxProfit(int[] prices) {
 - 进阶：[714. 含手续费](714-best-time-to-buy-and-sell-stock-with-transaction-fee.md) —— 三状态变体
 - 知识点：状态机 DP 见[动态规划](algorithms/11-动态规划/README.md)
 
----
-
-[← 返回训练计划](社招算法训练计划.md)

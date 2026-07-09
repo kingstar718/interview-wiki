@@ -71,6 +71,3 @@ public int[][] merge(int[][] intervals) {
 - 进阶：[253. 会议室 II](253-meeting-rooms-ii.md) —— 扫描线
 - 知识点：区间排序 + 贪心合并模板见[排序](algorithms/13-排序/README.md)
 
----
-
-[← 返回训练计划](社招算法训练计划.md)

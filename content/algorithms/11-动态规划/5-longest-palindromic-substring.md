@@ -74,6 +74,3 @@ private void expand(String s, int l, int r) {
 - 进阶：[1143. 最长公共子序列](1143-longest-common-subsequence.md) —— 子序列类 DP
 - 知识点：中心扩展法 vs DP 见[动态规划](algorithms/11-动态规划/README.md)
 
----
-
-[← 返回训练计划](社招算法训练计划.md)

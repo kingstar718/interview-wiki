@@ -76,6 +76,3 @@ public Node copyRandomList(Node head) {
 - 进阶：O(1) 空间的交织复制法（新结点插在原结点后 → 复制 random → 拆链）
 - 知识点：深拷贝 vs 浅拷贝的语义区别见[Java基础](Java基础.md)"深浅拷贝"
 
----
-
-[← 返回训练计划](社招算法训练计划.md)

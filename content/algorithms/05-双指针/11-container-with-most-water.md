@@ -67,6 +67,3 @@ public int maxArea(int[] height) {
 - 易混：[42. 接雨水](42-trapping-rain-water.md) —— 本题选两板成容器，那题是所有柱子共同接水，公式与维护量都不同
 - 知识点：双指针的本质是**每步用 O(1) 判断排除一批候选**，专题见[双指针](algorithms/05-双指针/README.md)
 
----
-
-[← 返回训练计划](社招算法训练计划.md)

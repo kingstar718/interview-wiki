@@ -45,6 +45,3 @@ public boolean carPooling(int[][] trips, int capacity) {
 
 - 同套路：[1109. 航班预订统计](1109-corporate-flight-bookings.md)
 
----
-
-[← 返回训练计划](社招算法训练计划.md)

@@ -77,6 +77,3 @@ private void backtrack(int[] nums, List<Integer> path, boolean[] used, List<List
 - 进阶：[78. 子集](78-subsets.md) —— 另一类回溯模板；[39. 组合总和](39-combination-sum.md) —— 可重复选
 - 知识点：回溯三要素（路径/选择列表/结束条件）见[回溯](algorithms/10-回溯/README.md)
 
----
-
-[← 返回训练计划](社招算法训练计划.md)

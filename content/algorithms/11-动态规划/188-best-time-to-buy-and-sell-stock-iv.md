@@ -68,6 +68,3 @@ public int maxProfit(int k, int[] prices) {
 - 进阶：[309. 冷冻期](309-best-time-to-buy-and-sell-stock-with-cooldown.md) —— 状态机加一维
 - 知识点：股票 DP 状态机模板见[动态规划](algorithms/11-动态规划/README.md)
 
----
-
-[← 返回训练计划](社招算法训练计划.md)

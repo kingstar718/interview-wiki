@@ -46,6 +46,3 @@ public int[] topologicalSort(int n, int[][] edges) {
 
 - [207. 课程表](207-course-schedule.md)、[210. 课程表 II](210-course-schedule-ii.md)
 
----
-
-[← 返回训练计划](社招算法训练计划.md)

@@ -59,6 +59,3 @@ public int[][] reconstructQueue(int[][] people) {
 - 进阶：[621. 任务调度器](621-task-scheduler.md) —— 贪心 + 数学推导
 - 知识点："高个子先排，矮个子插队"贪心模式见[贪心](algorithms/12-贪心/README.md)
 
----
-
-[← 返回训练计划](社招算法训练计划.md)

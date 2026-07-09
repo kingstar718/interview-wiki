@@ -75,6 +75,3 @@ public List<List<Integer>> generate(int numRows) {
 - 进阶：119. 杨辉三角 II —— 只要第 k 行，倒序原地更新压到 O(k) 空间
 - 知识点：递推填表是最朴素的动态规划，入门衔接见[动态规划](algorithms/11-动态规划/README.md)；每行也是组合数 C(n,k)
 
----
-
-[← 返回训练计划](社招算法训练计划.md)

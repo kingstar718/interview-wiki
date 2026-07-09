@@ -77,6 +77,3 @@ public int longestValidParentheses(String s) {
 - 进阶：[312. 戳气球](312-burst-balloons.md) —— 区间 DP 另一题
 - 知识点：括号匹配的栈/DP 双解法见[动态规划](algorithms/11-动态规划/README.md)
 
----
-
-[← 返回训练计划](社招算法训练计划.md)

@@ -90,6 +90,3 @@ private int findRight(int[] nums, int target) {
 - 进阶：[33. 搜索旋转排序数组](33-search-in-rotated-sorted-array.md) —— 有序条件破坏时如何二分
 - 知识点：二分查找边界模板汇总见[二分查找](algorithms/07-二分查找/README.md)
 
----
-
-[← 返回训练计划](社招算法训练计划.md)

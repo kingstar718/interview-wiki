@@ -81,6 +81,3 @@ private void reverse(int[] nums, int start, int end) {
 - 进阶：环状替换解法 —— 需要 gcd(n,k) 分组，理解"为什么会提前回到起点"
 - 易混：[31. 下一个排列](31-next-permutation.md) —— 同样用到"区间反转"子操作，目的完全不同
 
----
-
-[← 返回训练计划](社招算法训练计划.md)

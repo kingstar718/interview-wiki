@@ -69,6 +69,3 @@ public int[] dailyTemperatures(int[] temperatures) {
 - 进阶：[84. 柱状图中最大矩形](84-largest-rectangle-in-histogram.md) —— 从"下一个更大"升级为"两侧第一个更小"
 - 知识点：单调栈专题见[单调栈与单调队列](algorithms/15-单调栈与单调队列/README.md)；O(n) 的证明是[摊还](摊还.md)——每个下标入栈出栈各一次，内层 while 的总弹出次数被总入栈次数锁死
 
----
-
-[← 返回训练计划](社招算法训练计划.md)

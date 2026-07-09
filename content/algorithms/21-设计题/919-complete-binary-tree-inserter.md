@@ -60,6 +60,3 @@ class CBTInserter {
 
 - [102. 二叉树的层序遍历](102-binary-tree-level-order-traversal.md)（BFS 模板）
 
----
-
-[← 返回训练计划](社招算法训练计划.md)

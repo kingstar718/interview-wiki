@@ -48,6 +48,3 @@ public int singleNumber(int[] nums) {
 
 - 基础：位运算异或性质；进阶：[260. 只出现一次的数字 III](260-single-number-iii.md)
 
----
-
-[← 返回训练计划](社招算法训练计划.md)

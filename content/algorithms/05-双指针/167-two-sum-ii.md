@@ -67,6 +67,3 @@ public int[] twoSum(int[] numbers, int target) {
 - 易混：[1. 两数之和](01-two-sum.md) —— 无序 + 要原下标，哈希版
 - 知识点：有序性 → 单调性 → 每步 O(1) 排除，与二分查找同一逻辑根基，见[二分查找](algorithms/07-二分查找/README.md)
 
----
-
-[← 返回训练计划](社招算法训练计划.md)

@@ -76,6 +76,3 @@ private void backtrack(int[] c, int remain, int start, List<Integer> path, List<
 - 进阶：[46. 全排列](46-permutations.md) —— 同"回溯搜索"但排列 vs 组合
 - 知识点：回溯"可重复组合"模板见[回溯](algorithms/10-回溯/README.md)
 
----
-
-[← 返回训练计划](社招算法训练计划.md)

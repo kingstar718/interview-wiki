@@ -65,6 +65,3 @@ public ListNode getIntersectionNode(ListNode headA, ListNode headB) {
 - 进阶：两条链表都可能有环时求交点 —— 本题与 142 的组合应用
 - 知识点：a+c+b = b+c+a 的等式思维——把"对齐"转化为"走同样总路程"，不用先算长度
 
----
-
-[← 返回训练计划](社招算法训练计划.md)

@@ -92,6 +92,3 @@ private TreeNode deserialize(Queue<String> nodes) {
 - 进阶：[105. 从前序与中序遍历构造二叉树](105-construct-binary-tree-from-preorder-and-inorder-traversal.md) —— 无空标记时的重建
 - 知识点：递归消费列表的"全局指针"模式见[二叉树](algorithms/08-二叉树/README.md)
 
----
-
-[← 返回训练计划](社招算法训练计划.md)

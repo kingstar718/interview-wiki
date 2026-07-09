@@ -81,6 +81,3 @@ private boolean backtrack(char[][] board, int i, int j,
 - 进阶：[36. 有效的数独](https://leetcode.cn/problems/valid-sudoku/) —— 前置合法性判断
 - 知识点：回溯 + 约束传播、宫格索引公式见[回溯](algorithms/10-回溯/README.md)
 
----
-
-[← 返回训练计划](社招算法训练计划.md)

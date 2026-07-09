@@ -73,6 +73,3 @@ public int maxCoins(int[] nums) {
 - 进阶：区间 DP 的通用模板
 - 知识点：区间 DP 的"反向思考"技巧见[动态规划](algorithms/11-动态规划/README.md)
 
----
-
-[← 返回训练计划](社招算法训练计划.md)

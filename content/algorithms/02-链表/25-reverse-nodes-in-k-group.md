@@ -82,6 +82,3 @@ public ListNode reverseKGroup(ListNode head, int k) {
 - 易混：[24. 两两交换链表结点](24-swap-nodes-in-pairs.md) —— 即 k=2 的本题，但常被单独要求"只改指针不换值"
 - 知识点：dummy 结点 + 组前驱/组尾多指针的命名管理，是链表题从"能做对"到"写得稳"的分水岭
 
----
-
-[← 返回训练计划](社招算法训练计划.md)

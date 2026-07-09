@@ -46,6 +46,3 @@ public int[] corpFlightBookings(int[][] bookings, int n) {
 
 - 同套路：[1094. 拼车](1094-car-pooling.md)
 
----
-
-[← 返回训练计划](社招算法训练计划.md)

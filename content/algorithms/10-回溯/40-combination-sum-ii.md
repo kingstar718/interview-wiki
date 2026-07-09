@@ -77,6 +77,3 @@ private void backtrack(int[] c, int remain, int start, List<Integer> path, List<
 - 进阶：[47. 全排列 II](47-permutations-ii.md) —— 排列版去重对比
 - 知识点：组合类回溯的"同层去重"模板见[回溯](algorithms/10-回溯/README.md)
 
----
-
-[← 返回训练计划](社招算法训练计划.md)

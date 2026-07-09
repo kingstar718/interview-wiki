@@ -65,6 +65,3 @@ public int minPathSum(int[][] grid) {
 - 进阶：[72. 编辑距离](72-edit-distance.md) —— 二维 DP 的三方向转移
 - 知识点：网格 DP 模板见[动态规划](algorithms/11-动态规划/README.md)
 
----
-
-[← 返回训练计划](社招算法训练计划.md)

@@ -91,6 +91,3 @@ public int orangesRotting(int[][] grid) {
 - 进阶：[207. 课程表](207-course-schedule.md) —— 从网格图换到邻接表的图遍历
 - 知识点：多源 BFS 模板见[图](algorithms/09-图/README.md)
 
----
-
-[← 返回训练计划](社招算法训练计划.md)

@@ -74,6 +74,3 @@ public int[] productExceptSelf(int[] nums) {
 - 易混：[152. 乘积最大子数组](152-maximum-product-subarray.md) —— 连续区间最值是 DP，本题是全体乘积拆两半
 - 知识点：前缀思想专题见[前缀和与差分](algorithms/17-前缀和与差分/README.md)
 
----
-
-[← 返回训练计划](社招算法训练计划.md)

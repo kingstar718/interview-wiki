@@ -70,6 +70,3 @@ public int coinChange(int[] coins, int amount) {
 - 进阶：[300. 最长递增子序列](300-longest-increasing-subsequence.md) —— 一维 DP 另一模式
 - 知识点：完全背包问题（求最值 vs 计数）见[动态规划](algorithms/11-动态规划/README.md)
 
----
-
-[← 返回训练计划](社招算法训练计划.md)

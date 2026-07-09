@@ -68,6 +68,3 @@ public ListNode removeNthFromEnd(ListNode head, int n) {
 - 易混：[141. 环形链表I](141-linked-list-cycle.md) —— 同叫"快慢指针"，但那边是判环不是定位
 - 知识点：dummy 结点统一"删的是头结点"的边界，同见 [24. 两两交换链表结点](24-swap-nodes-in-pairs.md)
 
----
-
-[← 返回训练计划](社招算法训练计划.md)

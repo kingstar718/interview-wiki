@@ -73,6 +73,3 @@ public int maxProduct(int[] nums) {
 - 同套路：[53. 最大子数组和](53-maximum-subarray.md) —— 加法版；乘法因"负负得正"要同时维护最大/最小两条状态
 - 易混：[238. 除自身以外数组的乘积](238-product-of-array-except-self.md) —— 那题是"除我以外全体乘积"（前后缀积），不是连续区间最值
 
----
-
-[← 返回训练计划](社招算法训练计划.md)

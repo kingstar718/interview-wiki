@@ -44,6 +44,3 @@ public String longestWord(String[] words) {
 
 - 基础：[208. 实现 Trie](208-implement-trie.md)
 
----
-
-[← 返回训练计划](社招算法训练计划.md)

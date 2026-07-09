@@ -73,6 +73,3 @@ public int subarraySum(int[] nums, int k) {
 - 易混：[53. 最大子数组和](53-maximum-subarray.md) —— 同为子数组：求最值用 Kadane，求计数用前缀和哈希；本题有负数，滑动窗口不适用
 - 知识点：前缀和专题见[前缀和与差分](algorithms/17-前缀和与差分/README.md)
 
----
-
-[← 返回训练计划](社招算法训练计划.md)

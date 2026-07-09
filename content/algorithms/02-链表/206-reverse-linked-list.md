@@ -83,6 +83,3 @@ public ListNode reverseList(ListNode head) {
 - 同套路：[24. 两两交换链表结点](24-swap-nodes-in-pairs.md) —— 相邻指针改写的最小练习
 - 知识点：递归解法调用栈深度 O(n)，超长链表有栈溢出风险，虚拟机栈结构见[JVM](JVM.md)
 
----
-
-[← 返回训练计划](社招算法训练计划.md)

@@ -75,6 +75,3 @@ public int mySqrt(int x) {
 - 进阶：[33. 搜索旋转排序数组](33-search-in-rotated-sorted-array.md) —— 二分在非单调场景的拓展
 - 知识点：二分查找右边界模板见[二分查找](algorithms/07-二分查找/README.md)；整数溢出防护见[Java基础](Java基础.md)
 
----
-
-[← 返回训练计划](社招算法训练计划.md)

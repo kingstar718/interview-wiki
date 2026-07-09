@@ -74,6 +74,3 @@ public int largestRectangleArea(int[] heights) {
 - 进阶：85. 最大矩形 —— 01 矩阵按行累积成柱状图后逐行调用本题；[42. 接雨水](42-trapping-rain-water.md) —— 单调栈的另一经典应用
 - 知识点：首尾补高度 0 的哨兵，消除"栈不空要收尾"的特判——哨兵思想同链表 dummy 结点
 
----
-
-[← 返回训练计划](社招算法训练计划.md)

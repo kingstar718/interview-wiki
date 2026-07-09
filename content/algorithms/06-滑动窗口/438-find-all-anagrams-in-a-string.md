@@ -69,6 +69,3 @@ public List<Integer> findAnagrams(String s, String p) {
 - 进阶：[76. 最小覆盖子串](76-minimum-window-substring.md) —— 从"恰好等于"放宽为"包含即可"，窗口变长
 - 知识点：与 [49. 字母异位词分组](49-group-anagrams.md) 同用"计数规范化"，一个横向滑动、一个全局聚桶
 
----
-
-[← 返回训练计划](社招算法训练计划.md)

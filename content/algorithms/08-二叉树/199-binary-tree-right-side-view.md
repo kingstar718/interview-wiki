@@ -89,6 +89,3 @@ private void dfs(TreeNode node, int depth, List<Integer> res) {
 - 进阶：[236. 二叉树的最近公共祖先](236-lowest-common-ancestor-of-a-binary-tree.md) —— 另一种"不需要处理整层"的递归解法
 - 知识点：DFS 遍历顺序的灵活控制（先右后左）见[二叉树](algorithms/08-二叉树/README.md)
 
----
-
-[← 返回训练计划](社招算法训练计划.md)

@@ -81,8 +81,7 @@ Explorer({
       "面试问题深挖指南",
       "项目经历与场景题",
       "领域建模与代码设计",
-      // algorithms/(训练计划置顶,专题目录按编号回退排序)
-      "社招算法训练计划",
+      // algorithms/ 专题目录按编号回退排序,无需在此登记
     ]
     const ra = ORDER.indexOf(a.displayName)
     const rb = ORDER.indexOf(b.displayName)

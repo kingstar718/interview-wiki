@@ -86,6 +86,3 @@ private void dfs(char[][] grid, int i, int j) {
 - 进阶：[207. 课程表](207-course-schedule.md) —— 图的遍历从网格换到邻接表
 - 知识点：网格图的 DFS 遍历模板见[图](algorithms/09-图/README.md)
 
----
-
-[← 返回训练计划](社招算法训练计划.md)

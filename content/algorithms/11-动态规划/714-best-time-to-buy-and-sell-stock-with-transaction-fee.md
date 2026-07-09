@@ -55,6 +55,3 @@ public int maxProfit(int[] prices, int fee) {
 - 进阶：[188. 买卖股票 IV](188-best-time-to-buy-and-sell-stock-iv.md) —— 限次数
 - 知识点：状态机 DP 模板见[动态规划](algorithms/11-动态规划/README.md)
 
----
-
-[← 返回训练计划](社招算法训练计划.md)

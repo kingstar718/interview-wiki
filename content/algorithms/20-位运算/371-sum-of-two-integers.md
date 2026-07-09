@@ -37,6 +37,3 @@ public int getSum(int a, int b) {
 
 - [136. 只出现一次的数字](136-single-number.md)（异或的拓展应用）
 
----
-
-[← 返回训练计划](社招算法训练计划.md)

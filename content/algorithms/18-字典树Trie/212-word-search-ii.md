@@ -75,6 +75,3 @@ class Trie {
 
 - 基础：[208. 实现 Trie](208-implement-trie.md)、[79. 单词搜索](79-word-search.md)
 
----
-
-[← 返回训练计划](社招算法训练计划.md)

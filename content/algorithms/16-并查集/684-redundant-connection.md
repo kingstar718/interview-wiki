@@ -64,6 +64,3 @@ private void union(int[] parent, int a, int b) {
 - 进阶：[990. 等式方程的可满足性](990-satisfiability-of-equality-equations.md) —— 带约束的并查集
 - 知识点：并查集检测环见[并查集](algorithms/16-并查集/README.md)
 
----
-
-[← 返回训练计划](社招算法训练计划.md)

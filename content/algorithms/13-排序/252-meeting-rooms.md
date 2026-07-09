@@ -48,6 +48,3 @@ public boolean canAttendMeetings(int[][] intervals) {
 
 - 同套路：[56. 合并区间](56-merge-intervals.md)、[253. 会议室 II](253-meeting-rooms-ii.md)
 
----
-
-[← 返回训练计划](社招算法训练计划.md)

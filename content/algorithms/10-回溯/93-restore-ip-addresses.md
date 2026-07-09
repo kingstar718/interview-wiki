@@ -81,6 +81,3 @@ private boolean isValid(String seg) {
 - 进阶：[17. 电话号码的字母组合](17-letter-combinations-of-a-phone-number.md) —— 另一种字符串组合回溯
 - 知识点：字符串分割 + 合法性剪枝见[回溯](algorithms/10-回溯/README.md)
 
----
-
-[← 返回训练计划](社招算法训练计划.md)

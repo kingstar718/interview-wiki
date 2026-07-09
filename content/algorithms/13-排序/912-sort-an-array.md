@@ -78,6 +78,3 @@ private void swap(int[] nums, int i, int j) {
 - 进阶：[75. 颜色分类](75-sort-colors.md) —— 三路切分的简化版（只有三类）
 - 知识点：排序算法体系对比见[排序](algorithms/13-排序/README.md)
 
----
-
-[← 返回训练计划](社招算法训练计划.md)
