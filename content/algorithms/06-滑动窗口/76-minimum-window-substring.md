@@ -81,7 +81,7 @@ public String minWindow(String s, String t) {
 
 - 同套路：[3. 无重复字符的最长子串](3-longest-substring-without-repeating-characters.md) —— 最长模板对照
 - 进阶：[438. 找到字符串中所有字母异位词](438-find-all-anagrams-in-a-string.md)、[567. 字符串的排列](567-permutation-in-string.md) —— 把"覆盖"收紧成"恰好相等"，窗口退化为定长
-- 知识点：Integer 缓存与 equals 比较的坑，见[Java基础](Java基础.md) int 与 Integer 一节
+- 知识点：Integer 缓存与 equals 比较的坑，见[Java基础](Java基础.md) int 与 Integer 一节；「内层有 while 却仍是 O(n)」的依据是[摊还](摊还.md)——左指针总共只前进 n 次
 
 ---
 
