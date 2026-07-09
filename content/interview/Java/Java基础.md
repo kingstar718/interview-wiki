@@ -24,49 +24,7 @@
 
 ---
 
-## 一、IO 流
-
-### 核心概念速查
-
-| 类型 | 说明 | 适用场景 |
-|------|------|---------|
-| **BIO** | 阻塞 IO，同步阻塞 | 连接数少 |
-| **NIO** | 非阻塞 IO，选择器 | 连接数多 |
-| **AIO** | 异步 IO，不常用 | 极端场景 |
-
-### 高频面试题
-
-#### BIO、NIO、AIO 的区别？
-
-难度 🟡
-
-**快答**
-- BIO：线程阻塞在 read，一个连接一个线程
-- NIO：一个线程处理多个连接，非阻塞
-- AIO：异步，操作系统通知结果
-
----
-
-## 二、异常处理
-
-### 高频面试题
-
-#### 受检异常 vs 非受检异常？
-
-难度 🟢
-
-**快答**
-- **受检异常（Checked Exception）**：编译器检查，必须处理，如 IOException
-- **非受检异常（Unchecked Exception）**：继承 RuntimeException，可不处理
-
-**建议：**
-- 自定义异常：如果调用者能恢复，用受检异常；如果无法恢复，用非受检异常
-- 不要捕获后什么都不做（empty catch）
-- 使用特定的异常类，便于定位问题
-
----
-
-## 三、Java 基础高频补充
+## 一、语言基础
 
 ### JVM、JDK、JRE 三者关系？
 
@@ -82,12 +40,13 @@
 - 跨平台的是 Java 程序（字节码），不是 JVM。JVM 是用 C/C++ 写的平台相关程序
 - JVM 不只跑 Java，Kotlin、Scala 等语言编译后也能在 JVM 上运行
 - Java 是编译 + 解释混合模式：先编译为字节码，JVM 中解释器 + JIT 编译器混合执行
+- 现代口径：**JDK 9+ 官方不再单独发行 JRE**，模块化后用 `jlink` 按需裁剪定制运行时，"JDK 包含 JRE"的三层说法只适用于 JDK 8 时代
 
 ---
 
 ### int 和 Integer 的区别？
 
-难度 🟡
+频次 ★★★★ · 难度 🟡
 
 **快答**
 - int 是基本类型，Integer 是包装类（引用类型）
@@ -122,7 +81,7 @@ c == d;  // false（超出缓存范围，新建对象）
 
 ### String、StringBuilder、StringBuffer 区别？
 
-难度 🟡
+频次 ★★★★ · 难度 🟡
 
 | 特性 | String | StringBuilder | StringBuffer |
 |------|--------|--------------|-------------|
@@ -132,7 +91,7 @@ c == d;  // false（超出缓存范围，新建对象）
 | 适用场景 | 静态字符串 | 单线程动态操作 | 多线程动态操作 |
 
 **String 不可变的原因：**
-- 内部用 `private final char[] value` 存储
+- 内部数组 `private final` 且不暴露修改方法——JDK 8 是 `char[] value`，**JDK 9+ 改为 `byte[] value` + `coder` 标记**（Compact Strings：纯 Latin-1 内容每字符 1 字节，比 UTF-16 省一半内存，"为什么改 byte[]"本身就是高频追问）
 - 字符串常量池的需要（多个引用指向同一对象）
 - 安全性（类加载器、网络连接等场景）
 - 线程安全（不可变天然线程安全）
@@ -141,7 +100,7 @@ c == d;  // false（超出缓存范围，新建对象）
 
 ### == 和 equals 的区别？
 
-难度 🟢
+频次 ★★★★ · 难度 🟢
 
 **快答**
 - `==` 比较基本类型的值，比较引用类型的地址
@@ -152,6 +111,86 @@ c == d;  // false（超出缓存范围，新建对象）
 - 如果 `a.equals(b)` 为 true，则 `a.hashCode() == b.hashCode()` 必须为 true
 - 如果 hashCode 相同，equals 不一定为 true（哈希冲突）
 - 重写 equals 必须重写 hashCode，否则在 HashMap/HashSet 中会出问题
+
+---
+
+### 值传递 vs 引用传递
+
+难度 🟡
+
+**Java 只有值传递！**
+- 基本类型：传递值的副本，修改不影响原值
+- 引用类型：传递引用的副本，通过副本可修改对象内容，但修改引用指向不影响原引用
+
+---
+
+### static 关键字的四种用法
+
+难度 🟢
+
+| 用法 | 说明 |
+|------|------|
+| 静态变量 | 类级别共享，所有实例共用 |
+| 静态方法 | 不依赖实例，不能访问非静态成员 |
+| 静态代码块 | 类加载时执行一次，初始化静态资源 |
+| 静态内部类 | 不依赖外部类实例，避免内存泄漏 |
+
+---
+
+### BigDecimal 为什么比 double 更适合金额计算？
+
+难度 🟢
+
+double 使用二进制浮点运算，无法精确表示某些十进制小数（如 0.1），导致精度丢失：
+```java
+System.out.println(0.05 + 0.01); // 0.060000000000000005
+```
+
+**正确做法：**
+```java
+BigDecimal a = new BigDecimal("0.05");  // 用字符串构造
+BigDecimal b = new BigDecimal("0.01");
+System.out.println(a.add(b)); // 0.06（精确）
+```
+
+**常见追问**
+- 为什么不能 `new BigDecimal(0.1)`？→ double 传进构造器时精度已经丢了（实际是 0.1000000000000000055…），要用字符串构造或 `BigDecimal.valueOf()`（内部走 `Double.toString`）
+- `equals` 和 `compareTo` 的区别？→ `equals` 连标度一起比（`0.1` 与 `0.10` 不等），`compareTo` 只比数值；金额判等要用 `compareTo() == 0`，用 HashSet/HashMap 对 BigDecimal 去重是经典坑
+- 除法为什么会抛异常？→ 除不尽（如 1/3）时不指定精度直接抛 `ArithmeticException`，必须 `divide(b, scale, RoundingMode.HALF_UP)` 显式给舍入模式
+
+---
+
+## 二、面向对象与设计模式
+
+### 面向对象六大设计原则？
+
+难度 🟡
+
+| 原则 | 缩写 | 含义 |
+|------|------|------|
+| 单一职责 | SRP | 一个类只负责一项职责 |
+| 开闭原则 | OCP | 对扩展开放，对修改封闭 |
+| 里氏替换 | LSP | 子类对象能替换父类对象 |
+| 接口隔离 | ISP | 接口应该小而专 |
+| 依赖倒置 | DIP | 依赖抽象而非具体实现 |
+| 最少知识 | LoD | 只与直接朋友交互 |
+
+**多态的体现：** 方法重载（编译时）、方法重写（运行时）、接口实现、向上/向下转型
+
+---
+
+### 抽象类和接口的区别？
+
+难度 🟡
+
+| 特性 | 抽象类 | 接口 |
+|------|--------|------|
+| 关键字 | extends | implements |
+| 继承数量 | 单继承 | 多实现 |
+| 成员变量 | 可有实例变量 | 只能有常量（public static final） |
+| 方法 | 可有具体实现 | Java 8 前只能有抽象方法，Java 8+ 可有 default/static，Java 9+ 可有 private |
+| 构造器 | 有 | 无 |
+| 设计意图 | is-a 关系，代码复用 | has-a/can-do 能力，定义规范 |
 
 ---
 
@@ -183,9 +222,106 @@ c == d;  // false（超出缓存范围，新建对象）
 
 ---
 
-### 反射机制及应用场景？
+### 单例模式（双重检查锁定）
+
+频次 ★★★★ · 难度 🟡
+
+```java
+public class Singleton {
+    private static volatile Singleton instance = null;
+    private Singleton() {}
+    
+    public static Singleton getInstance() {
+        if (instance == null) {
+            synchronized (Singleton.class) {
+                if (instance == null) {
+                    instance = new Singleton();
+                }
+            }
+        }
+        return instance;
+    }
+}
+```
+
+**为什么需要 volatile？**
+- 保证可见性
+- 禁止指令重排序（`instance = new Singleton()` 分为：分配内存 → 初始化 → 赋值给引用，重排序后其他线程可能拿到未初始化的对象）
+
+另一种线程安全且惰性的写法是**静态内部类单例**——线程安全由 `<clinit>` 的加锁单次语义兜底，见[JVM](JVM.md)"类加载过程"一节。
+
+---
+
+### 策略模式 vs 责任链模式
 
 难度 🟡
+
+**策略模式**：封装一组可互换的算法，运行时选择
+- 场景：支付方式选择（支付宝/微信/银行卡）、排序算法切换
+
+**责任链模式**：请求沿处理者链传递，直到被处理
+- 场景：请求校验链（登录 → 权限 → 频率限制）、审批流程
+
+两者共同目的：消除复杂的 if-else，提高扩展性
+
+---
+
+### 代理模式 vs 适配器模式
+
+难度 🟢
+
+- **代理模式**：控制对对象的访问，添加额外功能（如 Spring AOP）
+- **适配器模式**：转换接口，让不兼容的类协同工作
+
+---
+
+## 三、泛型、反射与 SPI
+
+### 泛型是如何实现的？为什么说是"伪泛型"？
+
+频次 ★★★ · 难度 🟡
+
+**是什么**：Java 泛型只存在于**编译期**，编译器做完类型检查后会**擦除**成原始类型（Type Erasure），运行时字节码里根本没有泛型信息——这就是常说的"伪泛型"，区别于 C++ 模板（真的为每个类型生成一份代码）。
+
+**擦除规则**：
+
+```java
+public class Box<T> { T value; }              // 编译后 T 被擦成 Object
+public class NumBox<T extends Number> { T v; } // 编译后 T 被擦成 Number(擦成上界)
+
+List<String> list = new ArrayList<>();
+List<Integer> list2 = new ArrayList<>();
+System.out.println(list.getClass() == list2.getClass()); // true —— 运行时都是 ArrayList,没有 <String>/<Integer> 之分
+```
+
+**桥接方法（源码验证擦除的证据）**：
+
+```java
+class MyComparator implements Comparator<String> {
+    public int compare(String a, String b) { return a.length() - b.length(); }
+}
+```
+用 `javap -p MyComparator` 反编译能看到编译器**额外生成**了一个方法：
+```java
+// 编译器生成的桥接方法(bridge method),字节码层面才存在
+public int compare(Object a, Object b) {
+    return compare((String) a, (String) b);   // 强转后调用真正的实现
+}
+```
+接口 `Comparator<T>` 擦除后方法签名是 `compare(Object, Object)`，但子类写的是 `compare(String, String)`——两者签名不同，**不构成重写**。编译器靠生成桥接方法伪造出一个 `compare(Object,Object)` 覆盖接口方法，内部再强转调用真正实现，才让擦除后的多态继续成立。
+
+**常见追问**
+- 为什么不能 `new T[10]`？→ 擦除后 `T` 变成 `Object`，`new T[10]` 实际会创建 `Object[]`；但调用方赋值给 `String[]` 之类的具体数组类型引用时，运行时**数组是有类型信息的**（不像泛型集合），会在别的地方触发 `ClassCastException`。所以 JDK 禁止直接写这行代码，要用 `(T[]) new Object[10]` 强转（不安全但能过编译，本质是绕过检查）或 `Array.newInstance(clazz, 10)`。
+- 泛型擦除会带来什么运行时开销问题？→ 基本类型泛型会被迫**自动装箱**（`List<Integer>` 存的是 `Integer` 对象不是 `int`），大量数据场景有装箱拆箱和内存开销，这也是 JDK 一直没有 `List<int>` 的根因；Project Valhalla 的值类型提案目标之一就是解决这个问题（**截至 JDK 25 仍未正式落地**，面试别把它当已发布特性讲）。
+- 通配符 `? extends T` 和 `? super T` 怎么记？→ **PECS 原则**（Producer Extends, Consumer Super）：只读取（生产数据给你用）就用 `extends`，如 `List<? extends Number> src` 你能读出 Number 但不能往里加；只写入（消费你给的数据）就用 `super`，如 `List<? super Integer> dest` 你能加 Integer 但读出来只能当 Object 用。
+
+**通用概念**：类型擦除是**编译期多态、运行期单态**的一种权衡——在保证向后兼容（Java 5 引入泛型时，老代码用 `List` 不用 `List<T>` 也能和新代码互相调用）和不修改 JVM 字节码规范的前提下实现类型安全检查。C# 的泛型是运行时具体化（reified），没有这个问题，但代价是不能像 Java 一样直接对老字节码保持兼容。
+
+---
+
+### 反射机制及应用场景？
+
+频次 ★★★ · 难度 🟡
 
 **快答**
 - 反射是在运行状态中动态获取类信息（属性、方法、构造器）并调用/修改的能力
@@ -202,6 +338,18 @@ Field field = clazz.getDeclaredField("privateField");
 field.setAccessible(true);
 Object value = field.get(obj);
 ```
+
+---
+
+### Java 注解的原理？
+
+难度 🟡
+
+- 注解本质是继承 `Annotation` 接口的特殊接口
+- 运行时注解通过反射获取时，返回的是动态代理对象（`AnnotationInvocationHandler`）
+- 注解信息存储在 class 文件的属性表中（`RuntimeVisibleAnnotations`）
+- `@Retention` 控制保留策略：SOURCE（仅源码）、CLASS（class 文件）、RUNTIME（运行时可反射）
+- `@Target` 控制作用位置：TYPE、FIELD、METHOD、PARAMETER 等
 
 ---
 
@@ -264,89 +412,31 @@ private class LazyIterator implements Iterator<S> {
 
 ---
 
-### Java 注解的原理？
+## 四、异常处理
 
-难度 🟡
+### 受检异常 vs 非受检异常？
 
-- 注解本质是继承 `Annotation` 接口的特殊接口
-- 运行时注解通过反射获取时，返回的是动态代理对象（`AnnotationInvocationHandler`）
-- 注解信息存储在 class 文件的属性表中（`RuntimeVisibleAnnotations`）
-- `@Retention` 控制保留策略：SOURCE（仅源码）、CLASS（class 文件）、RUNTIME（运行时可反射）
-- `@Target` 控制作用位置：TYPE、FIELD、METHOD、PARAMETER 等
+难度 🟢
 
----
+**快答**
+- **受检异常（Checked Exception）**：编译器检查，必须处理，如 IOException
+- **非受检异常（Unchecked Exception）**：继承 RuntimeException，可不处理
 
-### 面向对象六大设计原则？
+**为什么这么设计**：受检异常想把"可预期、可恢复的失败"（文件不存在、网络中断）编码进方法签名，强迫调用方表态；运行时异常代表编程错误（空指针、越界），当场恢复没有意义所以不强制。但强制处理催生了大量 catch 后吞掉的反模式，Kotlin/C# 都放弃了受检异常，Spring 把 `SQLException` 包装成非受检的 `DataAccessException` 也是同一判断。
 
-难度 🟡
-
-| 原则 | 缩写 | 含义 |
-|------|------|------|
-| 单一职责 | SRP | 一个类只负责一项职责 |
-| 开闭原则 | OCP | 对扩展开放，对修改封闭 |
-| 里氏替换 | LSP | 子类对象能替换父类对象 |
-| 接口隔离 | ISP | 接口应该小而专 |
-| 依赖倒置 | DIP | 依赖抽象而非具体实现 |
-| 最少知识 | LoD | 只与直接朋友交互 |
-
-**多态的体现：** 方法重载（编译时）、方法重写（运行时）、接口实现、向上/向下转型
-
----
-
-### 抽象类和接口的区别？
-
-难度 🟡
-
-| 特性 | 抽象类 | 接口 |
-|------|--------|------|
-| 关键字 | extends | implements |
-| 继承数量 | 单继承 | 多实现 |
-| 成员变量 | 可有实例变量 | 只能有常量（public static final） |
-| 方法 | 可有具体实现 | Java 8 前只能有抽象方法，Java 8+ 可有 default/static，Java 9+ 可有 private |
-| 构造器 | 有 | 无 |
-| 设计意图 | is-a 关系，代码复用 | has-a/can-do 能力，定义规范 |
-
-### 泛型是如何实现的？为什么说是"伪泛型"？
-
-**是什么**：Java 泛型只存在于**编译期**，编译器做完类型检查后会**擦除**成原始类型（Type Erasure），运行时字节码里根本没有泛型信息——这就是常说的"伪泛型"，区别于 C++ 模板（真的为每个类型生成一份代码）。
-
-**擦除规则**：
-
-```java
-public class Box<T> { T value; }              // 编译后 T 被擦成 Object
-public class NumBox<T extends Number> { T v; } // 编译后 T 被擦成 Number(擦成上界)
-
-List<String> list = new ArrayList<>();
-List<Integer> list2 = new ArrayList<>();
-System.out.println(list.getClass() == list2.getClass()); // true —— 运行时都是 ArrayList,没有 <String>/<Integer> 之分
-```
-
-**桥接方法（源码验证擦除的证据）**：
-
-```java
-class MyComparator implements Comparator<String> {
-    public int compare(String a, String b) { return a.length() - b.length(); }
-}
-```
-用 `javap -p MyComparator` 反编译能看到编译器**额外生成**了一个方法：
-```java
-// 编译器生成的桥接方法(bridge method),字节码层面才存在
-public int compare(Object a, Object b) {
-    return compare((String) a, (String) b);   // 强转后调用真正的实现
-}
-```
-接口 `Comparator<T>` 擦除后方法签名是 `compare(Object, Object)`，但子类写的是 `compare(String, String)`——两者签名不同，**不构成重写**。编译器靠生成桥接方法伪造出一个 `compare(Object,Object)` 覆盖接口方法，内部再强转调用真正实现，才让擦除后的多态继续成立。
+**建议：**
+- 自定义异常：如果调用者能恢复，用受检异常；如果无法恢复，用非受检异常
+- 不要捕获后什么都不做（empty catch）
+- 使用特定的异常类，便于定位问题
 
 **常见追问**
-- 为什么不能 `new T[10]`？→ 擦除后 `T` 变成 `Object`，`new T[10]` 实际会创建 `Object[]`；但调用方赋值给 `String[]` 之类的具体数组类型引用时，运行时**数组是有类型信息的**（不像泛型集合），会在别的地方触发 `ClassCastException`。所以 JDK 禁止直接写这行代码，要用 `(T[]) new Object[10]` 强转（不安全但能过编译，本质是绕过检查）或 `Array.newInstance(clazz, 10)`。
-- 泛型擦除会带来什么运行时开销问题？→ 基本类型泛型会被迫**自动装箱**（`List<Integer>` 存的是 `Integer` 对象不是 `int`），大量数据场景有装箱拆箱和内存开销，这也是 JDK 一直没有 `List<int>` 的根因；Java 21 的 Value Types（Project Valhalla）目标之一就是解决这个问题。
-- 通配符 `? extends T` 和 `? super T` 怎么记？→ **PECS 原则**（Producer Extends, Consumer Super）：只读取（生产数据给你用）就用 `extends`，如 `List<? extends Number> src` 你能读出 Number 但不能往里加；只写入（消费你给的数据）就用 `super`，如 `List<? super Integer> dest` 你能加 Integer 但读出来只能当 Object 用。
-
-**通用概念**：类型擦除是**编译期多态、运行期单态**的一种权衡——在保证向后兼容（Java 5 引入泛型时，老代码用 `List` 不用 `List<T>` 也能和新代码互相调用）和不修改 JVM 字节码规范的前提下实现类型安全检查。C# 的泛型是运行时具体化（reified），没有这个问题，但代价是不能像 Java 一样直接对老字节码保持兼容。
+- finally 一定会执行吗？→ 除 `System.exit()`、JVM 崩溃、所在线程被杀外都执行；但 **finally 里写 return 会吞掉 try 的返回值和异常**，属于禁手
+- try-with-resources 的原理？→ 编译器语法糖，自动生成 finally 调 `close()`；close 抛出的异常会通过 `addSuppressed` 挂在主异常上而不是覆盖它——手写 finally close 恰好相反（close 异常覆盖业务异常），这是它的核心优势
+- 异常的性能成本在哪？→ 构造异常时 `fillInStackTrace` 抓取整个调用栈最贵；用异常做正常流程控制是反模式
 
 ---
 
-## 四、Java 8+ 新特性
+## 五、Java 8+ 函数式编程
 
 Java 17/21/25 的 Record、密封类、模式匹配和虚拟线程见 [Java现代特性](Java现代特性.md)。
 
@@ -429,60 +519,28 @@ cf1.thenCombine(cf2, (r1, r2) -> r1 + r2)
 
 ---
 
-## 五、设计模式
+## 六、IO 与序列化
 
-### 单例模式（双重检查锁定）
+### BIO、NIO、AIO 的区别？
 
-难度 🟡
+频次 ★★★★ · 难度 🟡
 
-```java
-public class Singleton {
-    private static volatile Singleton instance = null;
-    private Singleton() {}
-    
-    public static Singleton getInstance() {
-        if (instance == null) {
-            synchronized (Singleton.class) {
-                if (instance == null) {
-                    instance = new Singleton();
-                }
-            }
-        }
-        return instance;
-    }
-}
-```
+**是什么**：
 
-**为什么需要 volatile？**
-- 保证可见性
-- 禁止指令重排序（`instance = new Singleton()` 分为：分配内存 → 初始化 → 赋值给引用，重排序后其他线程可能拿到未初始化的对象）
+| 模型 | 本质 | 线程模型 | 适用场景 |
+|------|------|---------|---------|
+| **BIO** | 同步阻塞 | 一连接一线程，线程阻塞在 read | 连接数少且固定 |
+| **NIO** | 同步非阻塞 + IO 多路复用 | 一个 Selector 线程管理成千上万连接 | 高并发网关、中间件 |
+| **AIO** | 异步（内核完成后回调） | 无需自己等待就绪 | 业界极少用（见追问） |
+
+**为什么 NIO 能撑高并发（C10K 问题）**：BIO 一万个连接就要一万个线程——仅线程栈就吃掉约 10GB（`-Xss` 默认 1MB），加上上下文切换，机器先于业务被拖死。NIO 把"等数据到达"交给内核（select/epoll），应用线程只处理**就绪**的连接，阻塞点从 N 个线程收敛到 1 个 `select()` 调用。
+
+**常见追问**
+- NIO 的"非阻塞"到底哪里非阻塞？→ read 不再等数据：没数据立即返回 0；"等就绪"这件事由 Selector 统一阻塞在 `select()` 上完成。所以 NIO 是"读写非阻塞 + 等待集中化"，不是没有阻塞。
+- 为什么 Java AIO 没流行？→ Linux 上的实现用 epoll 模拟、并非内核真异步（io_uring 才是），相比 Netty 式 NIO 没有实际收益；Windows 的 IOCP 是真异步但服务器不跑 Windows。
+- select/poll/epoll 的区别？→ 属于操作系统考点，见[操作系统](操作系统.md)"select/poll/epoll 区别"。
 
 ---
-
-### 策略模式 vs 责任链模式
-
-难度 🟡
-
-**策略模式**：封装一组可互换的算法，运行时选择
-- 场景：支付方式选择（支付宝/微信/银行卡）、排序算法切换
-
-**责任链模式**：请求沿处理者链传递，直到被处理
-- 场景：请求校验链（登录 → 权限 → 频率限制）、审批流程
-
-两者共同目的：消除复杂的 if-else，提高扩展性
-
----
-
-### 代理模式 vs 适配器模式
-
-难度 🟢
-
-- **代理模式**：控制对对象的访问，添加额外功能（如 Spring AOP）
-- **适配器模式**：转换接口，让不兼容的类协同工作
-
----
-
-## 六、IO 与网络编程
 
 ### NIO 三大核心组件
 
@@ -500,6 +558,8 @@ Channel 注册到 Selector → Selector 轮询就绪事件 → 处理就绪的 C
 ```
 
 **实际应用：** Netty 底层基于 NIO Selector + epoll 实现高并发网络通信
+
+相关深挖：零拷贝（`FileChannel.transferTo` / sendfile）见[操作系统](操作系统.md)"零拷贝"；半包粘包与拆包器见[Netty与RPC](Netty与RPC.md)"TCP 粘包/拆包如何解决？"。
 
 ---
 
@@ -523,50 +583,12 @@ Object obj = ois.readObject();
 - 安全性差（反序列化可执行任意代码）
 - 性能差（序列化后的字节流大）
 
-**替代方案：** Protobuf（高性能、跨语言）、JSON（FastJSON、Jackson）
+**替代方案：** Protobuf（高性能、跨语言）、JSON（Jackson、fastjson2）。注意别再推荐 fastjson 1.x——反序列化漏洞史太多，面试提它有减分风险。
 
----
-
-## 七、其他高频问题
-
-### BigDecimal 为什么比 double 更适合金额计算？
-
-难度 🟢
-
-double 使用二进制浮点运算，无法精确表示某些十进制小数（如 0.1），导致精度丢失：
-```java
-System.out.println(0.05 + 0.01); // 0.060000000000000005
-```
-
-**正确做法：**
-```java
-BigDecimal a = new BigDecimal("0.05");  // 用字符串构造
-BigDecimal b = new BigDecimal("0.01");
-System.out.println(a.add(b)); // 0.06（精确）
-```
-
----
-
-### 值传递 vs 引用传递
-
-难度 🟡
-
-**Java 只有值传递！**
-- 基本类型：传递值的副本，修改不影响原值
-- 引用类型：传递引用的副本，通过副本可修改对象内容，但修改引用指向不影响原引用
-
----
-
-### static 关键字的四种用法
-
-难度 🟢
-
-| 用法 | 说明 |
-|------|------|
-| 静态变量 | 类级别共享，所有实例共用 |
-| 静态方法 | 不依赖实例，不能访问非静态成员 |
-| 静态代码块 | 类加载时执行一次，初始化静态资源 |
-| 静态内部类 | 不依赖外部类实例，避免内存泄漏 |
+**常见追问**
+- serialVersionUID 有什么用？→ 反序列化时的版本校验凭据：不显式声明时由编译器按类结构哈希自动生成，类一改动它就变 → 老数据反序列化直接抛 `InvalidClassException`；显式声明后增删字段可以兼容（新增字段读出默认值，删掉的字段被忽略）
+- 为什么说反序列化有安全风险？→ `readObject` 会执行对象图里各类的反序列化逻辑，攻击者用 gadget chain（如 Apache Commons Collections 链）可以达成远程代码执行；JDK 9（JEP 290，后移植到 8u121）引入反序列化过滤器，原则是**永远不反序列化不可信数据**
+- transient 和 static 字段会被序列化吗？→ 都不会。transient 是显式排除；static 属于类不属于对象实例
 
 ---
 

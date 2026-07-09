@@ -25,67 +25,35 @@
 
 ---
 
-## 一、JVM 虚拟机
+## 一、运行时内存与对象
 
-### 核心概念速查
+### 运行时数据区有哪些？各自会出现什么 OOM？
 
-| 概念 | 说明 |
-|------|------|
-| **堆（Heap）** | 对象分配的内存区域，GC 管理 |
-| **栈（Stack）** | 方法执行、局部变量的内存区域 |
-| **方法区** | 类、常量、静态变量等 |
-| **GC** | 自动垃圾回收，回收无引用对象 |
-| **GC Root** | 引用链的起点：栈变量、静态变量等 |
-| **Young Generation** | 新生代，GC 频繁 |
-| **Old Generation** | 老年代，GC 不频繁 |
+频次 ★★★★★ · 难度 🟡
 
-### 高频面试题
+**是什么**：
 
-#### JVM 垃圾回收机制和调优？
+| 区域 | 线程私有/共享 | 存什么 | 溢出报错 |
+|------|--------------|--------|---------|
+| 程序计数器 | 私有 | 当前字节码行号 | 唯一不会 OOM 的区域 |
+| 虚拟机栈 | 私有 | 栈帧（局部变量表/操作数栈/动态链接/返回地址） | `StackOverflowError`；线程过多时 `unable to create new native thread` |
+| 本地方法栈 | 私有 | native 方法栈帧（HotSpot 与虚拟机栈合一） | 同上 |
+| 堆 | 共享 | 对象实例、数组 | `Java heap space` |
+| 方法区（JDK 8+ 为元空间） | 共享 | 类元数据、运行时常量池 | `Metaspace` |
+| 直接内存 | 共享（不属于运行时数据区） | NIO 的 DirectByteBuffer | `Direct buffer memory` |
 
-难度 🔴
+**为什么这么设计**：线程私有区随线程生灭，内存随栈帧入栈出栈自动回收，GC 完全不用管；共享区（堆/方法区）才是 GC 的战场。JDK 8 用元空间替换永久代后，类元数据改存本地内存，不再与堆抢 `-Xmx`，也不再因永久代固定上限频繁 OOM；字符串常量池更早（JDK 7）已挪进堆。
 
-**快答**
-- GC 通过可达性分析（reference chain）判断对象是否存活
-- 新生代用 Eden + Survivor，老年代单独分配
-- GC 调优：选择合适收集器、调整堆大小、减少 full GC
+**常见追问**
+- 栈深度不够是 SOF 还是 OOM？→ 单线程递归过深抛 `StackOverflowError`；不断创建线程把内存耗光才是 OOM。`-Xss` 调大单栈容量，可创建线程数就变少，两者算的是同一笔账。
+- 为什么用元空间替掉永久代？→ ①永久代大小要预设、很难估（动态代理/脚本引擎生成类多的应用常炸 PermGen）；②类元数据的生命周期与类加载器绑定，放本地内存配合类卸载更自然；③为与无永久代的 JRockit 合流。注意元空间默认只受物理内存限制，生产必须用 `-XX:MaxMetaspaceSize` 设上限。
+- new 出来的对象一定在堆上吗？→ 不一定。JIT 逃逸分析判定不逃逸的对象可做标量替换（HotSpot 实际实现），字段拆散放栈上，连对象头都省了。
 
-**深答**（本节省略细节，详见 JVM 专题文档）
-
----
-
-### 最佳实践
-
-**❌ 常见误区：**
-1. 频繁创建大对象（增加 GC 压力）
-2. 不释放资源（try-with-resources 自动关闭）
-3. 盲目优化堆大小（基于监控数据调整）
-
-**✅ 正确做法：**
-```java
-// 1. 使用对象池避免频繁创建
-ObjectPool<Resource> pool = new ObjectPool<>();
-Resource res = pool.borrow();
-try {
-    // use
-} finally {
-    pool.release(res);
-}
-
-// 2. 自动资源管理
-try (FileInputStream fis = new FileInputStream("file.txt")) {
-    // 自动关闭
-}
-
-// 3. 监控 GC，基于数据调优
-// 查看 GC 日志，分析 full GC 频率和暂停时间
-```
-
----
-
-## 二、JVM 补充
+各区 OOM 的排查工具链见本篇"OOM 有哪几种？分别怎么排查？"。
 
 ### 对象创建过程
+
+频次 ★★★ · 难度 🟡
 
 1. **类加载检查**：检查类是否已加载、解析、初始化
 2. **分配内存**：根据类信息计算对象大小，从堆中分配（指针碰撞或空闲列表）
@@ -93,7 +61,13 @@ try (FileInputStream fis = new FileInputStream("file.txt")) {
 4. **设置对象头**：存储类元数据信息、哈希码、GC 分代年龄、锁状态等
 5. **执行 `<init>` 方法**：按程序员意图初始化对象
 
+**常见追问**
+- 并发分配内存怎么保证安全？→ 两招：CAS + 失败重试；或 **TLAB**（Thread Local Allocation Buffer）——每个线程在 Eden 预先划一小块私有缓冲，分配先走 TLAB，用完再同步申请新的，把竞争摊薄到"申请缓冲"这一步。
+- 指针碰撞和空闲列表怎么选？→ 取决于堆是否规整，也就是取决于 GC 算法：复制/整理算法（Serial、ParNew、G1）堆规整用指针碰撞；标记-清除（CMS）有碎片，只能用空闲列表。
+
 ### 对象在内存中的布局
+
+难度 🟡
 
 对象头（Header） + 实例数据（Instance Data） + 对齐填充（Padding）
 
@@ -101,7 +75,13 @@ try (FileInputStream fis = new FileInputStream("file.txt")) {
 - **实例数据**：对象中定义的各种字段
 - **对齐填充**：JVM 要求对象大小是 8 字节的整数倍
 
+---
+
+## 二、垃圾回收
+
 ### GC Roots 有哪些？
+
+频次 ★★★★ · 难度 🟢
 
 - 虚拟机栈（栈帧中的本地变量表）中引用的对象
 - 方法区中类静态属性引用的对象
@@ -109,64 +89,51 @@ try (FileInputStream fis = new FileInputStream("file.txt")) {
 - 本地方法栈中 JNI 引用的对象
 - 活跃线程对象
 
+### 强软弱虚四种引用
+
+频次 ★★★★ · 难度 🟡
+
+| 引用 | 回收时机 | 典型场景 |
+|------|---------|---------|
+| **强引用** `Object o = new Object()` | 永不回收（可达时） | 默认引用 |
+| **软引用** `SoftReference` | **内存不足（OOM 前）** 才回收 | 内存敏感缓存（图片缓存） |
+| **弱引用** `WeakReference` | **下一次 GC** 就回收 | `ThreadLocalMap` 的 key、`WeakHashMap` |
+| **虚引用** `PhantomReference` | 随时，无法通过它拿到对象 | 配合 `ReferenceQueue` 跟踪回收时机，管理堆外内存（`DirectByteBuffer` 的 Cleaner） |
+
+**常见追问**
+- ThreadLocal 为什么用弱引用还会泄漏？→ key（ThreadLocal 对象）是弱引用会被回收，但 **value 是强引用**，线程不死（线程池）value 就一直挂在 ThreadLocalMap 里 → 必须手动 `remove()`。弱引用只解决了 key 的泄漏，还留下 key 为 null 的 stale entry。
+- 软引用适合做缓存吗？→ 谨慎。回收时机由 JVM 决定，接近 OOM 时集中清空导致缓存雪崩 + Full GC 变长；生产缓存更推荐 Caffeine 这类带容量/过期策略的库。
+
+### GC 算法：标记-清除、标记-复制、标记-整理怎么选？
+
+频次 ★★★★ · 难度 🟡
+
+**是什么**：
+
+| 算法 | 做法 | 优点 | 代价 | 用在哪 |
+|------|------|------|------|--------|
+| 标记-清除（Mark-Sweep） | 标记存活对象，原地清掉垃圾 | 不搬对象，最快 | 内存碎片；分配要维护空闲列表 | CMS 老年代 |
+| 标记-复制（Copying） | 存活对象整体搬到另一块空区 | 无碎片，分配用指针碰撞；存活越少越快 | 常驻浪费一块空间；存活多时搬运贵 | 新生代（Eden + S0/S1） |
+| 标记-整理（Mark-Compact） | 标记后把存活对象向一端压缩 | 无碎片、不浪费空间 | 移动对象 + 更新所有引用，STW 长 | 老年代（Parallel Old、G1 整体视角） |
+
+**为什么这么设计（分代假说）**：绝大多数对象朝生夕灭（弱分代假说），熬过多次 GC 的对象大概率继续活（强分代假说）→ 新生代存活率低，复制算法只搬极少数存活对象最划算；老年代存活率高，复制不划算，改用清除或整理。Eden:S0:S1 = 8:1:1 也是这个假说的落地——只拿 10% 空间做复制缓冲，Survivor 装不下时由老年代做**分配担保**兜底。
+
+**常见追问**
+- 为什么 Survivor 要两块？→ 复制算法的目标区必须是干净的连续空间，两块轮换（from/to）才能保证每次 Minor GC 都往空区搬、搬完即无碎片；一块做不到。
+- Minor GC 时老年代指向新生代的引用怎么发现？→ 跨代引用靠**记忆集（卡表）**：把老年代划成 512B 的卡页，写屏障把"可能存在跨代引用"的卡页标脏，Minor GC 只扫脏卡，不用扫整个老年代。G1 的 RSet 是同一思想按 Region 细化，见"G1 收集器原理"。
+- 标记-清除的碎片什么时候爆雷？→ 总空闲足够却放不下一个大对象时，被迫提前 Full GC——CMS 的 concurrent mode failure 常见诱因之一。
+
 ### 对象什么时候会从新生代晋升到老年代？
+
+频次 ★★★ · 难度 🟡
 
 - **年龄阈值**：对象在 Survivor 区熬过一次 Minor GC 年龄 +1，达到 `MaxTenuringThreshold`（默认 15）时晋升
 - **大对象直接进入**：超过 `-XX:PretenureSizeThreshold` 的大对象直接分配到老年代
 - **动态年龄判定**：Survivor 区中同一年龄的对象大小总和超过 Survivor 区的一半时，大于等于该年龄的对象直接晋升
 
-### 双亲委派的破坏场景
-
-以下场景需要打破双亲委派：
-- **SPI 机制**：如 JDBC 驱动加载，父加载器（Bootstrap）需要加载子加载器（Application）路径下的类，通过 `Thread.currentThread().getContextClassLoader()` 解决；ServiceLoader 懒加载源码与 Dubbo SPI 对比见[Java基础](Java基础.md)"SPI 机制"一节
-- **Tomcat**：每个 Web 应用有自己的 ClassLoader，优先加载自己的类（WebappClassLoader），实现应用隔离
-- **热部署/热替换**：自定义 ClassLoader 每次加载新版本 class 文件
-
-### 如何排查内存泄漏？
-
-**步骤**：
-1. 添加 JVM 参数：`-XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath=./heapdump.hprof`
-2. 发生 OOM 时自动生成堆快照
-3. 用 MAT / JProfiler 分析，看 **支配树（Dominator Tree）** 找出占用最大的对象
-4. 查看 **引用链（GC Root Path）** 确定是谁持有了泄漏对象
-
-**常见内存泄漏原因**：
-- 静态集合无意识缓存大量对象
-- 未关闭资源（连接、流等）
-- ThreadLocal 未 remove
-- 事件监听器未注销
-
-### 类卸载的苛刻条件
-
-需要 **同时满足** 三点：
-1. 该类所有实例都已被回收
-2. 加载该类的 ClassLoader 已被回收
-3. 该类的 Class 对象无任何引用
-
-### 什么时候该用什么 GC 收集器？
-
-| 收集器 | 适用场景 |
-|--------|---------|
-| Parallel GC | 后台计算，追求高吞吐 |
-| G1（默认） | 大堆内存（数 GB+），兼顾吞吐和延迟 |
-| ZGC | 超大堆（TB 级），停顿 < 1ms |
-| Shenandoah | 大堆低延迟，类似 ZGC |
-| Serial GC | 小内存 / 客户端应用 |
-
-> CMS 和 ParNew 已在 JDK 14 被移除，不再适用于现代环境。
-
-### JVM 常用调优参数
-
-| 参数 | 作用 |
-|------|------|
-| `-Xms` / `-Xmx` | 堆初始 / 最大大小 |
-| `-Xss` | 单线程栈大小 |
-| `-XX:+HeapDumpOnOutOfMemoryError` | OOM 时生成堆快照 |
-| `-XX:MaxGCPauseMillis` | G1 最大停顿时间目标 |
-| `-XX:+UseZGC` | 启用 ZGC 收集器 |
-| `-XX:+PrintGCDetails` | 打印 GC 详细日志 |
-
 ### 三色标记：并发标记为什么会漏标？怎么解决？
+
+频次 ★★★★ · 难度 🔴
 
 **是什么**：并发标记阶段给对象染三种颜色描述扫描进度。
 
@@ -196,6 +163,8 @@ try (FileInputStream fis = new FileInputStream("file.txt")) {
 
 ### G1 收集器原理
 
+频次 ★★★★ · 难度 🔴
+
 **是什么**：JDK 9+ 默认收集器。把堆划分为约 2048 个大小相等的 **Region**（1~32MB），Eden/Survivor/Old 不再物理连续，而是 Region 的逻辑集合；超过 Region 一半的大对象放 **Humongous** 区。
 
 **为什么这么设计**：
@@ -213,20 +182,23 @@ try (FileInputStream fis = new FileInputStream("file.txt")) {
 - G1 什么时候会退化成 Full GC？→ Mixed GC 回收速度赶不上分配速度（并发模式失败）、Humongous 分配失败、转移时 Survivor/Old 装不下（to-space exhausted）。退化后是单线程/多线程的整堆压缩（JDK 10+ 并行化），停顿秒级。排查方向：增大堆、调低 IHOP 让并发标记提早、排查大对象。
 - 为什么大对象是"半个 Region"为界？→ 连续 Region 分配 Humongous 开销大且回收时机特殊（Young GC / Full GC / 并发清理才回收），大量短命大对象是 G1 的典型性能杀手。
 
-### 强软弱虚四种引用
+### 什么时候该用什么 GC 收集器？
 
-| 引用 | 回收时机 | 典型场景 |
-|------|---------|---------|
-| **强引用** `Object o = new Object()` | 永不回收（可达时） | 默认引用 |
-| **软引用** `SoftReference` | **内存不足（OOM 前）** 才回收 | 内存敏感缓存（图片缓存） |
-| **弱引用** `WeakReference` | **下一次 GC** 就回收 | `ThreadLocalMap` 的 key、`WeakHashMap` |
-| **虚引用** `PhantomReference` | 随时，无法通过它拿到对象 | 配合 `ReferenceQueue` 跟踪回收时机，管理堆外内存（`DirectByteBuffer` 的 Cleaner） |
+频次 ★★★ · 难度 🟢
 
-**常见追问**
-- ThreadLocal 为什么用弱引用还会泄漏？→ key（ThreadLocal 对象）是弱引用会被回收，但 **value 是强引用**，线程不死（线程池）value 就一直挂在 ThreadLocalMap 里 → 必须手动 `remove()`。弱引用只解决了 key 的泄漏，还留下 key 为 null 的 stale entry。
-- 软引用适合做缓存吗？→ 谨慎。回收时机由 JVM 决定，接近 OOM 时集中清空导致缓存雪崩 + Full GC 变长；生产缓存更推荐 Caffeine 这类带容量/过期策略的库。
+| 收集器 | 适用场景 |
+|--------|---------|
+| Parallel GC | 后台计算，追求高吞吐 |
+| G1（默认） | 大堆内存（数 GB+），兼顾吞吐和延迟 |
+| ZGC | 超大堆（TB 级），停顿 < 1ms |
+| Shenandoah | 大堆低延迟，类似 ZGC |
+| Serial GC | 小内存 / 客户端应用 |
+
+> CMS 和 ParNew 已在 JDK 14 被移除，不再适用于现代环境。
 
 ### 安全点与安全区域
+
+频次 ★★★ · 难度 🔴
 
 **是什么**：GC 需要 STW 时，线程不能停在任意位置——**安全点（Safepoint）** 是线程状态确定、栈上引用关系明确的位置（方法调用、循环回跳、异常跳转处）。
 
@@ -236,11 +208,118 @@ try (FileInputStream fis = new FileInputStream("file.txt")) {
 - 大循环为什么会拖长 STW？→ 可数循环（int 计数）默认**不在循环内插安全点轮询**，一个千万次的纯计算循环会让其他所有线程干等它跑完才能开始 GC。JDK 10+ 的 Loop Strip Mining 缓解；排查用 `-XX:+PrintSafepointStatistics` 看 sync 时间。
 - 线程 sleep/blocked 了走不到安全点怎么办？→ **安全区域（Safe Region）**：进入该区域前声明"这段代码不改引用关系"，GC 不必等它；线程离开安全区域时检查 GC 是否完成，未完成则挂起。
 
+---
+
+## 三、类加载
+
+### 类加载过程：一个类从 class 文件到可用要经历什么？
+
+频次 ★★★★ · 难度 🟡
+
+**是什么**：加载 → 验证 → 准备 → 解析 → 初始化 五个阶段（解析可以晚于初始化，为运行期动态绑定留口子）：
+
+| 阶段 | 干什么 | 关键点 |
+|------|--------|--------|
+| 加载 | 读字节流 → 方法区的类数据结构 + 堆中 Class 对象 | 数组类由 JVM 直接创建，不经类加载器 |
+| 验证 | 文件格式/元数据/字节码/符号引用四道检查 | 保证字节流不会危害 JVM |
+| 准备 | 静态变量分配内存并赋**零值** | `static int a = 1` 此阶段 a=0；`static final int a = 1`（ConstantValue）此阶段直接是 1 |
+| 解析 | 符号引用 → 直接引用 | |
+| 初始化 | 执行 `<clinit>()`：静态变量赋值 + 静态块按源码顺序合并 | JVM 保证 `<clinit>` **加锁且只执行一次** |
+
+**为什么这么设计**：初始化刻意惰性——只有首次**主动使用**才触发（new、读写静态变量、调静态方法、反射、初始化子类、main 所在类），保证"用到才付出成本"；`<clinit>` 的加锁单次语义把类初始化的线程安全从程序员手里拿走，由 JVM 兜底——**静态内部类单例**线程安全的根据就在这里。
+
+**常见追问**
+- `ClassLoader.loadClass` 和 `Class.forName` 的区别？→ 前者只加载不初始化；后者默认初始化（JDBC 老写法 `Class.forName("com.mysql...")` 就是靠初始化触发驱动静态块里的 `registerDriver`）。
+- 访问 `static final` 常量会触发类初始化吗？→ 不会。编译期常量在编译时已折叠进调用方的常量池，字节码层面根本不引用定义类；换成运行期才能确定的值（`static final String s = UUID.randomUUID().toString()`）就会触发。
+- 双亲委派是什么、防什么？→ Bootstrap ← Platform（JDK 8 叫 Ext）← App 三层，loadClass 先委托父加载器，父找不到才自己加载。保证核心类全局唯一（自己写的 `java.lang.String` 永远轮不到加载）+ 防篡改。被破坏的场景见下节。
+
+### 双亲委派的破坏场景
+
+频次 ★★★★ · 难度 🟡
+
+以下场景需要打破双亲委派：
+- **SPI 机制**：如 JDBC 驱动加载，父加载器（Bootstrap）需要加载子加载器（Application）路径下的类，通过 `Thread.currentThread().getContextClassLoader()` 解决；ServiceLoader 懒加载源码与 Dubbo SPI 对比见[Java基础](Java基础.md)"SPI 机制"一节
+- **Tomcat**：每个 Web 应用有自己的 ClassLoader，优先加载自己的类（WebappClassLoader），实现应用隔离
+- **热部署/热替换**：自定义 ClassLoader 每次加载新版本 class 文件
+
+### 类卸载的苛刻条件
+
+难度 🟡
+
+需要 **同时满足** 三点：
+1. 该类所有实例都已被回收
+2. 加载该类的 ClassLoader 已被回收
+3. 该类的 Class 对象无任何引用
+
+---
+
+## 四、调优与排障
+
+### JVM 调优的方法论：从目标到证据链
+
+频次 ★★★★ · 难度 🔴
+
+**是什么**：调优三步，顺序不能反——
+1. **定目标**：吞吐、延迟、内存占用三者取舍（P99 停顿 < 50ms？还是批处理吞吐最大？没有目标就没有"调好了"的标准）
+2. **拿证据**：开 GC 日志（JDK 9+ 用 `-Xlog:gc*:file=gc.log`，JDK 8 用 `-XX:+PrintGCDetails`）、`jstat -gcutil` 看趋势、JFR 抓采样
+3. **一次只改一个变量**：改完压测对比指标，否则不知道是哪个改动起了作用
+
+**GC 日志怎么看**（抓三类信息）：
+- **频率**：Young GC 多久一次 → 反映分配速率
+- **停顿**：Pause Young / Mixed / Full 的耗时分布，长尾是谁贡献的
+- **回收效果**：每次 GC 后堆占用回到多少——**老年代水位是否持续上涨**是最关键的一条线
+
+**症状 → 方向速查**：
+
+| 症状 | 可能原因 | 排查方向 |
+|------|---------|---------|
+| Young GC 频繁但停顿短 | 新生代太小 / 分配速率高 | 增大新生代；找临时对象大户 |
+| Full GC 频繁 | 晋升过快 / 内存泄漏 / 元空间满 | HeapDump + MAT；查动态类生成 |
+| 单次停顿特别长 | 安全点等待 / Humongous / 系统 swap | safepoint 日志；禁 swap；查大对象 |
+| CPU 高但吞吐低 | 堆太小反复 GC，GC 线程抢 CPU | 加堆或找泄漏 |
+
+**为什么不能只调参数**：参数是果不是因——大多数"GC 问题"实际是代码问题（无界缓存、大结果集查询、循环里拼字符串）。先用 MAT 看对象分布再谈参数；上来就抄一套"神参数"是背题选手的标志。
+
+**常见追问**
+- 生产常开 GC 日志代价大吗？→ 几乎为零，应该常开；`-Xlog:gc*` 支持 filecount/filesize 滚动，不会撑爆磁盘。
+- 怎么判断该扩堆还是该修代码？→ 看 **Full GC 后老年代能否回到低位**：能回去 = 容量问题，扩堆有效；回不去且持续上涨 = 泄漏，扩堆只是推迟爆炸，走内存泄漏排查（见下文）。
+
+### JVM 常用调优参数
+
+频次 ★★★ · 难度 🟢
+
+| 参数 | 作用 |
+|------|------|
+| `-Xms` / `-Xmx` | 堆初始 / 最大大小 |
+| `-Xss` | 单线程栈大小 |
+| `-XX:+HeapDumpOnOutOfMemoryError` | OOM 时生成堆快照 |
+| `-XX:MaxGCPauseMillis` | G1 最大停顿时间目标 |
+| `-XX:+UseZGC` | 启用 ZGC 收集器 |
+| `-XX:+PrintGCDetails` | 打印 GC 详细日志 |
+
+### 如何排查内存泄漏？
+
+频次 ★★★★ · 难度 🟡
+
+**步骤**：
+1. 添加 JVM 参数：`-XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath=./heapdump.hprof`
+2. 发生 OOM 时自动生成堆快照
+3. 用 MAT / JProfiler 分析，看 **支配树（Dominator Tree）** 找出占用最大的对象
+4. 查看 **引用链（GC Root Path）** 确定是谁持有了泄漏对象
+
+**常见内存泄漏原因**：
+- 静态集合无意识缓存大量对象
+- 未关闭资源（连接、流等）
+- ThreadLocal 未 remove
+- 事件监听器未注销
+
 ### OOM 有哪几种？分别怎么排查？
+
+频次 ★★★★ · 难度 🟡
 
 | OOM 类型 | 报错信息 | 常见原因 | 排查 |
 |---------|---------|---------|------|
-| 堆溢出 | `Java heap space` | 内存泄漏 / 堆太小 / 大查询加载过多数据 | HeapDump + MAT 支配树（见第 6 节） |
+| 堆溢出 | `Java heap space` | 内存泄漏 / 堆太小 / 大查询加载过多数据 | HeapDump + MAT 支配树（见"如何排查内存泄漏"） |
 | 元空间 | `Metaspace` | 动态生成类失控（CGLIB 代理、Groovy 脚本、反射滥用） | `-XX:MaxMetaspaceSize` 限制 + jcmd 看类加载数量 |
 | 直接内存 | `Direct buffer memory` | NIO/Netty 堆外内存未释放，`-XX:MaxDirectMemorySize` 不足 | NMT（Native Memory Tracking）、Netty 泄漏检测 |
 | 无法创建线程 | `unable to create new native thread` | 线程数超系统限制（ulimit）、线程栈总量耗尽 | `jstack` 数线程 + 检查线程池是否无界 |
