@@ -8,3 +8,4 @@ tsconfig.tsbuildinfo
 .quartz/
 private/
 quartz/cli/tui/dist/
+__pycache__/
