@@ -54,6 +54,7 @@
 
 ## 已完成
 
+- [x] 索引:知识点索引自动化 — 新增 scripts/slug.py(纯标准库复刻 github-slugger v2)+ gen_index.py(扫 interview/ 篇目真实 H3,按 quartz.ts ORDER 生成「真实标题+锚点」索引,点击直达小节,带 --check 防漂移);check_index.py 加 M 项锚点死链校验(归一化匹配);重写 content/indexes/知识点索引.md,同步 CLAUDE/CONTRIBUTING 文档(546495a)
 - [x] 算法:关联题回填三批全量(链表 13 + 数组 19 + 栈与队列 8)— 每篇按同套路/进阶/易混/知识点四类补齐,与 interview 篇目互链(caaa180)
 - [x] 算法:check_index.py 校验 L「关联题」转必填(九节固定)(caaa180)
 
