@@ -11,6 +11,7 @@ Explorer({
       indexes: "索引",
       interview: "社招八股",
       algorithms: "算法刷题",
+      problems: "题库",
     }
     if (node.isFolder && NAMES[node.displayName]) {
       node.displayName = NAMES[node.displayName]
@@ -88,7 +89,23 @@ Explorer({
       "面试问题深挖指南",
       "项目经历与场景题",
       "领域建模与代码设计",
-      // algorithms/ 专题目录按编号回退排序,无需在此登记
+      // algorithms/(套路节点在前,原始题目池在后;新增套路在此登记,否则会被
+      // 排到 problems/ 之后 —— 默认排序是"目录在前、文件在后",problems/
+      // 是这里唯一的子目录,不登记就会排到 13 个套路文件前面,顺序反了)
+      "数组与字符串",
+      "链表",
+      "栈与队列",
+      "哈希表",
+      "双指针与滑动窗口",
+      "二分查找",
+      "二叉树",
+      "图论",
+      "回溯",
+      "动态规划与贪心",
+      "排序与堆",
+      "字典树",
+      "位运算",
+      "题库",
     ]
     const ra = ORDER.indexOf(a.displayName)
     const rb = ORDER.indexOf(b.displayName)
