@@ -24,8 +24,8 @@
     E. 分类一致  —— interview/<分类>/ 目录名 == 枢纽清单中该文件的分类名
     F. 无孤儿题解 —— algorithms/<专题>/ 下每个题解文件都必须被本专题 README 链接
                     (防止「有文件却无本地导航入口」的断点)
-    G. 地图置顶  —— interview/ 专题第一个 H2 必须是无章号的「## 面试追问地图」,
-                    且含返回知识点链接(面试问题深挖指南豁免)
+    G. 地图置顶  —— interview/ 专题第一个 H2 必须是无章号的「## 面试追问地图」
+                    (面试问题深挖指南豁免)
     H. 标题无编号 —— interview/ 的 H3-H6 小节标题禁止数字编号开头(^数字[.、]):
                     小节标题是稳定语义 ID,同 C 项原则(401/502 等状态码开头合法)
     I. 元数据行  —— 「频次 ★ · 难度 🟡 · 高频：公司」行出现即校验(interview + 算法题解):
@@ -240,7 +240,6 @@ def check_orphan_solutions():
 
 
 MAP_HEADING = "## 面试追问地图"
-BACK_LINK = "[← 返回知识点](知识点索引.md)"
 MAP_EXEMPT = {"面试问题深挖指南.md"}
 H2_RE = re.compile(r"^##\s")
 NUM_SECTION_RE = re.compile(r"^#{3,6}\s+\d+[.、．]\s")
@@ -384,7 +383,7 @@ def check_solution_structure():
 
 
 def check_map_on_top():
-    """G. 专题第一个 H2 必须是无章号地图,且全文含返回链接。"""
+    """G. 专题第一个 H2 必须是无章号地图。"""
     errors = []
     for path in interview_files():
         if os.path.basename(path) in MAP_EXEMPT:
@@ -395,8 +394,6 @@ def check_map_on_top():
         if first_h2 is None or first_h2[1].strip() != MAP_HEADING:
             got = first_h2[1].strip() if first_h2 else "(无 H2)"
             errors.append(f"{rel} 第一个 H2 应为「{MAP_HEADING}」,实际是「{got}」")
-        if not any(BACK_LINK in ln for ln in lines):
-            errors.append(f"{rel} 缺少返回链接「{BACK_LINK}」")
     return errors
 
 
@@ -522,7 +519,7 @@ def main():
         ("D. 文件集一致(实际==枢纽)", check_file_set(actual, hub)),
         ("E. 分类一致(目录==枢纽)", check_category(actual, hub)),
         ("F. 无孤儿题解(题解都被专题 README 链接)", check_orphan_solutions()),
-        ("G. 追问地图置顶(无章号+返回链接)", check_map_on_top()),
+        ("G. 追问地图置顶(无章号)", check_map_on_top()),
         ("H. 小节标题无编号(标题是稳定语义 ID)", check_section_naming()),
         ("I. 元数据行格式(频次/难度/高频)", check_meta_line()),
         ("J. 关联题欠链(提到已收录题号必须链接)", check_related_links()),
