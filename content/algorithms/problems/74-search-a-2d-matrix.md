@@ -57,7 +57,7 @@ public boolean searchMatrix(int[][] matrix, int target) {
 
 ## 变式
 
-- **[240. 搜索二维矩阵 II](https://leetcode.cn/problems/search-a-2d-matrix-ii/)**：每行/列各自升序，但非全量递增（上一行末 ≤ 下一行首不保证）。此时二分不管用，用 **Z 字形搜索**（从右上角开始，行首≤t≤行末才进入行，否则跳过整行）或每行分别二分
+- **[240. 搜索二维矩阵 II](240-search-a-2d-matrix-ii.md)**：每行/列各自升序，但非全量递增（上一行末 ≤ 下一行首不保证）。此时二分不管用，用 **Z 字形搜索**（从右上角开始，行首≤t≤行末才进入行，否则跳过整行）或每行分别二分
 - 先找行再找列：本题也能先二分确定行，再二分该行（两次二分），但一次二分更简洁
 
 ## 易错点
@@ -74,6 +74,6 @@ public boolean searchMatrix(int[][] matrix, int target) {
 ## 关联题
 
 - 同套路：[4. 寻找两个正序数组的中位数](4-median-of-two-sorted-arrays.md) —— 二分在不同数据结构上的映射
-- 进阶：[240. 搜索二维矩阵 II](https://leetcode.cn/problems/search-a-2d-matrix-ii/) —— 条件放宽后的 Z 字形解法
+- 进阶：[240. 搜索二维矩阵 II](240-search-a-2d-matrix-ii.md) —— 条件放宽后的 Z 字形解法
 - 知识点：[二分查找](二分查找.md)的"映射"思维
 

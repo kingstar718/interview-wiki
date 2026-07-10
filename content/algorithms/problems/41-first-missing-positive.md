@@ -77,7 +77,7 @@ public int firstMissingPositive(int[] nums) {
 ## 关联题
 
 - 同套路：[448. 找到所有数组中消失的数字](448-find-disappeared-numbers.md) —— "下标即哈希"的原地标记，它是无约束热身版
-- 进阶：287. 寻找重复数 —— 不许改数组时转成下标成环，用 Floyd 判圈
+- 进阶：[287. 寻找重复数](287-find-the-duplicate-number.md) —— 不许改数组时转成下标成环，用 Floyd 判圈
 - 易混：[73. 矩阵置零](73-set-matrix-zeroes.md) —— 同为 O(1) 标记，但那题是借首行首列当标记位
 - 知识点：鸽巢原理——答案必在 [1, n+1] 内，这是所有 O(1) 空间解法的前提
 

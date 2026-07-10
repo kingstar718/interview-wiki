@@ -67,6 +67,6 @@ public ListNode middleNode(ListNode head) {
 ## 关联题
 
 - 同套路：[141. 环形链表I](141-linked-list-cycle.md)、[142. 环形链表II](142-linked-list-cycle-ii.md) —— 快慢指针族
-- 进阶：234. 回文链表 —— 找中点 + 反转后半段的组合应用；[148. 排序链表](148-sort-list.md) —— 归并切分靠本题找中点
+- 进阶：[234. 回文链表](234-palindrome-linked-list.md) —— 找中点 + 反转后半段的组合应用；[148. 排序链表](148-sort-list.md) —— 归并切分靠本题找中点
 - 易混：[19. 删除倒数第N个结点](19-remove-nth-node-from-end-of-list.md) —— 同为双指针定位，但用固定间距不是速度差
 

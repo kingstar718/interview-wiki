@@ -78,6 +78,6 @@ public ListNode detectCycle(ListNode head) {
 ## 关联题
 
 - 同套路：[141. 环形链表I](141-linked-list-cycle.md) —— 先把判环写熟，本题只是相遇后多走一段
-- 进阶：287. 寻找重复数 —— 把数组下标当 next 指针，数组版找环入口，想通它才算真正掌握本题
+- 进阶：[287. 寻找重复数](287-find-the-duplicate-number.md) —— 把数组下标当 next 指针，数组版找环入口，想通它才算真正掌握本题
 - 易混：[160. 相交链表](160-intersection-of-two-linked-lists.md) —— 都推路程等式，但一个消环内偏移、一个消长度差
 

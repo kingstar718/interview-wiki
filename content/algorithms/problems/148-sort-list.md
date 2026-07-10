@@ -93,7 +93,7 @@ private ListNode merge(ListNode a, ListNode b) {
 
 ## 关联题
 
-- 同套路：[876. 链表的中间结点](876-middle-of-the-linked-list.md)（切分找中点） + 21. 合并两个有序链表（合并子过程）—— 本题 = 两者组合
+- 同套路：[876. 链表的中间结点](876-middle-of-the-linked-list.md)（切分找中点） + [21. 合并两个有序链表](21-merge-two-sorted-lists.md)（合并子过程）—— 本题 = 两者组合
 - 进阶：[23. 合并K个排序链表](23-merge-k-sorted-lists.md) —— 分治合并思想相通
 - 知识点：链表排序选归并不选快排——不能随机访问、合并只改指针 O(1) 额外空间，排序算法对比见[数据结构与算法](数据结构与算法.md)
 
