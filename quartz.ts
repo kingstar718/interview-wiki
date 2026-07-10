@@ -10,7 +10,7 @@ Explorer({
     const NAMES: Record<string, string> = {
       indexes: "索引",
       interview: "社招八股",
-      algorithms: "算法刷题",
+      algorithms: "算法题",
       problems: "题库",
     }
     if (node.isFolder && NAMES[node.displayName]) {
@@ -26,7 +26,7 @@ Explorer({
       "索引",
       "概念",
       "社招八股",
-      "算法刷题",
+      "算法题",
       // 概念/(跨域知识节点,显示名取页面 H1;新增概念在此登记)
       "摊还",
       "局部性",
