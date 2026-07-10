@@ -5,11 +5,13 @@
 | 主问题 | 必讲关键点 | 下一层追问 |
 |--------|------------|------------|
 | [文档模型](#mongodb-适合什么场景) | JSON/BSON、集合、库 | 无 Schema 设计、与关系型对比 |
-| [复制集](#复制集架构) | 主从、Oplog、自动故障转移 | 选举机制、写关注、读偏好 |
+| [复制集](#复制集架构) | 主从、Oplog、自动故障转移 | 选举算法、节点状态、多数派原则 |
+| [写关注/读偏好](#写关注write-concern) | w/majority、readPreference | 组合效果、一致性 vs 性能取舍 |
 | [分片](#片键选择) | 片键选择、数据分布、平衡 | 片键选择不当后果、hashed/range 分片 |
 | [索引](#索引类型) | 单字段/复合/TTL/稀疏/地理 | 索引下推到存储引擎、explain |
-| [事务](#mongodb-的多文档事务) | 4.0 多文档事务、2PC 模拟 | RDB 事务 vs MongoDB 事务差异 |
+| [事务](#mongodb-的多文档事务) | 4.0 多文档事务、Read Concern | 快照隔离、majority/local 选择 |
 | [聚合管道](#聚合管道常用阶段) | \$match/\$group/\$lookup | 内存限制、$lookup 性能、pipeline 优化 |
+| [Change Streams](#change-streams-是什么) | 实时变更推送、resume token | 缓存同步、与 binlog/Kafka 对比 |
 | [存储引擎](#wiredtiger-核心特性) | WiredTiger、MVCC、压缩 | 快照隔离、journal、cache 淘汰 |
 | [ObjectId](#objectid-的结构) | 12 字节、时间戳+机器+进程+自增 | 单调递增与分布式趋势 |
 | [基础概念](#mongodb-适合什么场景) | 场景选择、集合/文档/库、关系型映射 | 何时用 MongoDB vs MySQL |
@@ -149,24 +151,78 @@ db.users.find({ age: { $gt: 25 } }).explain("executionStats");
 
 ### 自动故障转移
 
-1. Secondary 检测到 Primary 心跳超时（默认 10s）
-2. 触发选举：节点**获得大多数投票**（含仲裁节点）→ 成为新 Primary
-3. 旧 Primary 恢复后降级为 Secondary
+#### 节点状态
 
-**写关注（Write Concern）：**
+MongoDB 复制集节点共有 6 种状态：
+
+| 状态 | 说明 |
+|------|------|
+| PRIMARY | 当前主节点，处理所有写请求 |
+| SECONDARY | 从节点，同步 Oplog 复制数据 |
+| ARBITER | 仲裁节点，只参与选举投票，不存储数据 |
+| STARTUP | 刚启动，正在加载配置 |
+| RECOVERING | 正在追赶 Oplog，暂未就绪 |
+| ROLLBACK | 回滚中——旧主恢复后发现冲突写操作，需回滚到一致性点 |
+
+#### 选举流程
+
+选举是**Bully 协议变种**，触发条件：
+
+1. **Primary 心跳超时**（默认 `electionTimeoutMillis = 10s`）
+2. Secondary 发现**无法连接 Primary**
+3. 发起选举的节点先投自己一票，再向其他节点拉票
+
+**选举规则（优先级比较）：**
+
+1. **票数 > 总投票节点数的一半** → 当选
+2. 若平票/无人过半 → 竞选节点等待随机时间重试
+3. **Oplog 进度**是最硬约束——上一个主挂了，Oplog 落后太多的节点即使票够也不会当选（防止丢数据）
+4. **优先级（priority）**：数值越高越优先当选，相同优先级才比较 Oplog 进度
+
+**防惊群机制：**
+
+- 选举超时时间对每个 Secondary 加了一个 **随机偏移**（0~`electionTimeoutMillis`），避免所有从节点同时发起选举
+- 已选出新 Primary 后，其他节点的选举请求会被拒绝
+
+**多数派原则：**
+
+- 复制集推荐**奇数个投票节点**（3/5/7），防止平票场景（脑裂）
+- 投票节点 = 有投票权的 member（默认所有数据节点 + arbiter 都有投票权）
+- Arbiter 参与选举不占空间，1 个 arbiter + 2 个数据节点 = 3 个投票节点，挂 1 个仍能选主
+
+**常见追问：**
+
+- 复制集挂掉几个节点还能正常选主？→ 3 节点最多挂 1 个，5 节点最多挂 2 个（需要多数派存活）
+- Arbiter 能缓解吗？→ 能。2 个数据节点 + 1 个 arbiter = 3 票，最多接受挂 1 个（而非 2 节点集群挂 1 个就彻底不可写）
+- 旧主恢复后会怎样？→ 旧 Primary 检测到新主比自己 Oplog 更新，降级为 Secondary 并触发 **ROLLBACK** 回滚冲突写
+
+### 写关注（Write Concern）
+
 | 级别 | 说明 |
 |------|------|
 | `w:1` | 主节点写入即确认（默认，故障切换可能丢数据） |
 | `w:"majority"` | 大多数节点写入后才确认（强安全） |
 | `w:3` | 指定 3 个节点确认 |
+| `j:true` | 写入 journal 后才确认 |
+| `wtimeout:5000` | 写入超时 5s，超时返回错误 |
 
-**读偏好（Read Preference）：**
+**组合建议：** 重要数据用 `w:"majority"` + `j:true`，允许丢数据的日志场景用 `w:1`。
+
+### 读偏好（Read Preference）
+
 | 模式 | 说明 |
 |------|------|
 | `primary` | 只读主（默认，强一致） |
 | `primaryPreferred` | 主优先，主不可用时读从 |
 | `secondary` | 只读从 |
+| `secondaryPreferred` | 从优先，从不可用时读主 |
 | `nearest` | 读最近节点（低延迟） |
+
+**读偏好 × 写关注的组合效果：**
+
+- `w:"majority"` 写入 + `readConcern: "majority"` 读取 → 在读取节点上能读到已确认的大多数数据（因果一致）
+- `w:1` 写入 + `secondaryPreferred` 读取 → 可能读到旧数据（主从延迟）
+- `nearest` 读偏好适合跨地域部署，选延迟最低的节点读
 
 关联知识点：Redis 哨兵的 SDOWN→ODOWN 选举与 MongoDB 选举都是**多数派选主**，但 MongoDB 用 Oplog 同步更接近 MySQL 半同步复制。
 
@@ -220,6 +276,24 @@ db.users.find({ age: { $gt: 25 } }).explain("executionStats");
 - **单文档写是原子的**：即使不开启事务，对单个文档的 `$set`、`$inc` 等操作原子完成
 - **大多数场景不需要事务**：通过内嵌文档 + 原子操作就能保证一致性
 
+### Read Concern（读关注）
+
+Read Concern 控制读操作能读到什么状态的数据，从弱到强排序：
+
+| 级别 | 说明 |
+|------|------|
+| `local` | 默认级别。读本节点最新数据（可能回滚，副本集内可能读到未确认的写） |
+| `available` | 同 `local`，但分片场景下不等待元数据一致（读最新分片路由） |
+| `majority` | 读大多数节点已确认的数据（不会被回滚，保证因果一致性） |
+| `linearizable` | 读操作前等所有前序写确认，返回最新值（强一致，性能差，只在 PRIMARY 可用） |
+| `snapshot` | 读事务快照下的数据（事务中用，或显式指定时间戳） |
+
+**常见追问：**
+
+- `local` 和 `majority` 的核心区别？→ `local` 读到的是本节点当前最新，但该数据可能被回滚（旧主恢复时 ROLLBACK）；`majority` 确保该数据已被大多数节点确认，永远不会被回滚。
+- 默认为什么是 `local` 不是 `majority`？→ `majority` 读需要等大多数节点确认，延迟比 `local` 高，且增加 secondary 负载。MongoDB 默认倾向性能优先。
+- 因果一致性会话是什么？→ 客户端设置 `afterClusterTime`，保证读到的数据不会早于上次写的时间戳，需要 `readConcern: "majority"` 配合。
+
 ---
 
 ## 七、聚合管道
@@ -249,7 +323,62 @@ db.orders.aggregate([
 
 ---
 
-## 八、存储引擎 WiredTiger
+## 八、Change Streams
+
+### Change Streams 是什么？
+
+Change Streams 是 MongoDB 3.6+ 提供的**实时变更推送能力**——应用可以订阅集合、库或整个复制集的数据变更（插入、更新、替换、删除），每次变更事件包含操作类型、变更前后文档摘要和 **resume token**。
+
+### 核心特性
+
+| 特性 | 说明 |
+|------|------|
+| 底层依赖 | Oplog（与复制集同步同一条管道），对 Oplog 做游标遍历 |
+| 断线续传 | resume token 记录变更流位置，断线后从 token 处续传（类似 Kafka offset） |
+| 过滤器 | `$match` 过滤操作类型或条件，`$project` 裁剪字段 |
+| 权限 | 需要 `changeStream` 动作权限及对应集合的读权限 |
+| 分片兼容 | 分片集群上需要打开所有分片的 change stream（mongos 层聚合） |
+
+### 基本用法
+
+```js
+// 监听某个集合的变更（插入和更新）
+const changeStream = db.collection("orders").watch([
+  { $match: { operationType: { $in: ["insert", "update"] } } }
+]);
+
+// 每次数据变更自动收到事件
+while (await changeStream.hasNext()) {
+  const event = changeStream.next();
+  console.log(event.operationType, event.documentKey);
+  // resumeToken 保存后可续传
+  saveResumeToken(event._id);
+}
+```
+
+### 与 MySQL binlog / Kafka 的对比
+
+| 能力 | MongoDB Change Streams | MySQL binlog | Kafka |
+|------|----------------------|-------------|-------|
+| 推送方式 | 游标轮询（类似拉模式） | 推模式（dump） | 拉模式（poll） |
+| 断线续传 | resume token | binlog position + GTID | offset |
+| 数据过滤 | 服务端 `$match` | 需消费端过滤 | Broker 端过滤（Kafka 2.4+） |
+| 变更前映像 | 默认不包含，需 `fullDocument: "updateLookup"` | row 模式有 before/after | 由业务方定义 |
+| 适用场景 | 缓存同步、跨服务事件通知、审计日志 | MySQL 数据同步 | 通用事件总线 |
+
+### 典型场景：缓存同步
+
+利用 Change Streams 实时监听 MongoDB 变更，推至 Redis/Elasticsearch：
+
+```text
+MongoDB 数据变更 → Oplog → Change Stream 游标 → 应用消费 → 更新缓存
+```
+
+对比 MySQL 需要 Canal + MQ 才能实现类似能力，MongoDB 原生支持变更推送，架构更简洁。
+
+---
+
+## 九、存储引擎 WiredTiger
 
 ### WiredTiger 核心特性
 
@@ -270,7 +399,7 @@ db.orders.aggregate([
 
 ---
 
-## 九、性能优化
+## 十、性能优化
 
 | 优化手段 | 说明 |
 |---------|------|

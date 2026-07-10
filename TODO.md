@@ -7,6 +7,8 @@
 
 ### 高优先级（★★★★★/★★★★ 高频且明显缺失）
 
+- [x] Java基础/Java现代特性/集合框架/并发编程 四篇查漏补缺 — Enum 枚举/结构化并发/Queue PriorityQueue/锁分类 Semaphore（93837ea）
+
 存量整改（规范见 CONTRIBUTING.md「存量内容整改规范」，2026-07-09 登记）：
 
 - [x] 整改:JVM.md 试点 — 拆 docsify 外壳/删自引用"详见 JVM 专题文档"/补运行时内存区、GC 三算法、类加载五阶段三节（e894fdb）
@@ -61,7 +63,7 @@
 - [x] Elasticsearch：选主机制 — 已补充 7.x 前后选主流程/脑裂关联
 - [x] Elasticsearch：段合并与 forcemerge — 已补充合并过程/对写入的影响
 - [x] 锁升级细节评估 — 偏向锁已有"JDK 15 起已默认禁用"覆盖 ✅
-- [ ] MongoDB：是否值得新增专题（部分公司考，非主流必考，需要用户确认）
+- [x] MongoDB：查漏补缺 — 补复制集选举细节、Change Streams、读写关注组合、vs MySQL 对比深化
 
 ### 站点侧（非内容）
 

@@ -16,6 +16,8 @@
 | [IO/NIO](#bionioaio-的区别) | 阻塞模型、Channel/Buffer/Selector | 零拷贝、半包粘包、Netty 如何使用 |
 | [序列化](#序列化和反序列化) | 对象到字节、版本兼容 | serialVersionUID、安全风险、替代协议 |
 | [面向对象与设计模式](#面向对象六大设计原则) | 六大原则、单例、策略、代理 | DCL volatile、设计原则落地 |
+| [内部类](#内部类) | 四种内部类、语法糖、外部类引用 | 内存泄漏、final 变量拷贝、静态内部类单例 |
+| [Enum 枚举](#enum-枚举) | 本质是 final 类、ordinal、values() | EnumMap/EnumSet、反射限制、单例场景 |
 | [异常处理](#受检异常-vs-非受检异常) | 受检/非受检、try-with-resources | 异常链、性能开销、最佳实践 |
 
 回答基础题时不要停留在语法定义，至少补充一个运行时行为或常见错误。
@@ -156,6 +158,55 @@ System.out.println(a.add(b)); // 0.06（精确）
 - `equals` 和 `compareTo` 的区别？→ `equals` 连标度一起比（`0.1` 与 `0.10` 不等），`compareTo` 只比数值；金额判等要用 `compareTo() == 0`，用 HashSet/HashMap 对 BigDecimal 去重是经典坑
 - 除法为什么会抛异常？→ 除不尽（如 1/3）时不指定精度直接抛 `ArithmeticException`，必须 `divide(b, scale, RoundingMode.HALF_UP)` 显式给舍入模式
 
+### Enum 枚举
+
+频次 ★★★★★ · 难度 🟢
+
+**是什么**：enum 是 Java 5 引入的语法糖，编译后生成继承 `java.lang.Enum` 的 final 类。枚举常量实质是类的静态 final 实例。
+
+**核心特性：**
+- 构造器默认 private，在 static 块中按声明顺序初始化所有常量
+- `ordinal()` 返回声明顺序（0-based），依赖 ordinal 的代码在增删中间常量时静默出错
+- `values()` 是编译器生成的静态方法（反射不可见），返回所有常量数组
+- `valueOf(String)` 通过 `name()` 匹配枚举常量
+- enum 可以实现接口、定义抽象方法让每个常量提供不同实现
+- 编译器禁止显式继承 Enum，但允许 implements 接口
+
+```java
+public enum Status {
+    PENDING(0, "待支付"),
+    PAID(1, "已支付"),
+    REFUNDED(2, "已退款");
+
+    private final int code;
+    private final String desc;
+
+    Status(int code, String desc) {
+        this.code = code;
+        this.desc = desc;
+    }
+
+    public static Status fromCode(int code) {
+        for (Status s : values()) {
+            if (s.code == code) return s;
+        }
+        throw new IllegalArgumentException("Unknown code: " + code);
+    }
+}
+```
+
+**EnumMap / EnumSet：**
+- `EnumMap`：内部用数组（ordinal 做下标），比 HashMap 更快更省内存。key 必须同类型枚举
+- `EnumSet`：内部用位向量（64 位 long 或 long[]），比 HashSet 快几个数量级。适合枚举组合判断
+- 两者迭代顺序都是枚举声明顺序
+
+**常见追问：**
+- enum 可以被反射创建吗？→ 不能。`Constructor.newInstance()` 对 enum 类型抛 `IllegalArgumentException`
+- enum 线程安全吗？→ 枚举常量在 static 块初始化，由 JVM 类加载保证线程安全
+- 单例模式为什么要用 enum？→ 天然防反射攻击、防序列化破坏（Enum 的 readObject 返回同一实例）
+- switch 可以用 enum 吗？→ 可以且推荐，编译器检查是否覆盖所有分支
+- 枚举能序列化吗？→ 写的是 name，读时 `valueOf(name)`，保证单例；即使 serialVersionUID 不同也能反序列化
+
 ---
 
 ## 二、面向对象与设计模式
@@ -191,6 +242,30 @@ System.out.println(a.add(b)); // 0.06（精确）
 | 设计意图 | is-a 关系，代码复用 | has-a/can-do 能力，定义规范 |
 
 ---
+
+### 内部类
+
+频次 ★★★★★ · 难度 🟢
+
+**是什么**：定义在另一个类内部的类。Java 有四种内部类，本质是编译器语法糖——编译后全部提升为独立的顶级 class 文件（`Outer$Inner.class`）。
+
+| 类型 | 定义位置 | 依赖外部类实例 | 是否可定义静态成员 | 典型用途 |
+|------|---------|---------------|-----------------|---------|
+| **成员内部类** | 类成员位置 | ✅ 必须通过 `outer.new Inner()` 创建 | ❌（Java 16 前） | 专属于外部类的逻辑，如集合的 Iterator |
+| **静态内部类** | 类成员位置 + `static` | ❌ 可独立创建 `new Outer.StaticInner()` | ✅ | 单例持有者、Builder、分组配置 |
+| **局部内部类** | 方法/代码块内 | ✅ 需在外部类方法中创建 | ❌ | 极少用，仅在该方法内复用 |
+| **匿名内部类** | 方法内 new 接口/类时直接定义 | ✅ 需在外部类方法中创建 | ❌ | 事件回调、Runnable、Comparator |
+
+**关键特性：**
+- 成员内部类持有外部类 `this` 引用，可以访问外部类 private 成员；这也意味着外部类无法被 GC（内部类对象存活时），是内存泄漏的常见来源
+- 匿名内部类引用的局部变量必须是 `final` 或 effectively final（JDK 8+）
+- 静态内部类不持有外部类引用，不会导致内存泄漏——Android/Handler 泄漏的修复方式就是改成静态内部类
+- 所有内部类编译后独立成 class 文件：`Outer$Inner.class`
+
+**常见追问：**
+- 为什么内部类访问的局部变量必须是 final？→ 内部类对象可能在方法返回后才执行（如回调），那时局部变量已出栈。Java 的解决方案是在内部类中拷贝一份，用 final 保证拷贝和原值始终一致
+- 内部类会导致内存泄漏吗？→ 会。成员内部类隐式持有外部类引用，如果内部类生命周期比外部类长（如匿名 Runnable 提交到线程池），外部类就无法被 GC。修复：改用静态内部类 + 弱引用
+- 静态内部类单例为什么线程安全？→ 见[单例模式](#单例模式双重检查锁定)
 
 ### Java 创建对象有哪几种方式？
 
