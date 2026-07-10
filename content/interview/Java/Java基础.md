@@ -4,17 +4,19 @@
 
 | 主问题 | 必讲关键点 | 下一层追问 |
 |--------|------------|------------|
-| 基本类型与包装类型 | 存储、默认值、泛型、自动装箱 | Integer 缓存、拆箱 NPE、比较陷阱 |
-| String 不可变 | final、字符存储、哈希缓存、安全性 | 字符串常量池、intern、拼接优化 |
-| equals/hashCode | 相等契约、哈希容器定位 | 只重写 equals 会怎样、可变 Key 风险 |
-| 抽象类与接口 | 单继承、多实现、状态与行为 | default 方法冲突、如何选型 |
-| 反射与注解 | Class 元数据、运行期解析 | 性能开销、框架如何扫描、代理关系 |
-| SPI | META-INF/services、ServiceLoader 懒加载 | 上下文类加载器为何破坏双亲委派、Dubbo SPI 改进点 |
-| 泛型 | 类型擦除、编译期约束 | PECS、桥接方法、为何不能 new T |
-| Stream | 惰性求值、中间/终止操作 | 并行流线程池、副作用、性能边界 |
-| CompletableFuture | 任务编排、异常传播、线程池 | thenApply/thenCompose、超时和取消 |
-| IO/NIO | 阻塞模型、Channel/Buffer/Selector | 零拷贝、半包粘包、Netty 如何使用 |
-| 序列化 | 对象到字节、版本兼容 | serialVersionUID、安全风险、替代协议 |
+| [基本类型与包装类型](#int-和-integer-的区别) | 存储、默认值、泛型、自动装箱 | Integer 缓存、拆箱 NPE、比较陷阱 |
+| [String 不可变](#stringstringbuilderstringbuffer-区别) | final、字符存储、哈希缓存、安全性 | 字符串常量池、intern、拼接优化 |
+| [equals/hashCode](#和-equals-的区别) | 相等契约、哈希容器定位 | 只重写 equals 会怎样、可变 Key 风险 |
+| [抽象类与接口](#抽象类和接口的区别) | 单继承、多实现、状态与行为 | default 方法冲突、如何选型 |
+| [反射与注解](#反射机制及应用场景) | Class 元数据、运行期解析 | 性能开销、框架如何扫描、代理关系 |
+| [SPI](#spi-机制serviceloader-是怎么找到实现类的) | META-INF/services、ServiceLoader 懒加载 | 上下文类加载器为何破坏双亲委派、Dubbo SPI 改进点 |
+| [泛型](#泛型是如何实现的为什么说是伪泛型) | 类型擦除、编译期约束 | PECS、桥接方法、为何不能 new T |
+| [Stream](#stream-api) | 惰性求值、中间/终止操作 | 并行流线程池、副作用、性能边界 |
+| [CompletableFuture](#completablefuture-异步编程) | 任务编排、异常传播、线程池 | thenApply/thenCompose、超时和取消 |
+| [IO/NIO](#bionioaio-的区别) | 阻塞模型、Channel/Buffer/Selector | 零拷贝、半包粘包、Netty 如何使用 |
+| [序列化](#序列化和反序列化) | 对象到字节、版本兼容 | serialVersionUID、安全风险、替代协议 |
+| [面向对象与设计模式](#面向对象六大设计原则) | 六大原则、单例、策略、代理 | DCL volatile、设计原则落地 |
+| [异常处理](#受检异常-vs-非受检异常) | 受检/非受检、try-with-resources | 异常链、性能开销、最佳实践 |
 
 回答基础题时不要停留在语法定义，至少补充一个运行时行为或常见错误。
 

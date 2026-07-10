@@ -4,16 +4,17 @@
 
 | 主问题 | 必讲关键点 | 下一层追问 |
 |--------|------------|------------|
-| IoC/DI | BeanDefinition、容器创建、依赖注入 | 构造器 vs 字段注入、FactoryBean |
-| 容器启动 | refresh() 十二步、BFPP → BPP → 单例实例化 | onRefresh 与内嵌 Tomcat、启动失败销毁 |
-| @Autowired | AutowiredAnnotationBPP、属性填充阶段注入 | byType/byName、@Resource 区别、字段注入缺点 |
-| Bean 生命周期 | 实例化、属性填充、Aware、前后处理器 | BeanPostProcessor 执行时机、代理何时生成 |
-| AOP | 切点、通知、代理调用 | JDK/CGLIB 选择、自调用为何失效 |
-| 事务 | 代理、传播、隔离、回滚规则 | checked 异常、this 调用、事务边界 |
-| 循环依赖 | 三级缓存、提前暴露引用 | 构造器循环、prototype、代理对象一致性 |
-| 作用域 | singleton/prototype/request | 单例 Bean 线程安全吗 |
-| 扩展点 | BPP、BFPP、ImportSelector | starter 和自动配置如何使用 |
-| SpringMVC | DispatcherServlet 调度链 | 参数解析、返回值处理、异常处理 |
+| [IoC/DI](#控制反转依赖注入依赖倒置的区别) | BeanDefinition、容器创建、依赖注入 | 构造器 vs 字段注入、FactoryBean |
+| [容器启动](#容器启动-refresh-做了什么源码级) | refresh() 十二步、BFPP → BPP → 单例实例化 | onRefresh 与内嵌 Tomcat、启动失败销毁 |
+| [@Autowired](#autowired-是怎么完成注入的) | AutowiredAnnotationBPP、属性填充阶段注入 | byType/byName、@Resource 区别、字段注入缺点 |
+| [Bean 生命周期](#spring-bean-的完整生命周期) | 实例化、属性填充、Aware、前后处理器 | BeanPostProcessor 执行时机、代理何时生成 |
+| [AOP](#aop-的实现方式jdk-动态代理-vs-cglib) | 切点、通知、代理调用 | JDK/CGLIB 选择、自调用为何失效 |
+| [事务](#spring-事务什么时候会失效) | 代理、传播、隔离、回滚规则 | checked 异常、this 调用、事务边界 |
+| [循环依赖](#spring-如何解决循环依赖) | 三级缓存、提前暴露引用 | 构造器循环、prototype、代理对象一致性 |
+| [作用域](#spring-bean-的作用域) | singleton/prototype/request | 单例 Bean 线程安全吗 |
+| [扩展点](#七spring-扩展点) | BPP、BFPP、ImportSelector | starter 和自动配置如何使用 |
+| [SpringMVC](#springmvc-处理流程) | DispatcherServlet 调度链 | 参数解析、返回值处理、异常处理 |
+| [设计模式](#spring-中用到的设计模式) | 工厂、单例、代理、模板 | Spring 核心组件对应模式、设计原则落地 |
 
 Spring 问题通常会沿“容器启动 → Bean 创建 → 代理生成 → 方法调用”连续追问，应保持时间顺序清晰。
 

@@ -4,16 +4,17 @@
 
 | 主问题 | 必讲关键点 | 下一层追问 |
 |--------|------------|------------|
-| Servlet 生命周期 | init/service/destroy、单例并发 | 实例字段线程安全、何时初始化 |
-| Tomcat 架构 | Connector、Engine、Host、Context | 请求如何从 Socket 到 Servlet |
-| Tomcat 线程池 | 线程、连接、accept 队列 | 参数关系、扩大线程为何更慢 |
-| 类加载 | WebApp 隔离、父加载边界 | 热部署泄漏、依赖冲突 |
-| Nginx 高性能 | 多进程、事件驱动、多路复用 | Worker 数、惊群、阻塞操作 |
-| 反向代理 | 路由、TLS、真实 IP | 多层代理 Header 信任 |
-| 负载均衡 | 算法、健康检查、无状态 | 粘性会话和扩容问题 |
-| 502/504 | 无效响应 vs 上游超时 | 如何从代理日志定位后端 |
-| 长连接 | 两段连接、超时、连接池 | TIME_WAIT、连接复用 |
-| 平滑重载 | 新旧 Worker 交接 | 长连接何时退出、配置回滚 |
+| [Servlet 生命周期](#servlet-的生命周期是什么) | init/service/destroy、单例并发 | 实例字段线程安全、何时初始化 |
+| [Tomcat 架构](#tomcat-的核心组件有哪些) | Connector、Engine、Host、Context | 请求如何从 Socket 到 Servlet |
+| [Tomcat 线程池](#tomcat-的线程池如何工作) | 线程、连接、accept 队列 | 参数关系、扩大线程为何更慢 |
+| [类加载](#tomcat-类加载机制有什么特点) | WebApp 隔离、父加载边界 | 热部署泄漏、依赖冲突 |
+| [Nginx 高性能](#nginx-为什么性能高) | 多进程、事件驱动、多路复用 | Worker 数、惊群、阻塞操作 |
+| [反向代理](#正向代理和反向代理的区别) | 路由、TLS、真实 IP | 多层代理 Header 信任 |
+| [负载均衡](#nginx-的负载均衡算法有哪些) | 算法、健康检查、无状态 | 粘性会话和扩容问题 |
+| [502/504](#502-和-504-有什么区别) | 无效响应 vs 上游超时 | 如何从代理日志定位后端 |
+| [长连接](#长连接如何配置和排查) | 两段连接、超时、连接池 | TIME_WAIT、连接复用 |
+| [平滑重载](#nginx-如何实现平滑重载) | 新旧 Worker 交接 | 长连接何时退出、配置回滚 |
+| [Nginx 限流](#nginx-限流有哪些思路) | 请求限速、连接限数、并发控制 | 漏桶 vs 令牌桶、限流与业务隔离 |
 
 Web 链路题应能完整描述“客户端 → Nginx → Tomcat → Filter → DispatcherServlet → Controller”。
 
