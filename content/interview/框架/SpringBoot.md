@@ -4,14 +4,14 @@
 
 | 主问题 | 必讲关键点 | 下一层追问 |
 |--------|------------|------------|
-| 自动配置 | ImportSelector、候选配置、条件注解 | AutoConfiguration.imports、条件报告 |
-| Starter | 依赖聚合 + 自动配置 | 自定义 starter、配置元数据 |
-| 启动流程 | Environment、Context、refresh、WebServer | Runner 时机、启动事件、失败分析 |
-| 配置管理 | 属性源优先级、类型绑定、Profile | 动态刷新、密钥管理、配置回滚 |
-| Filter/Interceptor/AOP | 所属层次和调用时机 | 异常链、静态资源、Bean 注入 |
-| 参数校验 | Bean Validation、分组、自定义约束 | Controller 外的方法校验 |
-| Actuator | 健康、指标、管理端点 | 暴露风险、自定义 HealthIndicator |
-| 优雅停机 | 摘流量、等待请求、释放资源 | MQ 消费、线程池、K8s terminationGracePeriod |
+| [自动配置](#spring-boot-自动配置的原理) | ImportSelector、候选配置、条件注解 | AutoConfiguration.imports、条件报告 |
+| [Starter](#如何自定义-springboot-starter) | 依赖聚合 + 自动配置 | 自定义 starter、配置元数据 |
+| [启动流程](#spring-boot-启动流程) | Environment、Context、refresh、WebServer | Runner 时机、启动事件、失败分析 |
+| [配置管理](#spring-boot-配置的常见优先级) | 属性源优先级、类型绑定、Profile | 动态刷新、密钥管理、配置回滚 |
+| [Filter/Interceptor/AOP](#filterinterceptoraop-如何选择) | 所属层次和调用时机 | 异常链、静态资源、Bean 注入 |
+| [参数校验](#如何做参数校验) | Bean Validation、分组、自定义约束 | Controller 外的方法校验 |
+| [Actuator](#spring-boot-actuator-有什么作用) | 健康、指标、管理端点 | 暴露风险、自定义 HealthIndicator |
+| [优雅停机](#spring-boot-如何实现优雅停机) | 摘流量、等待请求、释放资源 | MQ 消费、线程池、K8s terminationGracePeriod |
 
 回答 Spring Boot 题要区分版本，特别是 2.7、3.x 的自动配置注册方式和 Jakarta 包迁移。
 

@@ -4,14 +4,15 @@
 
 | 主问题 | 必讲关键点 | 下一层追问 |
 |--------|------------|------------|
-| 文档模型 | JSON/BSON、集合、库 | 无 Schema 设计、与关系型对比 |
-| 复制集 | 主从、Oplog、自动故障转移 | 选举机制、写关注、读偏好 |
-| 分片 | 片键选择、数据分布、平衡 | 片键选择不当后果、hashed/range 分片 |
-| 索引 | 单字段/复合/TTL/稀疏/地理 | 索引下推到存储引擎、explain |
-| 事务 | 4.0 多文档事务、2PC 模拟 | RDB 事务 vs MongoDB 事务差异 |
-| 聚合管道 | \$match/\$group/\$lookup | 内存限制、$lookup 性能、pipeline 优化 |
-| 存储引擎 | WiredTiger、MVCC、压缩 | 快照隔离、journal、cache 淘汰 |
-| ObjectId | 12 字节、时间戳+机器+进程+自增 | 单调递增与分布式趋势 |
+| [文档模型](#mongodb-适合什么场景) | JSON/BSON、集合、库 | 无 Schema 设计、与关系型对比 |
+| [复制集](#复制集架构) | 主从、Oplog、自动故障转移 | 选举机制、写关注、读偏好 |
+| [分片](#片键选择) | 片键选择、数据分布、平衡 | 片键选择不当后果、hashed/range 分片 |
+| [索引](#索引类型) | 单字段/复合/TTL/稀疏/地理 | 索引下推到存储引擎、explain |
+| [事务](#mongodb-的多文档事务) | 4.0 多文档事务、2PC 模拟 | RDB 事务 vs MongoDB 事务差异 |
+| [聚合管道](#聚合管道常用阶段) | \$match/\$group/\$lookup | 内存限制、$lookup 性能、pipeline 优化 |
+| [存储引擎](#wiredtiger-核心特性) | WiredTiger、MVCC、压缩 | 快照隔离、journal、cache 淘汰 |
+| [ObjectId](#objectid-的结构) | 12 字节、时间戳+机器+进程+自增 | 单调递增与分布式趋势 |
+| [基础概念](#mongodb-适合什么场景) | 场景选择、集合/文档/库、关系型映射 | 何时用 MongoDB vs MySQL |
 
 MongoDB 面试重点在于「无 Schema 带来的设计灵活性」以及「复制集/分片的分布式架构」。
 

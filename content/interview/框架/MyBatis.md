@@ -4,15 +4,15 @@
 
 | 主问题 | 必讲关键点 | 下一层追问 |
 |--------|------------|------------|
-| `#{}` vs `${}` | PreparedStatement、字符串替换 | 动态列名如何防注入 |
-| 执行流程 | MapperProxy、SqlSession、Executor、Handler | 插件在哪一层拦截 |
-| 一级缓存 | SqlSession 级、本地 Map | 更新后何时清空、跨会话为何无效 |
-| 二级缓存 | namespace 级、序列化 | 多表和多实例一致性 |
-| 动态 SQL | if/where/foreach | 超大 IN、空集合、SQL 可读性 |
-| resultMap | 字段映射、关联和集合 | N+1、JOIN 结果去重 |
-| 插件 | 四大对象、动态代理 | 多插件顺序、BoundSql 修改风险 |
-| 分页 | count + 方言改写 | 深分页、游标分页 |
-| 批处理 | BatchExecutor、flushStatements | 事务大小、部分失败如何处理 |
+| [`#{}` vs `${}`](#和-的区别) | PreparedStatement、字符串替换 | 动态列名如何防注入 |
+| [执行流程](#mybatis-执行一条-sql-的流程) | MapperProxy、SqlSession、Executor、Handler | 插件在哪一层拦截 |
+| [一级缓存](#一级缓存和二级缓存的区别) | SqlSession 级、本地 Map | 更新后何时清空、跨会话为何无效 |
+| [二级缓存](#一级缓存和二级缓存的区别) | namespace 级、序列化 | 多表和多实例一致性 |
+| [动态 SQL](#常用动态-sql-标签有哪些) | if/where/foreach | 超大 IN、空集合、SQL 可读性 |
+| [resultMap](#resulttype-和-resultmap-的区别) | 字段映射、关联和集合 | N+1、JOIN 结果去重 |
+| [插件](#mybatis-插件原理) | 四大对象、动态代理 | 多插件顺序、BoundSql 修改风险 |
+| [分页](#分页插件的基本原理) | count + 方言改写 | 深分页、游标分页 |
+| [批处理](#mybatis-执行一条-sql-的流程) | BatchExecutor、flushStatements | 事务大小、部分失败如何处理 |
 
 回答 ORM 题要回到底层 JDBC，说明 MyBatis 帮你封装了什么、没有替你解决什么。
 

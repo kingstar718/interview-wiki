@@ -4,16 +4,18 @@
 
 | 主问题 | 必讲关键点 | 下一层追问 |
 |--------|------------|------------|
-| 倒排索引 | 词典、倒排表、文档列表 | 分词、跳表/压缩、为何适合全文搜索 |
-| Mapping | 字段类型、分词、doc_values | 动态字段爆炸、类型错误能否修改 |
-| 分片副本 | 路由、扩展、容灾 | 分片过多/过大、如何重新规划 |
-| 写入流程 | 主分片、复制、translog、refresh | 写成功为何暂时搜不到 |
-| 查询流程 | Query Then Fetch、协调合并 | 分片数对查询延迟的影响 |
-| text/keyword | 分词与精确值 | 排序聚合为何通常用 keyword |
-| match/term | 查询分析与精确词项 | analyzer 不一致为何搜不到 |
-| 深分页 | 各分片 Top N、协调节点丢弃 | search_after、PIT、唯一排序键 |
-| 聚合 | bucket、metric、pipeline | 高基数、内存和准确性 |
-| 数据同步 | 消息、CDC、补偿 | 乱序更新、全量重建、别名切换 |
+| [倒排索引](#倒排索引是什么) | 词典、倒排表、文档列表 | 分词、跳表/压缩、为何适合全文搜索 |
+| [Mapping](#mapping-为什么重要) | 字段类型、分词、doc_values | 动态字段爆炸、类型错误能否修改 |
+| [分片副本](#分片和副本有什么作用) | 路由、扩展、容灾 | 分片过多/过大、如何重新规划 |
+| [写入流程](#文档写入流程) | 主分片、复制、translog、refresh | 写成功为何暂时搜不到 |
+| [查询流程](#搜索请求的-query-then-fetch-流程) | Query Then Fetch、协调合并 | 分片数对查询延迟的影响 |
+| [text/keyword](#text-和-keyword-的区别) | 分词与精确值 | 排序聚合为何通常用 keyword |
+| [match/term](#match-和-term-的区别) | 查询分析与精确词项 | analyzer 不一致为何搜不到 |
+| [深分页](#elasticsearch-深分页为什么慢) | 各分片 Top N、协调节点丢弃 | search_after、PIT、唯一排序键 |
+| [聚合](#aggregation-有哪些常见类型) | bucket、metric、pipeline | 高基数、内存和准确性 |
+| [数据同步](#数据库与-elasticsearch-如何保持一致) | 消息、CDC、补偿 | 乱序更新、全量重建、别名切换 |
+| [集群与选主](#elasticsearch-选主机制) | 健康状态、脑裂、gossip | green/yellow/red、选主机制 |
+| [性能优化](#写入性能如何优化) | 写入/查询调优、分片规划、段合并 | forcemerge、堆内存设置、bulk 策略 |
 
 ES 题要区分“写入确认”“持久化”“可搜索”三个时间点，并说明它通常是派生索引而非事实源。
 

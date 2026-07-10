@@ -4,17 +4,17 @@
 
 | 主问题 | 必讲关键点 | 下一层追问 |
 |--------|------------|------------|
-| top/vmstat | CPU、load、运行队列、上下文切换 | CPU 空闲但 load 高的原因 |
-| free | available、cache、swap | 容器内存和宿主机内存差异 |
-| iostat | await、util、队列 | 高 util 是否一定代表磁盘瓶颈 |
-| ss/lsof | 监听、连接状态、进程 | CLOSE_WAIT/TIME_WAIT 排查 |
-| jstack/jmap/jstat | 线程、堆、GC | 在线导出堆的风险 |
-| Arthas | thread、trace、watch | 高开销命令如何控制影响 |
-| Docker | 镜像层、容器、namespace/cgroup | 容器退出后数据、镜像优化 |
-| JVM 容器化 | Xmx、非堆、RSS、限制 | OOMKilled 与 Java OOM 区别 |
-| K8s 探针 | readiness/liveness/startup | 错误探针为何引发重启风暴 |
-| 发布策略 | 滚动、蓝绿、金丝雀 | 数据库兼容、自动回滚指标 |
-| 可观测性 | 日志、指标、Trace | Trace 采样、敏感信息、告警降噪 |
+| [top/vmstat](#常用系统资源命令有哪些) | CPU、load、运行队列、上下文切换 | CPU 空闲但 load 高的原因 |
+| [free](#linux-load-average-是什么) | available、cache、swap | 容器内存和宿主机内存差异 |
+| [iostat](#常用系统资源命令有哪些) | await、util、队列 | 高 util 是否一定代表磁盘瓶颈 |
+| [ss/lsof](#服务端口不通怎么排查) | 监听、连接状态、进程 | CLOSE_WAIT/TIME_WAIT 排查 |
+| [jstack/jmap/jstat](#jpsjstackjmapjstat-分别做什么) | 线程、堆、GC | 在线导出堆的风险 |
+| [Arthas](#arthas-常用能力) | thread、trace、watch | 高开销命令如何控制影响 |
+| [Docker](#镜像和容器的区别) | 镜像层、容器、namespace/cgroup | 容器退出后数据、镜像优化 |
+| [JVM 容器化](#容器内存与-jvm-堆如何设置) | Xmx、非堆、RSS、限制 | OOMKilled 与 Java OOM 区别 |
+| [K8s 探针](#readiness-和-liveness-probe-的区别) | readiness/liveness/startup | 错误探针为何引发重启风暴 |
+| [发布策略](#蓝绿发布滚动发布金丝雀发布的区别) | 滚动、蓝绿、金丝雀 | 数据库兼容、自动回滚指标 |
+| [可观测性](#日志指标trace-如何分工) | 日志、指标、Trace | Trace 采样、敏感信息、告警降噪 |
 
 命令题不仅要说命令名，还要说明关键列、异常特征，以及看到结果后的下一步。
 
