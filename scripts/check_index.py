@@ -566,12 +566,21 @@ def check_hot_meta_sync():
     return errors
 
 
+SECTION_SPLIT_RE = re.compile(r"^## (.+)$", re.M)
+
+
 def check_solution_structure():
-    """L. H1 格式 + 元数据行必填 + 固定小节顺序。"""
+    """L. H1 格式 + 元数据行必填 + 固定小节顺序 + 小节不得为空。
+
+    「不得为空」是补课:此前只校验小节的名字与顺序,结果 20 篇题解顶着完整的九节
+    标题、底下一个字没有(边界条件/变式/易错点/面试追问 各空 20 处)。固定结构只
+    保证了目录整齐,没保证内容存在。
+    """
     errors = []
     for path, _num, _base in solution_files():
         rel = os.path.relpath(path, ROOT)
-        lines = skip_frontmatter(strip_code(read(path)))
+        text = read(path)
+        lines = skip_frontmatter(strip_code(text))
         if not lines or not ALGO_H1_RE.match(lines[0]):
             errors.append(f"{rel} H1 应为「# 题号. 中文题名（English Title）」,实际「{lines[0] if lines else ''}」")
         if parse_solution_meta(path) is None:
@@ -580,6 +589,11 @@ def check_solution_structure():
         expect = list(ALGO_SECTIONS)
         if h2 != expect:
             errors.append(f"{rel} 小节应为 {'→'.join(expect)},实际 {'→'.join(h2)}")
+            continue  # 小节不齐时不必再报空小节,先修结构
+        parts = SECTION_SPLIT_RE.split(text)
+        empty = [parts[i].strip() for i in range(1, len(parts), 2) if not parts[i + 1].strip()]
+        if empty:
+            errors.append(f"{rel} 小节有标题无内容: {'、'.join(empty)}")
     return errors
 
 

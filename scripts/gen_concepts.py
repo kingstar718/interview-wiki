@@ -43,6 +43,11 @@ CODE_SPAN_RE = re.compile(r"`[^`]*`")
 #
 # 导航域(索引页/首页/概念页互链)不算跨域证据,否则自己链一下就凑够两个域。
 NAV_DOMAINS = {"索引", "首页", "概念"}
+# 「算法」不计入概念的入场券(校验 P)。算法侧有自己的概念层 —— algorithms/ 的 13 个
+# 套路页与 概念/ 同构(原子 → 抽共性 → 反向视图),让 概念/ 去覆盖算法等于在已有概念
+# 层上再盖一层。算法 → 概念 的单向链接仍然保留并展示在「出现在哪里」里,只是不计域:
+# 「可以链」和「必须链」是两回事。见 CLAUDE.md 的「分域原则」。
+UNCOUNTED_DOMAINS = NAV_DOMAINS | {"算法"}
 
 
 def read(path):
@@ -92,7 +97,12 @@ def domain_of(path):
 
 
 def is_content_domain(dom):
-    return dom not in NAV_DOMAINS
+    """是否计入概念入场券的「内容域」—— 即 interview/ 的 8 个分类。
+
+    导航域(索引/首页/概念)不计,否则自己链一下就凑够两个域;算法域也不计,理由见
+    UNCOUNTED_DOMAINS 上方的注释。
+    """
+    return dom not in UNCOUNTED_DOMAINS
 
 
 def concept_files():
@@ -196,14 +206,15 @@ def main():
             print(f"✗ {d} 的「出现在哪里」已过期，请跑 python3 scripts/gen_concepts.py")
         return 1
 
-    # 概念成色:内容域入链 < 2 个域 -> 尚未成体系(索引/首页的导航链接不算)
+    # 概念成色:内容域(interview 的 8 个分类)入链 < 2 个 -> 尚未成体系。
+    # 导航域(索引/首页)与算法域都不计,但仍展示在「出现在哪里」里,只是不算入场券。
     for path in concepts:
         doms = {dom for hits in refs[os.path.basename(path)].values() for _t, _b, dom in hits}
         content_doms = {d for d in doms if is_content_domain(d)}
         name = os.path.basename(path)
         mark = "✓" if len(content_doms) >= 2 else "!"
         other = sorted(d for d in doms if not is_content_domain(d))
-        tail = f"  (另有导航入链:{'/'.join(other)})" if other else ""
+        tail = f"  (不计域的入链:{'/'.join(other)})" if other else ""
         print(f"  {mark} {name:<12} 内容域 {len(content_doms)} 个 {sorted(content_doms)}{tail}")
     return 0
 
