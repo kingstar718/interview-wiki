@@ -96,6 +96,7 @@ Explorer({
       "排序与堆",
       "字典树",
       "位运算",
+      "算法总览",
       "题库",
     ]
     const ra = ORDER.indexOf(a.displayName)

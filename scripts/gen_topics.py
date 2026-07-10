@@ -91,7 +91,7 @@ def pattern_files():
     """content/algorithms/ 下直属的套路页(不含 problems/ 与导航页 README.md)。"""
     for f in sorted(os.listdir(ALGORITHMS)):
         path = os.path.join(ALGORITHMS, f)
-        if os.path.isfile(path) and f.endswith(".md") and f != "README.md":
+        if os.path.isfile(path) and f.endswith(".md") and f not in ("README.md", "算法总览.md"):
             yield path
 
 
