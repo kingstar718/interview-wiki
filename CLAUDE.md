@@ -54,7 +54,7 @@ python3 scripts/outline.py --tech 单调栈    # 按算法技术词检索题解(
 > 检索/新增/修改的分任务操作手册在 [CONTRIBUTING.md](./CONTRIBUTING.md) 顶部「操作手册」一节(新增分四条路:八股小节/八股篇目/算法题解/技术词)。下面是骨架。
 
 1. **先领任务**:内容任务统一记录在 [TODO.md](./TODO.md)。动手前从「待办」领取;发现新缺口**先登记再做**,不要直接写。
-2. **先定位再写**:`outline.py --grep` 验证考点是否已覆盖(算法用 `--tech`),`outline.py <文件>` 看结构定插入位置;小节结构、修改整合规范、写作要求见 [CONTRIBUTING.md](./CONTRIBUTING.md)(是什么 → 为什么 → 源码⭕ → 对比⭕ → 常见追问 → 通用概念⭕)。
+2. **先定位再写**:`outline.py --grep` 验证考点是否已覆盖(算法用 `--tech`),`outline.py <文件>` 看结构定插入位置;做查漏补缺前应先 Web 搜索多来源高频题单(如 JavaGuide/小林coding/掘金),确认该考点确实高频后再动手;小节结构、修改整合规范、写作要求见 [CONTRIBUTING.md](./CONTRIBUTING.md)(是什么 → 为什么 → 源码⭕ → 对比⭕ → 常见追问 → 通用概念⭕)。
 3. **同步**:正文写完后同步追问地图行、相关篇目互链;`知识点索引.md` 由 `scripts/gen_index.py` 从各篇目 H3 自动生成(真实标题 + github-slugger 锚点),改完跑脚本刷新,勿手编。新增篇目还要在 `quartz.ts` 的 Explorer 排序表(ORDER)登记位置,注意表里登记的是**页面 H1 标题**而非文件名。
 4. **收尾**:跑 `python3 scripts/gen_index.py` 刷新知识点索引 → `python3 scripts/gen_topics.py` 刷新套路页 → `python3 scripts/check_index.py`;完成项移到 TODO.md「已完成」并附 commit 短哈希。
 
