@@ -33,7 +33,7 @@
                     ★ 1~5 个、难度限 🟢🟡🔴、公司限约定清单(算法侧可用「全厂」)、段序固定
     J. 关联题欠链 —— 题解正文提到已收录题号(如「148. 排序链表」)却全文无链接 -> 报警,
                     保证关联网络随收录自动趋于完整(行首序号列表不算提及)
-    K. 元数据一致 —— 题解元数据行是难度/频次/公司的权威源,算法题索引题单表是视图:
+    (K 已退役) 算法题索引改为 gen_topics.py 整篇生成,漂移由 --check 兜住 ——
                     已解题必须带链接、逐行比对难度/频次/公司
     L. 题解结构  —— H1 为「# 题号. 中文题名（English Title）」+ 元数据行必填 +
                     固定小节顺序(题目→…→面试追问→关联题,九节必填)
@@ -303,7 +303,6 @@ ALGO_SECTIONS = ["题目", "思路", "代码", "复杂度", "边界条件", "变
 MENTION_RE = re.compile(r"(\d{1,4})[.、]\s?[A-Za-z一-龥]")
 # 剑指题号「剑指 Offer II 14.」形如 LeetCode 题号提及,扫描前先抹掉,否则 14/40/45 会被误判为欠链
 OFFER_TITLE_RE = re.compile(r"剑指 Offer(?: II)? \d+(?: - II)?\.")
-ALGO_INDEX = os.path.join(CONTENT, "indexes", "算法题索引.md")
 HOT_INDEX = os.path.join(CONTENT, "indexes", "高频题目索引.md")
 
 
@@ -344,19 +343,16 @@ def skip_frontmatter(lines):
 
 
 def parse_solution_meta(path):
-    """题解元数据行 -> (频次, 难度, 公司集合) 或 None。取 H1 后前几行。"""
-    for line in skip_frontmatter(strip_code(read(path)))[:6]:
-        s = line.strip()
-        if META_TRIGGER_RE.match(s):
-            stars = re.search(r"频次 (★{1,5})", s)
-            diff = re.search(r"难度 ([🟢🟡🔴])", s)
-            comp = re.search(r"高频[：:]([^ ·]+)", s)
-            return (
-                stars.group(1) if stars else None,
-                diff.group(1) if diff else None,
-                set(comp.group(1).split("/")) if comp else set(),
-            )
-    return None
+    """题解元数据行 -> (频次, 难度, 公司集合) 或 None。
+
+    解析逻辑住在 gen_topics(它要拿这些字段生成算法题索引),这里只做转换 ——
+    两套解析必然漂移,权威源的读取方式也该只有一份。
+    """
+    meta = gen_topics.solution_meta(path)
+    if meta is None:
+        return None
+    stars, diff, comps = meta
+    return stars, diff, set(comps)
 
 
 def check_related_links():
@@ -383,45 +379,6 @@ def check_related_links():
                 errors.append(
                     f"{rel}:{lineno} 提到「{num}.」但未链接 {solved[num]}(已收录题必须带链接)"
                 )
-    return errors
-
-
-def check_algo_meta_sync():
-    """K. 题解元数据行(权威源) vs 算法题索引题单表(视图) 逐行比对。"""
-    errors = []
-    actual = {base: (path, num) for path, num, base in solution_files()}
-    # 索引里带链接的行: basename -> [(难度, 频次, 公司集合, 行号)]
-    index_rows = defaultdict(list)
-    for lineno, line in enumerate(read(ALGO_INDEX).splitlines(), 1):
-        if not line.startswith("|"):
-            continue
-        cells = [c.strip() for c in line.strip("|").split("|")]
-        if len(cells) < 5:
-            continue
-        m = LINK_RE.search(cells[1])
-        if m:
-            base = os.path.basename(m.group(1).split("#")[0])
-            index_rows[base].append((cells[2], cells[3], set(cells[4].split()), lineno))
-        elif cells[0].isdigit() and f"{cells[0]}-" in " ".join(actual):
-            hit = next((b for b in actual if b.startswith(cells[0] + "-")), None)
-            if hit:
-                errors.append(f"索引:{lineno} 题 {cells[0]} 已有题解 {hit} 但题名未带链接(已解=带链接)")
-    for base, rows in sorted(index_rows.items()):
-        if base not in actual:
-            continue  # 链接目标不存在由 A 兜底
-        meta = parse_solution_meta(actual[base][0])
-        rel = os.path.relpath(actual[base][0], ROOT)
-        if meta is None:
-            errors.append(f"{rel} 缺少元数据行(题解是难度/频次/公司的权威源,必填)")
-            continue
-        stars, diff, comps = meta
-        for idx_diff, idx_stars, idx_comps, lineno in rows:
-            if diff and idx_diff != diff:
-                errors.append(f"索引:{lineno} {base} 难度 {idx_diff} != 题解 {diff}(以题解为准)")
-            if stars and idx_stars != stars:
-                errors.append(f"索引:{lineno} {base} 频次 {idx_stars} != 题解 {stars}(以题解为准)")
-            if comps and idx_comps != comps:
-                errors.append(f"索引:{lineno} {base} 公司 {sorted(idx_comps)} != 题解 {sorted(comps)}(以题解为准)")
     return errors
 
 
@@ -738,7 +695,6 @@ def main():
         ("H. 小节标题无编号(标题是稳定语义 ID)", check_section_naming()),
         ("I. 元数据行格式(频次/难度/高频)", check_meta_line()),
         ("J. 关联题欠链(提到已收录题号必须链接)", check_related_links()),
-        ("K. 元数据一致(题解权威源==索引视图)", check_algo_meta_sync()),
         ("L. 题解结构(H1/元数据行/固定小节)", check_solution_structure()),
         ("M. 锚点死链(归一化匹配)", check_anchor_links(by_name)),
         ("N. 高频表一致(题解权威源==高频索引 A 表)", check_hot_meta_sync()),
