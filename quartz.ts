@@ -8,8 +8,7 @@ Explorer({
   // 顶层目录显示中文名(仅影响侧栏,不改真实路径/面包屑)
   mapFn: (node) => {
     const NAMES: Record<string, string> = {
-      indexes: "索引",
-      interview: "社招八股",
+      interview: "面试专题",
       algorithms: "算法题",
       problems: "题库",
     }
@@ -23,11 +22,13 @@ Explorer({
   sortFn: (a, b) => {
     const ORDER = [
       // 顶层(mapFn 改名后的显示名)
-      "索引",
-      "社招八股",
+      "知识点索引",
+      "算法题索引",
+      "高频题目索引",
+      "面试专题",
       "算法题",
-      // indexes/(显示名取页面 H1,知识点索引的 H1 是「社招面试问题知识点」)
-      "社招面试问题知识点",
+      // indexes/(显示名取页面 H1)
+      "知识点索引",
       "算法题索引",
       "高频题目索引",
       // interview/ 分类(学习顺序)

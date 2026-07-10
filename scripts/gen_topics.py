@@ -2,12 +2,12 @@
 """生成算法套路节点的「已解题目」清单 —— 纯标准库。
 
 用法:
-    python3 scripts/gen_topics.py            # 刷新所有套路页 + indexes/算法题索引.md
+    python3 scripts/gen_topics.py            # 刷新所有套路页 + content/算法题索引.md
     python3 scripts/gen_topics.py --check    # 只检查是否需要刷新(CI 用,退出码 1 = 有漂移)
 
 两份产物:
     algorithms/<套路>.md 的 `## 已解题目`   —— 标记块内生成
-    indexes/算法题索引.md                   —— 整篇生成(套路 → 技术词 → 题目双链)
+    content/算法题索引.md                   —— 整篇生成(套路 → 技术词 → 题目双链)
 
 为什么需要本脚本:
     `algorithms/problems/` 是扁平题目池,题目归属哪个套路不再由目录体现,
@@ -41,7 +41,7 @@ CONTENT = os.path.join(ROOT, "content")
 ALGORITHMS = os.path.join(CONTENT, "algorithms")
 PROBLEMS = os.path.join(ALGORITHMS, "problems")
 
-ALGO_INDEX = os.path.join(CONTENT, "indexes", "算法题索引.md")
+ALGO_INDEX = os.path.join(CONTENT, "算法题索引.md")
 
 BEGIN = "<!-- gen:problems:begin 由 scripts/gen_topics.py 生成，勿手编 -->"
 END = "<!-- gen:problems:end -->"
@@ -184,7 +184,7 @@ def pattern_one_liner(path):
 
 
 def render_index(groups, wl):
-    """整篇生成 indexes/算法题索引.md —— 三级结构:套路 → 技术词 → 题目。
+    """整篇生成 content/算法题索引.md —— 三级结构:套路 → 技术词 → 题目。
 
     这个文件里没有一个字节是原创信息:分组来自题解的 topics/techniques,
     难度/频次/公司来自题解元数据行。所以它必须是生成物,不是手写件。
