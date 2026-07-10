@@ -27,8 +27,8 @@
 | 某篇目的章节结构 | `python3 scripts/outline.py <文件名关键词>` —— 标题树 + 行号 |
 | 哪些题用了某个算法技术 | `python3 scripts/outline.py --tech 单调栈` —— 列出该技术词下全部题解 |
 | 全部技术词及覆盖题数 | `python3 scripts/outline.py --tech`（不带参数）|
-| 某个知识点在哪一节 | `content/indexes/知识点索引.md` —— 真实 H3 + 锚点，点击直达小节 |
-| 某道题属于哪些套路/技术 | 题解 frontmatter 的 `topics:`/`techniques:`；或看 `indexes/算法题索引.md` |
+| 某个知识点在哪一节 | `知识点索引.md` —— 真实 H3 + 锚点，点击直达小节 |
+| 某道题属于哪些套路/技术 | 题解 frontmatter 的 `topics:`/`techniques:`；或看 `content/算法题索引.md` |
 
 **永远先 `--grep` 再写。** 重复考点的处置规则见下方「修改与整合规范」——是加互链，不是再写一遍。
 
@@ -53,7 +53,7 @@
 4. 九个小节固定顺序，**且都不能是空壳**——校验 L 同时检查小节名、顺序与内容非空
 5. frontmatter 两级归属都必填：`topics:`（粗套路）+ `techniques:`（细技术词），校验 F/S
 6. `## 关联题` 每条带类型前缀：同套路/进阶/基础/易混/知识点（校验 O）
-7. 跑 `gen_topics.py` 刷新 `indexes/算法题索引.md`（生成物）；若进 Top40，手工同步 `indexes/高频题目索引.md`（手写件，校验 N 比对）
+7. 跑 `gen_topics.py` 刷新 `content/算法题索引.md`（生成物）；若进 Top40，手工同步 `content/高频题目索引.md`（手写件，校验 N 比对）
 
 ### 新增技术词（44 词的词表）
 
@@ -80,11 +80,11 @@
 
 | 生成物 | 形态 | 脚本 | 校验 |
 |---|---|---|---|
-| `indexes/知识点索引.md` | **整篇生成**（不含标记块，全文都是产物）| `gen_index.py` | —（`--check` 检漂移）|
-| `indexes/算法题索引.md` | **整篇生成**（套路 → 技术词 → 题目双链）| `gen_topics.py` | —（`--check` 检漂移）|
+| `content/知识点索引.md` | **整篇生成**（不含标记块，全文都是产物）| `gen_index.py` | —（`--check` 检漂移）|
+| `content/算法题索引.md` | **整篇生成**（套路 → 技术词 → 题目双链）| `gen_topics.py` | —（`--check` 检漂移）|
 | `algorithms/*.md` 的 `## 已解题目` | `<!-- gen:problems:begin -->` 标记块内 | `gen_topics.py` | R |
 
-`indexes/高频题目索引.md` 是唯一**手写**的索引——热度排名带主观判断，生成不出来，所以保留校验 N 逐行比对它与题解元数据行。
+`content/高频题目索引.md` 是唯一**手写**的索引——热度排名带主观判断，生成不出来，所以保留校验 N 逐行比对它与题解元数据行。
 
 小节标题是**稳定语义 ID**，发布后不轻改——改了会打断所有指向 `文件.md#锚点` 的链接（校验 M 拦死链）。
 
@@ -199,7 +199,7 @@ python3 scripts/check_index.py    # 16 项校验，退出码非 0 即有问题
 | 同步点 | 位置 | 说明 |
 |--------|------|------|
 | 追问地图 | 专题文件顶部表格 | 新增/修改对应行，"下一层追问"列要和正文的常见追问呼应 |
-| 知识点索引 | `content/indexes/知识点索引.md` | 由 `gen_index.py` 从篇目真实 H3 + github-slugger 锚点自动生成,勿手编;改完 H3 跑 `python3 scripts/gen_index.py` 刷新 |
+| 知识点索引 | `知识点索引.md` | 由 `gen_index.py` 从篇目真实 H3 + github-slugger 锚点自动生成,勿手编;改完 H3 跑 `python3 scripts/gen_index.py` 刷新 |
 | 套路视图 | `content/algorithms/<套路名>.md` | `## 已解题目` 由 `gen_topics.py` 从题解 `topics:` + `techniques:` 生成(按技术词分 H3 组),勿手编;改完跑 `python3 scripts/gen_topics.py` 刷新 |
 | 互链 | 相关篇目 | 正文提到其他专题的机制时就近加链接 |
 | 校验 | 仓库根目录 | `python3 scripts/check_index.py` 退出码为 0(16 项) |
