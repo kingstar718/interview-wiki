@@ -75,6 +75,6 @@ public int[] plusOne(int[] digits) {
 
 ## 关联题
 
-- 同套路：[2. 两数相加](2-add-two-numbers.md) —— 链表版进位模拟；415. 字符串相加 —— 字符串版
+- 同套路：[2. 两数相加](2-add-two-numbers.md) —— 链表版进位模拟；[415. 字符串相加](415-add-strings.md) —— 字符串版
 - 知识点：低位起 + carry 变量 + 全 9 时扩容补 1，进位模拟的最小完整样例
 

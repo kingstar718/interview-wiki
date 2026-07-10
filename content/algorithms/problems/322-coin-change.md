@@ -58,7 +58,7 @@ public int coinChange(int[] coins, int amount) {
 
 ## 变式
 
-- **[518. 零钱兑换 II](https://leetcode.cn/problems/coin-change-ii/)**：求凑法种数（完全背包计数），`dp[i] += dp[i-coin]`
+- **[518. 零钱兑换 II](518-coin-change-2.md)**：求凑法种数（完全背包计数），`dp[i] += dp[i-coin]`
 - **[70. 爬楼梯](70-climbing-stairs.md)**：每步可走 coin 种步数，问方案数
 
 ## 易错点
@@ -73,7 +73,7 @@ public int coinChange(int[] coins, int amount) {
 
 ## 关联题
 
-- 同套路：[518. 零钱兑换 II](https://leetcode.cn/problems/coin-change-ii/) —— 计数版
+- 同套路：[518. 零钱兑换 II](518-coin-change-2.md) —— 计数版
 - 进阶：[300. 最长递增子序列](300-longest-increasing-subsequence.md) —— 一维 DP 另一模式
 - 知识点：完全背包问题（求最值 vs 计数）见[动态规划](动态规划与贪心.md)
 

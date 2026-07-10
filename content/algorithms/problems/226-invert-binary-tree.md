@@ -70,7 +70,7 @@ public TreeNode invertTree(TreeNode root) {
 
 ## 关联题
 
-- 同套路：[101. 对称二叉树](https://leetcode.cn/problems/symmetric-tree/) —— 镜像相等判定的本质就是翻转后自比
+- 同套路：[101. 对称二叉树](101-symmetric-tree.md) —— 镜像相等判定的本质就是翻转后自比
 - 进阶：[105. 从前序与中序遍历构造二叉树](105-construct-binary-tree-from-preorder-and-inorder-traversal.md) —— 翻转概念的逆向：通过遍历顺序重建树结构
 - 知识点：二叉树递归遍历模板见[二叉树](二叉树.md)
 

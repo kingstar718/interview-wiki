@@ -47,7 +47,7 @@ public int maxDepth(TreeNode root) {
 
 ## 变式
 
-- **[110. 平衡二叉树](https://leetcode.cn/problems/balanced-binary-tree/)**：在求深度过程中判断左右子树深度差是否 > 1，是则提前返回 -1
+- **[110. 平衡二叉树](110-balanced-binary-tree.md)**：在求深度过程中判断左右子树深度差是否 > 1，是则提前返回 -1
 - **N 叉树最大深度**：`1 + max(所有子节点深度)`
 - **层序遍历版**：用 BFS 数层数，适合非递归要求
 
@@ -63,7 +63,7 @@ public int maxDepth(TreeNode root) {
 
 ## 关联题
 
-- 同套路：[110. 平衡二叉树](https://leetcode.cn/problems/balanced-binary-tree/) —— 扩展自本题的递归判平衡
+- 同套路：[110. 平衡二叉树](110-balanced-binary-tree.md) —— 扩展自本题的递归判平衡
 - 进阶：[543. 二叉树的直径](543-diameter-of-binary-tree.md) —— 深度求和而非取最大
 - 知识点：树递归的"分治"模式（左 + 右 + 合并）见[二叉树](二叉树.md)
 
