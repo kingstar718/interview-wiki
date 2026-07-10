@@ -1,6 +1,8 @@
 ---
 topics:
   - 数组与字符串
+techniques:
+  - 前缀和与差分
 ---
 
 # 1109. 航班预订统计（Corporate Flight Bookings）

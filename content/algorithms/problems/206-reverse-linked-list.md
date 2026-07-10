@@ -1,6 +1,8 @@
 ---
 topics:
   - 链表
+techniques:
+  - 三指针反转
 ---
 
 # 206. 反转链表（Reverse Linked List）

@@ -2,6 +2,8 @@
 topics:
   - 双指针与滑动窗口
   - 数组与字符串
+techniques:
+  - 原地读写指针
 ---
 
 # 283. 移动零（Move Zeroes）

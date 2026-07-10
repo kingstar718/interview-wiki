@@ -1,6 +1,8 @@
 ---
 topics:
   - 排序与堆
+techniques:
+  - 排序算法实现
 ---
 
 # 912. 排序数组（Sort an Array）

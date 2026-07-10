@@ -1,6 +1,8 @@
 ---
 topics:
   - 回溯
+techniques:
+  - 回溯框架
 ---
 
 # 17. 电话号码的字母组合（Letter Combinations of a Phone Number）

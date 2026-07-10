@@ -1,6 +1,8 @@
 ---
 topics:
   - 二叉树
+techniques:
+  - 递归返回值设计
 ---
 
 # 104. 二叉树的最大深度（Maximum Depth of Binary Tree）

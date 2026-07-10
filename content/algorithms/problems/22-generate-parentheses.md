@@ -1,6 +1,9 @@
 ---
 topics:
   - 回溯
+techniques:
+  - 回溯框架
+  - 剪枝
 ---
 
 # 22. 括号生成（Generate Parentheses）

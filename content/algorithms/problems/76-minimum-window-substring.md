@@ -1,6 +1,8 @@
 ---
 topics:
   - 双指针与滑动窗口
+techniques:
+  - 滑动窗口
 ---
 
 # 76. 最小覆盖子串（Minimum Window Substring）

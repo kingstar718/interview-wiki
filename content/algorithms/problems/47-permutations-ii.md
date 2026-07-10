@@ -1,6 +1,9 @@
 ---
 topics:
   - 回溯
+techniques:
+  - 回溯框架
+  - 剪枝
 ---
 
 # 47. 全排列 II（Permutations II）

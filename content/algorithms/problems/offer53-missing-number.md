@@ -1,6 +1,8 @@
 ---
 topics:
   - 二分查找
+techniques:
+  - 二分边界
 ---
 
 # 剑指 Offer 53 - II. 0～n-1 中缺失的数字

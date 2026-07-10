@@ -1,6 +1,8 @@
 ---
 topics:
   - 动态规划与贪心
+techniques:
+  - 背包
 ---
 
 # 322. 零钱兑换（Coin Change）

@@ -1,6 +1,8 @@
 ---
 topics:
   - 双指针与滑动窗口
+techniques:
+  - 滑动窗口
 ---
 
 # 3. 无重复字符的最长子串（Longest Substring Without Repeating Characters）

@@ -1,6 +1,8 @@
 ---
 topics:
   - 二叉树
+techniques:
+  - BFS层序
 ---
 
 # 919. 完全二叉树插入器（Complete Binary Tree Inserter）

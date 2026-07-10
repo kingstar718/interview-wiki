@@ -1,6 +1,8 @@
 ---
 topics:
   - 动态规划与贪心
+techniques:
+  - 背包
 ---
 
 # 139. 单词拆分（Word Break）

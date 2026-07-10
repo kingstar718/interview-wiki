@@ -1,6 +1,8 @@
 ---
 topics:
   - 数组与字符串
+techniques:
+  - 前缀和与差分
 ---
 
 # 238. 除自身以外数组的乘积（Product of Array Except Self）

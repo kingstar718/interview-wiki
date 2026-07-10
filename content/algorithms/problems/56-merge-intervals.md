@@ -2,6 +2,8 @@
 topics:
   - 排序与堆
   - 数组与字符串
+techniques:
+  - 区间排序
 ---
 
 # 56. 合并区间（Merge Intervals）

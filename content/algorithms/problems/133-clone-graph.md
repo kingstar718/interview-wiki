@@ -1,6 +1,8 @@
 ---
 topics:
   - 图论
+techniques:
+  - 图遍历
 ---
 
 # 133. 克隆图（Clone Graph）

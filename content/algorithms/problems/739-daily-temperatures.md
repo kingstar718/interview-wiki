@@ -1,6 +1,8 @@
 ---
 topics:
   - 栈与队列
+techniques:
+  - 单调栈与单调队列
 ---
 
 # 739. 每日温度（Daily Temperatures）

@@ -1,6 +1,8 @@
 ---
 topics:
   - 二分查找
+techniques:
+  - 二分边界
 ---
 
 # 33. 搜索旋转排序数组（Search in Rotated Sorted Array）

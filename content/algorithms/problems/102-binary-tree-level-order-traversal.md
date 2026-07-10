@@ -1,6 +1,8 @@
 ---
 topics:
   - 二叉树
+techniques:
+  - BFS层序
 ---
 
 # 102. 二叉树的层序遍历（Binary Tree Level Order Traversal）

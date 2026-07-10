@@ -1,6 +1,8 @@
 ---
 topics:
   - 二叉树
+techniques:
+  - 递归返回值设计
 ---
 
 # 543. 二叉树的直径（Diameter of Binary Tree）

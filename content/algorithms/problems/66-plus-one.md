@@ -1,6 +1,8 @@
 ---
 topics:
   - 数组与字符串
+techniques:
+  - 模拟构造
 ---
 
 # 66. 加一（Plus One）

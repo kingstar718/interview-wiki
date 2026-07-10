@@ -1,6 +1,8 @@
 ---
 topics:
   - 链表
+techniques:
+  - 快慢指针
 ---
 
 # 876. 链表的中间结点（Middle of the Linked List）

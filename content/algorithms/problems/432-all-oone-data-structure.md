@@ -1,6 +1,8 @@
 ---
 topics:
   - 哈希表
+techniques:
+  - 哈希+辅助结构
 ---
 
 # 432. 全 O(1) 的数据结构（All O`one Data Structure）

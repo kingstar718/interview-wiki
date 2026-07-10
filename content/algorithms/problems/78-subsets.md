@@ -2,6 +2,9 @@
 topics:
   - 位运算
   - 回溯
+techniques:
+  - 位掩码枚举
+  - 回溯框架
 ---
 
 # 78. 子集（Subsets）

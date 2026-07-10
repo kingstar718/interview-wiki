@@ -1,6 +1,8 @@
 ---
 topics:
   - 图论
+techniques:
+  - 图遍历
 ---
 
 # 417. 太平洋大西洋水流（Pacific Atlantic Water Flow）

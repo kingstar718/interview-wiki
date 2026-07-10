@@ -1,6 +1,8 @@
 ---
 topics:
   - 动态规划与贪心
+techniques:
+  - 线性DP
 ---
 
 # 70. 爬楼梯（Climbing Stairs）

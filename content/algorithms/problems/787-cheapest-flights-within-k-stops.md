@@ -1,6 +1,8 @@
 ---
 topics:
   - 图论
+techniques:
+  - 最短路
 ---
 
 # 787. K 站中转内最便宜的航班（Cheapest Flights Within K Stops）

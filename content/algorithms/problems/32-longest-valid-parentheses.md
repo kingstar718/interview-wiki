@@ -1,6 +1,8 @@
 ---
 topics:
   - 动态规划与贪心
+techniques:
+  - 线性DP
 ---
 
 # 32. 最长有效括号（Longest Valid Parentheses）

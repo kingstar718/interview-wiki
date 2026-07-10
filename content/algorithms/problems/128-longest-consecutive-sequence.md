@@ -1,6 +1,8 @@
 ---
 topics:
   - 哈希表
+techniques:
+  - 哈希查表
 ---
 
 # 128. 最长连续序列（Longest Consecutive Sequence）

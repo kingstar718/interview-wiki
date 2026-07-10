@@ -1,6 +1,8 @@
 ---
 topics:
   - 数组与字符串
+techniques:
+  - 矩阵操作
 ---
 
 # 48. 旋转图像（Rotate Image）

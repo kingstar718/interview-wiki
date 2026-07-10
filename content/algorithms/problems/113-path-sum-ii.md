@@ -1,6 +1,8 @@
 ---
 topics:
   - 二叉树
+techniques:
+  - 回溯框架
 ---
 
 # 113. 路径总和 II（Path Sum II）

@@ -2,6 +2,9 @@
 topics:
   - 动态规划与贪心
   - 数组与字符串
+techniques:
+  - 线性扫描维护状态
+  - 线性DP
 ---
 
 # 152. 乘积最大子数组（Maximum Product Subarray）

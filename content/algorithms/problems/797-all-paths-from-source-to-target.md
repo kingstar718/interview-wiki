@@ -1,6 +1,8 @@
 ---
 topics:
   - 图论
+techniques:
+  - 图遍历
 ---
 
 # 797. 所有可能的路径（All Paths From Source to Target）

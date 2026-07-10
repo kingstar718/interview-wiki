@@ -1,6 +1,8 @@
 ---
 topics:
   - 二分查找
+techniques:
+  - 二分边界
 ---
 
 # 4. 寻找两个正序数组的中位数（Median of Two Sorted Arrays）

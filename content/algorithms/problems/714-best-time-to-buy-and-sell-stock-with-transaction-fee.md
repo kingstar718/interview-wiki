@@ -1,6 +1,8 @@
 ---
 topics:
   - 动态规划与贪心
+techniques:
+  - 股票状态机DP
 ---
 
 # 714. 买卖股票的最佳时机含手续费（Best Time to Buy and Sell Stock with Transaction Fee）

@@ -3,6 +3,9 @@ topics:
   - 双指针与滑动窗口
   - 数组与字符串
   - 栈与队列
+techniques:
+  - 对撞指针
+  - 单调栈与单调队列
 ---
 
 # 42. 接雨水（Trapping Rain Water）

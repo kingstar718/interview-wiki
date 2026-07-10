@@ -1,6 +1,8 @@
 ---
 topics:
   - 二叉树
+techniques:
+  - 递归返回值设计
 ---
 
 # 236. 二叉树的最近公共祖先（Lowest Common Ancestor of a Binary Tree）

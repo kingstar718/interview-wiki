@@ -1,6 +1,8 @@
 ---
 topics:
   - 链表
+techniques:
+  - 快慢指针
 ---
 
 # 141. 环形链表I（Linked List Cycle）

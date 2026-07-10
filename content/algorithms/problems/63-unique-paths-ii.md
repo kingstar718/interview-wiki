@@ -1,6 +1,8 @@
 ---
 topics:
   - 动态规划与贪心
+techniques:
+  - 二维DP
 ---
 
 # 63. 不同路径 II（Unique Paths II）

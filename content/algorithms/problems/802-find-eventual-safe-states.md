@@ -1,6 +1,8 @@
 ---
 topics:
   - 图论
+techniques:
+  - 拓扑排序
 ---
 
 # 802. 找到最终的安全状态（Find Eventual Safe States）

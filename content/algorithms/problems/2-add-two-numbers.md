@@ -1,6 +1,8 @@
 ---
 topics:
   - 链表
+techniques:
+  - 虚拟头节点
 ---
 
 # 2. 两数相加（Add Two Numbers）

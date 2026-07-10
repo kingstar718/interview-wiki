@@ -1,6 +1,8 @@
 ---
 topics:
   - 双指针与滑动窗口
+techniques:
+  - 滑动窗口
 ---
 
 # 438. 找到字符串中所有字母异位词（Find All Anagrams in a String）

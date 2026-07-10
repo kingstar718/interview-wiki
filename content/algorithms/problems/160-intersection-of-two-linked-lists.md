@@ -1,6 +1,8 @@
 ---
 topics:
   - 链表
+techniques:
+  - 快慢指针
 ---
 
 # 160. 相交链表（Intersection of Two Linked Lists）

@@ -1,6 +1,8 @@
 ---
 topics:
   - 栈与队列
+techniques:
+  - 栈队列设计
 ---
 
 # 225. 用队列实现栈（Implement Stack using Queues）

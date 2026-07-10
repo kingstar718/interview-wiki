@@ -1,6 +1,9 @@
 ---
 topics:
   - 二叉树
+techniques:
+  - 递归返回值设计
+  - BST中序
 ---
 
 # 98. 验证二叉搜索树（Validate Binary Search Tree）

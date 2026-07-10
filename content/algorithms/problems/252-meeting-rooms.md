@@ -1,6 +1,8 @@
 ---
 topics:
   - 排序与堆
+techniques:
+  - 区间排序
 ---
 
 # 252. 会议室（Meeting Rooms）

@@ -1,6 +1,8 @@
 ---
 topics:
   - 动态规划与贪心
+techniques:
+  - 线性DP
 ---
 
 # 300. 最长递增子序列（Longest Increasing Subsequence）

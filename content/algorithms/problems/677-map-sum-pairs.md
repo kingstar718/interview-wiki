@@ -1,6 +1,8 @@
 ---
 topics:
   - 字典树
+techniques:
+  - Trie前缀树
 ---
 
 # 677. 键值映射（Map Sum Pairs）

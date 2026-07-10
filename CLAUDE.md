@@ -15,7 +15,7 @@ interview-wiki/
 ├── content/             # 笔记源码(Quartz 渲染此目录)
 │   ├── index.md           # 站点首页(不写篇数,手写计数必漂移)
 │   ├── indexes/           # 三大索引:知识点/算法题/高频题目
-│   ├── 概念/              # 跨域知识节点(算法套路 ↔ 八股机制的汇合点)
+│   ├── 概念/              # 跨 interview 分类的知识节点(不伸进算法侧,见「分域原则」)
 │   ├── interview/         # 社招八股,按分类分目录(Java/框架/数据库/中间件/
 │   │                      #   计算机基础/分布式与架构/工程实践/面试)
 │   └── algorithms/        # 算法刷题,13 个套路节点 + problems/ 扁平题目池
@@ -42,20 +42,35 @@ python3 scripts/gen_index.py
 # 概念页「出现在哪里」自动生成(改完任何指向 概念/ 的链接后跑;--check 只检测漂移)
 python3 scripts/gen_concepts.py
 
-# 套路页「已解题目」自动生成(改完题解 topics: frontmatter 后跑;--check 只检测漂移)
+# 套路页「已解题目」自动生成(改完题解 topics:/techniques: 后跑;--check 只检测漂移)
 python3 scripts/gen_topics.py
 
 # 内容定位(改前先跑,不用通读千行文件)
 python3 scripts/outline.py Redis           # 打印专题标题树+行号
 python3 scripts/outline.py --grep 缓存预热  # 全库定位考点(标题+正文,正文命中标注所在小节)
+python3 scripts/outline.py --tech 单调栈    # 按算法技术词检索题解(不带参数则列出 44 词+覆盖数)
 ```
 
 ## 内容工作流(新增/修改必读)
 
+> 检索/新增/修改的分任务操作手册在 [CONTRIBUTING.md](./CONTRIBUTING.md) 顶部「操作手册」一节(新增分五条路:八股小节/八股篇目/算法题解/技术词/概念)。下面是骨架。
+
 1. **先领任务**:内容任务统一记录在 [TODO.md](./TODO.md)。动手前从「待办」领取;发现新缺口**先登记再做**,不要直接写。
-2. **先定位再写**:`outline.py --grep` 验证考点是否已覆盖,`outline.py <文件>` 看结构定插入位置;小节结构、修改整合规范、写作要求见 [CONTRIBUTING.md](./CONTRIBUTING.md)(是什么 → 为什么 → 源码⭕ → 对比⭕ → 常见追问 → 通用概念⭕)。
+2. **先定位再写**:`outline.py --grep` 验证考点是否已覆盖(算法用 `--tech`),`outline.py <文件>` 看结构定插入位置;小节结构、修改整合规范、写作要求见 [CONTRIBUTING.md](./CONTRIBUTING.md)(是什么 → 为什么 → 源码⭕ → 对比⭕ → 常见追问 → 通用概念⭕)。
 3. **同步**:正文写完后同步追问地图行、相关篇目互链;`indexes/知识点索引.md` 由 `scripts/gen_index.py` 从各篇目 H3 自动生成(真实标题 + github-slugger 锚点),改完跑脚本刷新,勿手编。新增篇目还要在 `quartz.ts` 的 Explorer 排序表(ORDER)登记位置,注意表里登记的是**页面 H1 标题**而非文件名。
 4. **收尾**:跑 `python3 scripts/gen_index.py` 刷新知识点索引 → `python3 scripts/gen_concepts.py` 刷新概念页 → `python3 scripts/gen_topics.py` 刷新套路页 → `python3 scripts/check_index.py`;完成项移到 TODO.md「已完成」并附 commit 短哈希。
+
+## 分域原则(结构层面的硬约束)
+
+**算法是算法,八股是八股。抽取概念时不要把两者混为一谈。**
+
+- `algorithms/` 与 `interview/` 是两个独立的域,各自有自己的概念层:
+  - 八股的概念层是 `概念/`(原子=考点 → 抽共性 → `## 出现在哪里` 反向视图)
+  - **算法的概念层是 `algorithms/` 下的 13 个套路页**(原子=题解 → 抽共性 → `## 已解题目` 反向视图),两者同构
+- 所以 `概念/` **不覆盖算法**。让它伸进算法侧等于在已有概念层上再盖一层。
+- 校验 P 的内容域只按 interview 分类计,`algorithms` 不计域。
+- 算法 → 概念 的单向链接可以保留作延伸阅读,但**不计入概念的入场券**——「可以链」和「必须链」是两回事。
+- 算法侧要做概念层,就在套路页上做:`techniques:` 细粒度标签(进行中,见 [RFC-算法题标签方案.md](./RFC-算法题标签方案.md))。
 
 ## 内容约定
 
@@ -85,8 +100,8 @@ Quartz 的 `CrawlLinks` 配置为 `markdownLinkResolution: "shortest"`(Obsidian 
 - **文件名 = 稳定语义 ID**:`interview/`、`indexes/` 下用语义名(`MySQL.md`、`算法题索引.md`),**禁止位置型数字前缀**(`01-`);顺序在 `quartz.ts` 的 Explorer 排序表里表达,不编进文件名。
 - **文件名全库唯一**(README.md/index.md 除外):纯文件名链接方案的前提,新文件重名会被校验 B 拦截。
 - **例外**:`algorithms/problems/` 下的题号(`1-two-sum.md`)是稳定 ID,允许保留;`algorithms/` 下的套路页(`双指针与滑动窗口.md`)是语义名,同 `interview/` 命名规则,新增套路直接语义命名,不用数字序号。
-- **跨域概念在 `概念/`**:入场券是「入链覆盖 ≥2 个内容域」(校验 P,导航链接不算);`## 出现在哪里` 由 `gen_concepts.py` 生成(校验 Q);题解 `## 关联题` 每条须带白名单类型前缀(校验 O:同套路/进阶/基础/易混/知识点)。细则见 CONTRIBUTING.md。
-- **算法套路节点在 `algorithms/`**:`algorithms/problems/<题解>.md` 用 `topics:` frontmatter 声明归属的套路(可多值,一题可属于多个套路);套路页 `## 已解题目` 由 `gen_topics.py` 从 `topics:` 反向分组生成(校验 R);题解归属校验 F 拦截空/拼写错误的 `topics:`。细则见 CONTRIBUTING.md。
+- **跨分类概念在 `概念/`**:入场券是「入链覆盖 ≥2 个内容域」(校验 P,导航链接不算);`## 出现在哪里` 由 `gen_concepts.py` 生成(校验 Q);题解 `## 关联题` 每条须带白名单类型前缀(校验 O:同套路/进阶/基础/易混/知识点)。细则见 CONTRIBUTING.md。
+- **算法套路节点在 `algorithms/`**:题解用两级 frontmatter 声明归属 —— `topics:`(13 个粗套路,决定出现在哪页,校验 F)+ `techniques:`(44 个细技术词,决定落到页内哪个分组,校验 S)。词表权威源是**套路页自己的 frontmatter `techniques:`**,13 页并集即全局词表,同一个词可被多页声明。套路页 `## 已解题目` 由 `gen_topics.py` 反向分组生成(校验 R)。细则见 CONTRIBUTING.md。
 - 改完跑 `python3 scripts/check_index.py`,校验死链/文件名唯一/命名/文件集/分类一致/题解归属/关系类型/概念成色/套路视图。
 
 ## 部署

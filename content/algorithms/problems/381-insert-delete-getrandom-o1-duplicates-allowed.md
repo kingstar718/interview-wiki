@@ -1,6 +1,8 @@
 ---
 topics:
   - 哈希表
+techniques:
+  - 哈希+辅助结构
 ---
 
 # 381. O(1) 时间插入、删除和获取随机元素 - 允许重复（Insert Delete GetRandom O(1) - Duplicates allowed）

@@ -1,6 +1,8 @@
 ---
 topics:
   - 图论
+techniques:
+  - 拓扑排序
 ---
 
 # 207. 课程表（Course Schedule）

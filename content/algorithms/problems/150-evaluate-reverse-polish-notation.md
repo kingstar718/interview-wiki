@@ -1,6 +1,8 @@
 ---
 topics:
   - 栈与队列
+techniques:
+  - 表达式与嵌套栈
 ---
 
 # 150. 逆波兰表达式求值（Evaluate Reverse Polish Notation）

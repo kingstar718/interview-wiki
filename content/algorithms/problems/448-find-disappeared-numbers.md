@@ -1,6 +1,8 @@
 ---
 topics:
   - 数组与字符串
+techniques:
+  - 原地读写指针
 ---
 
 # 448. 找到所有数组中消失的数字（Find All Numbers Disappeared in an Array）

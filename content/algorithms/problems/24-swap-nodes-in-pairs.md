@@ -1,6 +1,8 @@
 ---
 topics:
   - 链表
+techniques:
+  - 虚拟头节点
 ---
 
 # 24. 两两交换链表结点（Swap Nodes in Pairs）

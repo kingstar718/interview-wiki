@@ -1,6 +1,8 @@
 ---
 topics:
   - 数组与字符串
+techniques:
+  - 原地读写指针
 ---
 
 # 189. 轮转数组（Rotate Array）

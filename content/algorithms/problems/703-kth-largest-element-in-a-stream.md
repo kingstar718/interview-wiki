@@ -1,6 +1,8 @@
 ---
 topics:
   - 排序与堆
+techniques:
+  - 堆TopK
 ---
 
 # 703. 数据流中的第 K 大元素（Kth Largest Element in a Stream）

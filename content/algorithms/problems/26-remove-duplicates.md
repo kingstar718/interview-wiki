@@ -1,6 +1,8 @@
 ---
 topics:
   - 数组与字符串
+techniques:
+  - 原地读写指针
 ---
 
 # 26. 删除有序数组中的重复项（Remove Duplicates from Sorted Array）

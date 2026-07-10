@@ -1,6 +1,8 @@
 ---
 topics:
   - 栈与队列
+techniques:
+  - 表达式与嵌套栈
 ---
 
 # 20. 有效的括号（Valid Parentheses）

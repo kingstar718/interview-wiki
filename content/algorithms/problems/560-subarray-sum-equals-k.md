@@ -2,6 +2,9 @@
 topics:
   - 哈希表
   - 数组与字符串
+techniques:
+  - 前缀和与差分
+  - 哈希查表
 ---
 
 # 560. 和为 K 的子数组（Subarray Sum Equals K）

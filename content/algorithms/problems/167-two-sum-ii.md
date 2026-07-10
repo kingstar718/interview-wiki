@@ -1,6 +1,8 @@
 ---
 topics:
   - 双指针与滑动窗口
+techniques:
+  - 对撞指针
 ---
 
 # 167. 两数之和II-输入有序（Two Sum II - Input Array Is Sorted）

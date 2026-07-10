@@ -1,6 +1,8 @@
 ---
 topics:
   - 字典树
+techniques:
+  - Trie前缀树
 ---
 
 # 212. 单词搜索 II（Word Search II）

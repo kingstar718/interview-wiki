@@ -1,6 +1,8 @@
 ---
 topics:
   - 图论
+techniques:
+  - 图遍历
 ---
 
 # 994. 腐烂的橘子（Rotting Oranges）

@@ -1,6 +1,8 @@
 ---
 topics:
   - 二分查找
+techniques:
+  - 跳表设计
 ---
 
 # 1206. 跳表（Design Skiplist）

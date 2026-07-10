@@ -1,6 +1,8 @@
 ---
 topics:
   - 哈希表
+techniques:
+  - 哈希+辅助结构
 ---
 
 # 146. LRU缓存（LRU Cache）

@@ -1,6 +1,8 @@
 ---
 topics:
   - 哈希表
+techniques:
+  - 哈希+辅助结构
 ---
 
 # 460. LFU 缓存（LFU Cache）

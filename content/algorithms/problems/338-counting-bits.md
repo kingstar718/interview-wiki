@@ -1,6 +1,8 @@
 ---
 topics:
   - 位运算
+techniques:
+  - 逐位构造
 ---
 
 # 338. 比特位计数（Counting Bits）
