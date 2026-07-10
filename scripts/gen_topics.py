@@ -13,9 +13,9 @@
     `algorithms/problems/` 是扁平题目池,题目归属哪个套路不再由目录体现,
     而是题解 frontmatter 的 `topics:` 字段(权威源,可多值 —— 一题可能同时属于
     「数组与字符串」和「双指针与滑动窗口」)。套路页的 `## 已解题目` 是这份
-    frontmatter 的视图,同 gen_concepts.py 的原则:视图永远生成,绝不手写。
+    frontmatter 的视图,原则:视图永远生成,绝不手写。
 
-    与 gen_concepts.py 的反链扫描不同,这里是正向分组(frontmatter 直接声明归属,
+    这里是正向分组(frontmatter 直接声明归属,
     不需要从正文链接里反推),所以更简单 —— 不涉及锚点分组。
 
 两级归属:

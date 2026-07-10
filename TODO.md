@@ -42,10 +42,7 @@
   补齐 1094/1109/1206/211/212/260/303/304/338/371/380/381/432/460/461/648/677/802/919 的
   复杂度/边界条件/变式/易错点/面试追问;顺带修 677 insert 的覆盖语义 bug(重复插入同一 key 会累加,应走差值)
   - [ ] P4 修剑指三篇绕过校验 L 的漏洞(SOLUTION_RE 不匹配 `offerNN-`,补足缺失小节);outline.py --tech;同步 CLAUDE/CONTRIBUTING
-- [ ] 结构:概念/ 收口为八股概念层(分域原则已写入 CLAUDE.md)
-  - [x] 校验 P 的内容域只按 interview 分类计,algorithms 不计域(gen_concepts.UNCOUNTED_DOMAINS);
-        同步 CONTRIBUTING「跨分类概念规范」,消除与 CLAUDE.md 的矛盾表述。9 个概念全部仍达标,无回收
-  - [ ] 拆 概念/树.md:「二叉搜索树」节移进 algorithms/二叉树.md,树.md 只留介质定价与索引结构选型
+- [x] 结构:移除 `content/概念/` 目录及 gen_concepts.py;清理全站引用与校验 P/Q
 - [x] 算法:题单 21 专题全量补齐(约 160 篇), 同步 README 与索引链接(3cb81d2)
 
 ### 低优先级 / 待评估
