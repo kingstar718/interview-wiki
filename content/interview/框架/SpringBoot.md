@@ -9,7 +9,7 @@
 | [Starter](#如何自定义-springboot-starter) | 依赖聚合 + 自动配置 | 自定义 starter、配置元数据 |
 | [启动流程](#spring-boot-启动流程) | Environment、Context、refresh、WebServer | Runner 时机、启动事件、失败分析 |
 | [内嵌 Tomcat](#springboot-内嵌-tomcat-是怎么启动的) | TomcatServletWebServerFactory、getWebServer、Connector | onRefresh 时机、与独立 Tomcat 对比 |
-| [配置管理](#spring-boot-配置的常见优先级) | 属性源优先级、类型绑定、Profile | 动态刷新、密钥管理、配置回滚 |
+| [配置管理](#spring-boot-配置的常见优先级) | 17 级 PropertySource 优先级、Profile 覆盖 | 动态刷新、密钥管理、配置回滚 |
 | [Filter/Interceptor/AOP](#filterinterceptoraop-如何选择) | 所属层次和调用时机 | 异常链、静态资源、Bean 注入 |
 | [参数校验](#如何做参数校验) | Bean Validation、分组、自定义约束 | Controller 外的方法校验 |
 | [Actuator](#spring-boot-actuator-有什么作用) | 健康、指标、管理端点 | 暴露风险、自定义 HealthIndicator |
@@ -201,11 +201,26 @@ AbstractApplicationContext.refresh()
 
 ### Spring Boot 配置的常见优先级？
 
-通常外部配置会覆盖包内配置，命令行参数和环境变量优先级较高。面试回答应抓住原则：
+频次 ★★★
 
-- 同一个属性存在多个来源时，优先级高的覆盖低的。
-- Profile 用于区分环境，不用于保存秘密。
-- 密码和令牌应由环境变量或密钥管理系统注入。
+Spring Boot 的 `PropertySource` 按固定优先级排序，**高优先级覆盖低优先级**。完整顺序如下（从高到低）：
+
+1. 命令行参数（`--server.port=8080`）
+2. JNDI 属性（`java:comp/env`）
+3. 系统属性（`System.getProperties()`）
+4. 操作系统环境变量
+5. `random.*` 配置（`${random.value}` / `${random.int}`）
+6. Profile 专用配置（`application-{profile}.yml`，**高于非 Profile 的同名配置**）
+7. 应用配置（`application.yml` / `application.properties`，jar 包外的优先于包内的）
+8. `@PropertySource` 在 `@Configuration` 上声明的资源（按声明顺序）
+9. SpringApplication 默认属性（`setDefaultProperties` 设置的）
+10. `spring.config.import` 引入的额外配置源（2.4+）
+
+**两个易混淆的规则**：
+- Profile 配置 > 非 Profile 配置：`application-prod.yml` 中的 `server.port` 会覆盖 `application.yml` 中的同一属性
+- jar 包外 > jar 包内：部署时在 jar 同目录放 `application.yml` 会覆盖 jar 包 `classpath:` 中的同名文件，这是运维常用的外置配置手段
+
+**面试答题策略**：不用逐一背 10 级，记住最高（命令行参数）和最低（默认属性），中间按"Profile → 外置文件 → 内置文件"分组记。追问"想覆盖 jar 包里的配置怎么做"→ 命令行参数、环境变量、包外配置文件均可。
 
 ### `@Value` 和 `@ConfigurationProperties` 的区别？
 

@@ -12,9 +12,11 @@
 | [事务](#spring-事务什么时候会失效) | 代理、传播、隔离、回滚规则 | checked 异常、this 调用、事务边界 |
 | [循环依赖](#spring-如何解决循环依赖) | 三级缓存、提前暴露引用 | 构造器循环、prototype、代理对象一致性 |
 | [作用域](#spring-bean-的作用域) | singleton/prototype/request | 单例 Bean 线程安全吗 |
+| [FactoryBean](#beanfactory-和-factorybean-的区别) | 容器接口 vs 工厂 Bean、& 前缀 | SqlSessionFactoryBean、ProxyFactoryBean |
 | [扩展点](#七spring-扩展点) | BPP、BFPP、ImportSelector | starter 和自动配置如何使用 |
-| [SpringMVC](#springmvc-处理流程) | DispatcherServlet 调度链 | 参数解析、返回值处理、异常处理 |
+| [事件机制](#spring-事件机制如何工作) | 事件发布、@EventListener、广播器 | 同步 vs 异步、@TransactionalEventListener |
 | [设计模式](#spring-中用到的设计模式) | 工厂、单例、代理、模板 | Spring 核心组件对应模式、设计原则落地 |
+| [SpringMVC](#springmvc-处理流程doDispatch-源码级) | DispatcherServlet 调度链、doDispatch | 参数解析、返回值处理、异常处理 |
 
 Spring 问题通常会沿“容器启动 → Bean 创建 → 代理生成 → 方法调用”连续追问，应保持时间顺序清晰。
 
@@ -481,7 +483,47 @@ private TransactionStatus handleExistingTransaction(TransactionDefinition def, O
 
 ---
 
-## 八、设计模式
+## 八、事件机制
+
+### Spring 事件机制如何工作？
+
+频次 ★★★ · 难度 🟡
+
+**是什么**：Spring 事件机制是**观察者模式**在容器内的实现——Bean 可以发布事件，其他 Bean 监听并响应，调用方和监听方完全解耦。
+
+**三个组成部分**：
+
+| 角色 | 接口/注解 | 说明 |
+|------|----------|------|
+| **事件** | `ApplicationEvent`（继承它）或 `PayloadApplicationEvent`（直接包装任意荷载） | 携带上下文数据 |
+| **发布者** | `ApplicationEventPublisher`（`context.publishEvent()`） | 容器本身即是发布器 |
+| **监听器** | `@EventListener` / `ApplicationListener<T>` 接口 | 接收并处理事件 |
+
+**执行流程**（源码级）：
+
+```text
+publisher.publishEvent(event)
+  ↓
+AbstractApplicationContext.publishEvent()
+  ↓
+ApplicationEventMulticaster.multicastEvent()
+  ↓ 遍历所有注册的 ApplicationListener
+  ↓ 筛选出能处理该事件类型的 listener
+listener.onApplicationEvent(event)
+```
+
+事件广播器 `ApplicationEventMulticaster` 在 `refresh()` 第 8 步 `initApplicationEventMulticaster()` 初始化，默认为 `SimpleApplicationEventMulticaster`（同步调用，即发布线程也是监听线程）。
+
+**@EventListener 原理**（高频追问）：它不是反射逐一检查每个 Bean 的方法，而是由 `EventListenerMethodProcessor`（实现 `SmartInitializingSingleton`）在所有单例 Bean 实例化完成后，扫描每个 Bean 中标了 `@EventListener` 的方法，为每个方法注册一个 `ApplicationListenerAdapter` 到广播器。这个"后处理"时机确保了所有监听器在容器启动的最后阶段注册完毕。
+
+**常见追问**
+- 事件默认同步还是异步？→ 同步。`SimpleApplicationEventMulticaster` 的 `multicastEvent()` 在发布者线程中逐一调用 listener。需要异步就在 `@EventListener` 上加 `@Async`，或替换 `ApplicationEventMulticaster` 为带 `Executor` 的实现
+- `@TransactionalEventListener` 有什么用？→ 在事务的特定阶段触发（`AFTER_COMMIT` / `AFTER_ROLLBACK` / `AFTER_COMPLETION` / `BEFORE_COMMIT`），确保监听器只在事务成功提交后才执行——避免事务回滚了但事件已经被处理了的场景
+- 监听器抛出异常会影响其他监听器吗？→ 默认同步模式下，先注册的监听器抛异常会导致后续监听器收不到事件；异步模式则互不影响
+
+---
+
+## 九、设计模式
 
 ### Spring 中用到的设计模式
 
@@ -498,27 +540,72 @@ private TransactionStatus handleExistingTransaction(TransactionDefinition def, O
 
 ---
 
-## 九、SpringMVC
+## 十、SpringMVC
 
 Servlet、Tomcat、Nginx 和完整 Web 请求链见 [Web容器与Nginx](Web容器与Nginx.md)。
 
-### SpringMVC 处理流程？
+### SpringMVC 处理流程？（doDispatch 源码级）
 
+频次 ★★★★ · 难度 🔴
+
+**是什么**：所有请求经过 `DispatcherServlet` 的 `doDispatch()` 方法调度，核心骨架如下（Spring 6.x，`DispatcherServlet.java`）：
+
+```java
+protected void doDispatch(HttpServletRequest request, HttpServletResponse response) {
+    HttpServletRequest processedRequest = request;
+    HandlerExecutionChain mappedHandler = null;
+    ModelAndView mv = null;
+
+    try {
+        // 1. 检查是否是 multipart 请求（文件上传）
+        processedRequest = checkMultipart(request);
+
+        // 2. HandlerMapping 获取执行链（Handler + 拦截器链）
+        mappedHandler = getHandler(processedRequest);
+        if (mappedHandler == null) {
+            noHandlerFound(processedRequest, response);
+            return;
+        }
+
+        // 3. HandlerAdapter 获取能处理该 Handler 的适配器
+        HandlerAdapter ha = getHandlerAdapter(mappedHandler.getHandler());
+
+        // 4. 前置拦截器：执行所有拦截器的 preHandle()
+        if (!mappedHandler.applyPreHandle(processedRequest, response)) {
+            return;  // 任一拦截器返回 false，请求终止
+        }
+
+        // 5. HandlerAdapter.handle() 真正执行 Controller 方法
+        //    — 参数解析器在此工作（HandlerMethodArgumentResolver）
+        //    — 调用方法后返回值处理器工作（HandlerMethodReturnValueHandler）
+        mv = ha.handle(processedRequest, response, mappedHandler.getHandler());
+
+        // 6. 后置拦截器：执行所有拦截器的 postHandle()
+        mappedHandler.applyPostHandle(processedRequest, response, mv);
+    } catch (Exception ex) {
+        // 7. 异常解析链：HandlerExceptionResolver 链处理
+        dispatchException = ex;
+    }
+
+    // 8. 视图渲染：processDispatchResult()
+    //    — 异常模式下调用 HandlerExceptionResolver 解析视图
+    //    — 正常模式下 ViewResolver 解析视图 → View.render()
+    //    — 无论异常/正常，最终执行 afterCompletion()
+    processDispatchResult(processedRequest, response, mappedHandler, mv, dispatchException);
+}
 ```
-用户请求
-    ↓
-DispatcherServlet（前端控制器）
-    ↓
-HandlerMapping → 找到 Controller + 拦截器 → HandlerExecutionChain
-    ↓
-HandlerAdapter → 参数绑定、数据验证
-    ↓
-Controller（Handler）执行 → 返回 ModelAndView
-    ↓
-ViewResolver（视图解析器）→ 解析 View
-    ↓
-渲染视图 → 响应
-```
+
+**五个扩展点及其在源码中的位置**：
+
+| 扩展点 | 对应接口 | doDispatch 中位置 | 典型实现 |
+|--------|---------|------------------|---------|
+| 参数解析 | `HandlerMethodArgumentResolver` | 第 5 步 `ha.handle()` 内部 | `RequestParamMethodArgumentResolver`、`PathVariableMethodArgumentResolver` |
+| 返回值处理 | `HandlerMethodReturnValueHandler` | 第 5 步 `ha.handle()` 内部 | `ResponseBodyMethodReturnValueHandler`（`@ResponseBody`）、`ModelMethodReturnValueHandler` |
+| 异常解析 | `HandlerExceptionResolver` | 第 7-8 步 | `ExceptionHandlerExceptionResolver`（`@ExceptionHandler`）、`DefaultHandlerExceptionResolver` |
+| 视图解析 | `ViewResolver` | 第 8 步 `processDispatchResult` | `InternalResourceViewResolver`、`ContentNegotiatingViewResolver` |
+| 拦截器 | `HandlerInterceptor` | 第 4/6/8 步 | 鉴权、日志、性能监控 |
+
+**面试答题策略**：先画流程图（5 步链），再亮源码骨架 `doDispatch`，然后追问往深扩展——"参数解析器怎么知道参数类型"答 `HandlerMethodArgumentResolver.supportsParameter()` → `resolveArgument()`；"`@ResponseBody` 的原理"答 `RequestResponseBodyMethodProcessor`（既是参数解析器又是返回值处理器）。
 
 ### HandlerMapping 和 HandlerAdapter 的作用？
 
