@@ -85,5 +85,5 @@ class MyQueue {
 ## 关联题
 
 - 同套路：[225. 用队列实现栈](225-implement-stack-using-queues.md) —— 互为反向问题；[155. 最小栈](155-min-stack.md) —— 同属结构设计
-- 知识点：倒栈[摊还](摊还.md) O(1)——每个元素一生最多进出两次；同一分析方法用在 ArrayList 扩容上，见[集合框架](集合框架.md#arraylist-扩容机制)
+- 知识点：倒栈摊还 O(1)——每个元素一生最多进出两次；同一分析方法用在 ArrayList 扩容上，见[集合框架](集合框架.md#arraylist-扩容机制)
 

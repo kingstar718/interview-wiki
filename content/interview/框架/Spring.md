@@ -322,7 +322,7 @@ private TransactionStatus handleExistingTransaction(TransactionDefinition def, O
 2. **挂起（suspend）**= 把连接从 ThreadLocal 摘下暂存，恢复时再放回；REQUIRES_NEW 会占用**第二个连接**，嵌套层数深时可能耗尽连接池造成自死锁
 3. NESTED 不换连接，靠 JDBC savepoint 部分回滚——所以要求 DataSource 支持 savepoint，且 JTA 分布式事务下不可用
 
-**通用概念**：传播行为本质是[上下文传递](上下文传递.md#框架里的上下文)策略的枚举——"跟随现有上下文 / 新开上下文 / 拒绝"。同样的模式出现在线程上下文（`InheritableThreadLocal`）、Go 的 `context`、分布式链路追踪的 span 传递中。
+**通用概念**：传播行为本质是上下文传递策略的枚举——"跟随现有上下文 / 新开上下文 / 拒绝"。同样的模式出现在线程上下文（`InheritableThreadLocal`）、Go 的 `context`、分布式链路追踪的 span 传递中。
 
 ### Spring 事务什么时候会失效？
 

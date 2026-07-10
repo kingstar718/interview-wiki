@@ -75,5 +75,5 @@ private void inorder(TreeNode node, int k) {
 
 - 同套路：[98. 验证二叉搜索树](98-validate-binary-search-tree.md) —— 中序遍历的升序性质
 - 进阶：[236. 二叉树的最近公共祖先](236-lowest-common-ancestor-of-a-binary-tree.md) —— BST 顺序性质在另一类问题的应用
-- 知识点：BST 中序遍历模板见[二叉树](二叉树.md)；中序有序是这条模板的根据，见[树](树.md#二叉搜索树)
+- 知识点：BST 中序遍历模板见[二叉树](二叉树.md)；中序有序是这条模板的根据，见树
 

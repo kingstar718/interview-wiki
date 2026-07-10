@@ -47,11 +47,6 @@
     O. 关系类型   —— 题解「## 关联题」每条目必须以白名单类型前缀开头(同套路/进阶/
                     基础/易混/知识点)。关系区是图的边,类型必须可机器解析;条目里
                     是否带链接由 J 项管(未收录的题允许纯文本,收录后 J 会催回补)
-    P. 概念成色   —— 概念/<x>.md 的入链必须覆盖 ≥2 个内容域(interview + algorithms)。
-                    只在一个域出现的不算跨域概念,应回收进正文。索引页/首页的导航
-                    链接不计入,否则自己链一下就能凑够两个域,判据失效
-    Q. 概念视图   —— 概念页「出现在哪里」由 gen_concepts.py 生成,内容须与全库真实
-                    入链一致(手写的成员列表最终都会漂移,同 K/N 项的教训)
     R. 套路视图   —— 套路页「已解题目」由 gen_topics.py 从题解 topics: frontmatter
                     生成,内容须与真实 frontmatter 一致(漂移检测,镜像 Q 项之于 P 项)
 
@@ -65,7 +60,6 @@ from collections import defaultdict
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from slug import slugify, slugify_headings  # 与 Quartz 同源的 github-slugger 规则
 from outline import parse_headings  # 跳过围栏代码块提取标题
-import gen_concepts  # 概念页反链的唯一实现,P/Q 项复用它,避免两套解析漂移
 import gen_topics  # 套路页题目分组的唯一实现,F/R 项复用它,避免两套解析漂移
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -168,9 +162,9 @@ def check_unique_names(by_name):
 
 
 def check_naming():
-    """C. interview/、indexes/、概念/ 下禁止位置型数字前缀(含分类子目录)。"""
+    """C. interview/、indexes/ 下禁止位置型数字前缀(含分类子目录)。"""
     errors = []
-    for folder in ("interview", "indexes", "概念"):
+    for folder in ("interview", "indexes"):
         d = os.path.join(CONTENT, folder)
         if not os.path.isdir(d):
             continue
@@ -408,47 +402,6 @@ def check_relation_types():
                 errors.append(
                     f"{base}:{offset} 关系类型「{m.group(1)}」不在白名单 {'/'.join(RELATION_TYPES)}"
                 )
-    return errors
-
-
-def _concept_refs():
-    """概念页 -> {锚点: [(标题, 文件名, 域)]},复用 gen_concepts 的解析。"""
-    concepts = list(gen_concepts.concept_files())
-    if not concepts:
-        return [], {}
-    return concepts, gen_concepts.collect_refs({os.path.basename(p) for p in concepts})
-
-
-def check_concept_maturity():
-    """P. 概念页入链须覆盖 ≥2 个内容域(导航链接不算)。"""
-    errors = []
-    concepts, refs = _concept_refs()
-    for path in concepts:
-        base = os.path.basename(path)
-        doms = {d for hits in refs[base].values() for _t, _b, d in hits}
-        content_doms = {d for d in doms if gen_concepts.is_content_domain(d)}
-        if len(content_doms) < 2:
-            errors.append(
-                f"概念/{base} 内容域入链只有 {sorted(content_doms) or '0 个'}"
-                f"(需 ≥2 个),尚未成体系 -> 回收进正文或补足跨域引用"
-            )
-    return errors
-
-
-def check_concept_view():
-    """Q. 概念页「出现在哪里」须与全库真实入链一致(生成物不得手编/过期)。"""
-    errors = []
-    concepts, refs = _concept_refs()
-    for path in concepts:
-        base = os.path.basename(path)
-        old = read(path)
-        try:
-            new = gen_concepts.splice(old, gen_concepts.render(path, refs[base]))
-        except SystemExit as e:
-            errors.append(f"概念/{base} {e}")
-            continue
-        if new != old:
-            errors.append(f"概念/{base} 的「出现在哪里」已过期 -> 跑 python3 scripts/gen_concepts.py")
     return errors
 
 
@@ -699,8 +652,6 @@ def main():
         ("M. 锚点死链(归一化匹配)", check_anchor_links(by_name)),
         ("N. 高频表一致(题解权威源==高频索引 A 表)", check_hot_meta_sync()),
         ("O. 关系类型(关联题条目带白名单前缀)", check_relation_types()),
-        ("P. 概念成色(入链覆盖 ≥2 个内容域)", check_concept_maturity()),
-        ("Q. 概念视图(出现在哪里与真实入链一致)", check_concept_view()),
         ("R. 套路视图(已解题目与 topics/techniques 分组一致)", check_topic_view()),
         ("S. 技术词表(techniques 非空且每个 topic 有本页声明的词)", check_technique_vocab()),
     ]

@@ -54,7 +54,7 @@ class RandomizedSet {
 - **时间**：`insert` / `remove` / `getRandom` 均摊 O(1)
 - **空间**：O(n)
 
-「均摊」来自 `ArrayList` 的扩容：单次 `add` 最坏 O(n)，但 n 次 `add` 总代价 O(n)，见[摊还](摊还.md)。
+「均摊」来自 `ArrayList` 的扩容：单次 `add` 最坏 O(n)，但 n 次 `add` 总代价 O(n)，见摊还。
 
 ## 边界条件
 

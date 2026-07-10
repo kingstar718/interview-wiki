@@ -84,5 +84,5 @@ private boolean validate(TreeNode node, Integer min, Integer max) {
 
 - 同套路：[230. BST 中第 K 小的元素](230-kth-smallest-element-in-a-bst.md) —— 利用中序遍历模版
 - 进阶：[236. 二叉树的最近公共祖先](236-lowest-common-ancestor-of-a-binary-tree.md) —— BST 版 LCA 可利用值范围直接判断方向，比普通二叉树更简单
-- 知识点：BST 的递归区间性质见[二叉树](二叉树.md)；中序有序、以及不平衡时退化成链表，见[树](树.md#二叉搜索树)
+- 知识点：BST 的递归区间性质见[二叉树](二叉树.md)；中序有序、以及不平衡时退化成链表，见树
 
