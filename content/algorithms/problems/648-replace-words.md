@@ -1,6 +1,8 @@
 ---
 topics:
   - 字典树
+techniques:
+  - Trie前缀树
 ---
 
 # 648. 单词替换（Replace Words）

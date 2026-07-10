@@ -1,6 +1,9 @@
 ---
 topics:
   - 链表
+techniques:
+  - 快慢指针
+  - 虚拟头节点
 ---
 
 # 148. 排序链表（Sort List）

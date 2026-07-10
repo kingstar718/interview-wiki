@@ -1,6 +1,8 @@
 ---
 topics:
   - 位运算
+techniques:
+  - 逐位构造
 ---
 
 # 461. 汉明距离（Hamming Distance）

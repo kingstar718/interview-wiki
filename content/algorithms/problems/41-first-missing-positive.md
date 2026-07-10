@@ -1,6 +1,8 @@
 ---
 topics:
   - 数组与字符串
+techniques:
+  - 原地读写指针
 ---
 
 # 41. 缺失的第一个正数（First Missing Positive）

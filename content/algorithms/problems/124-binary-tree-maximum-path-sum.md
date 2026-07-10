@@ -1,6 +1,8 @@
 ---
 topics:
   - 二叉树
+techniques:
+  - 递归返回值设计
 ---
 
 # 124. 二叉树中的最大路径和（Binary Tree Maximum Path Sum）

@@ -1,6 +1,8 @@
 ---
 topics:
   - 数组与字符串
+techniques:
+  - 前缀和与差分
 ---
 
 # 303. 区域和检索 - 数组不可变（Range Sum Query - Immutable）

@@ -1,6 +1,8 @@
 ---
 topics:
   - 二叉树
+techniques:
+  - BFS层序
 ---
 
 # 199. 二叉树的右视图（Binary Tree Right Side View）

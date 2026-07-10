@@ -1,6 +1,8 @@
 ---
 topics:
   - 二叉树
+techniques:
+  - 树的构造与序列化
 ---
 
 # 297. 二叉树的序列化与反序列化（Serialize and Deserialize Binary Tree）

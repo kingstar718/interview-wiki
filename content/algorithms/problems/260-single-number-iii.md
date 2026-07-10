@@ -1,6 +1,8 @@
 ---
 topics:
   - 位运算
+techniques:
+  - 异或自反
 ---
 
 # 260. 只出现一次的数字 III（Single Number III）

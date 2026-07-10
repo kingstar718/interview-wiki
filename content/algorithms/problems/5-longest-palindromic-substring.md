@@ -1,6 +1,8 @@
 ---
 topics:
   - 动态规划与贪心
+techniques:
+  - 中心扩展
 ---
 
 # 5. 最长回文子串（Longest Palindromic Substring）

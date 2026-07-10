@@ -1,6 +1,8 @@
 ---
 topics:
   - 二分查找
+techniques:
+  - 二分边界
 ---
 
 # 69. x 的平方根（Sqrt(x)）

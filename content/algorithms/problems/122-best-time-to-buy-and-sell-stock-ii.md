@@ -1,6 +1,8 @@
 ---
 topics:
   - 动态规划与贪心
+techniques:
+  - 贪心证明
 ---
 
 # 122. 买卖股票的最佳时机 II（Best Time to Buy and Sell Stock II）

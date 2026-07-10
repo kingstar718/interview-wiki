@@ -2,6 +2,9 @@
 topics:
   - 排序与堆
   - 链表
+techniques:
+  - 多路归并
+  - 虚拟头节点
 ---
 
 # 23. 合并K个排序链表（Merge k Sorted Lists）

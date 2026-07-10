@@ -1,6 +1,8 @@
 ---
 topics:
   - 动态规划与贪心
+techniques:
+  - 背包
 ---
 
 # 416. 分割等和子集（Partition Equal Subset Sum）

@@ -1,6 +1,8 @@
 ---
 topics:
   - 动态规划与贪心
+techniques:
+  - 线性DP
 ---
 
 # 213. 打家劫舍 II（House Robber II）

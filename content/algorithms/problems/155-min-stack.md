@@ -1,6 +1,8 @@
 ---
 topics:
   - 栈与队列
+techniques:
+  - 栈队列设计
 ---
 
 # 155. 最小栈（Min Stack）

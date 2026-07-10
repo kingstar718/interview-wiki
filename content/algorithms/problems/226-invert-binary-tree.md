@@ -1,6 +1,8 @@
 ---
 topics:
   - 二叉树
+techniques:
+  - 递归返回值设计
 ---
 
 # 226. 翻转二叉树（Invert Binary Tree）

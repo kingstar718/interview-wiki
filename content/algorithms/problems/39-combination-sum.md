@@ -1,6 +1,9 @@
 ---
 topics:
   - 回溯
+techniques:
+  - 回溯框架
+  - 剪枝
 ---
 
 # 39. 组合总和（Combination Sum）

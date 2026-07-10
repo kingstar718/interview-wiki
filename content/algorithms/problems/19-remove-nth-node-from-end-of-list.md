@@ -1,6 +1,9 @@
 ---
 topics:
   - 链表
+techniques:
+  - 快慢指针
+  - 虚拟头节点
 ---
 
 # 19. 删除倒数第N个结点（Remove Nth Node From End of List）

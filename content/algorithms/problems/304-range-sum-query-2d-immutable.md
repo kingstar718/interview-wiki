@@ -1,6 +1,8 @@
 ---
 topics:
   - 数组与字符串
+techniques:
+  - 前缀和与差分
 ---
 
 # 304. 二维区域和检索 - 矩阵不可变（Range Sum Query 2D - Immutable）

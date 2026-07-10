@@ -1,6 +1,8 @@
 ---
 topics:
   - 字典树
+techniques:
+  - Trie前缀树
 ---
 
 # 208. 实现 Trie（Implement Trie）

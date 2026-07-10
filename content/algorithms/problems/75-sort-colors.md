@@ -2,6 +2,9 @@
 topics:
   - 双指针与滑动窗口
   - 排序与堆
+techniques:
+  - 原地读写指针
+  - 排序算法实现
 ---
 
 # 75. 颜色分类（Sort Colors）

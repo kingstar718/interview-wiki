@@ -2,6 +2,9 @@
 topics:
   - 双指针与滑动窗口
   - 栈与队列
+techniques:
+  - 滑动窗口
+  - 单调栈与单调队列
 ---
 
 # 239. 滑动窗口最大值（Sliding Window Maximum）

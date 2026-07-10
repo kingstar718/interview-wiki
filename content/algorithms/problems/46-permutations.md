@@ -1,6 +1,8 @@
 ---
 topics:
   - 回溯
+techniques:
+  - 回溯框架
 ---
 
 # 46. 全排列（Permutations）

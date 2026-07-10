@@ -1,6 +1,8 @@
 ---
 topics:
   - 双指针与滑动窗口
+techniques:
+  - 滑动窗口
 ---
 
 # 567. 字符串的排列（Permutation in String）

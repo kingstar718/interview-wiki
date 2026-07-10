@@ -253,6 +253,36 @@ def check_orphan_solutions():
     return errors
 
 
+def check_technique_vocab():
+    """S. 题解 techniques: 非空,且每个 topic 至少命中一个「该套路页声明的」技术词。
+
+    严格模式(RFC 决策 C):词必须由该题所属的某个套路页声明。白名单是「这一页展示
+    哪些分组」而非「这个词归谁所有」—— 同一个词可被多页声明(如 `哈希查表` 同时
+    属于哈希表、数组与字符串、字典树三页),这正是「01-两数之和 挂在数组页却只有
+    哈希技术」这类挂靠型 topic 的解法。
+    """
+    errors = []
+    wl = gen_topics.whitelist()
+    vocab = {t for v in wl.values() for t in v}
+    for path in gen_topics.problem_files():
+        rel = os.path.relpath(path, ROOT)
+        text = read(path)
+        topics, techs = gen_topics.parse_topics(text), gen_topics.parse_techniques(text)
+        if not techs:
+            errors.append(f"{rel} 缺少 techniques: frontmatter(题解必须标注至少一个技术词)")
+            continue
+        for x in techs:
+            if x not in vocab:
+                errors.append(f"{rel} techniques 里的「{x}」不在词表内(拼写错误?词表见套路页 frontmatter)")
+        for t in topics:
+            if t in wl and not set(techs) & set(wl[t]):
+                errors.append(
+                    f"{rel} 的 topics 含「{t}」,但 techniques {techs} 没有一个是该套路页声明的词"
+                    f" -> 补词、或让 {t}.md 声明其中一个词、或去掉这个 topic"
+                )
+    return errors
+
+
 MAP_HEADING = "## 面试追问地图"
 MAP_EXEMPT = {"面试问题深挖指南.md"}
 H2_RE = re.compile(r"^##\s")
@@ -264,11 +294,15 @@ META_PARTS = [
     ("高频", None),  # 公司清单单独校验
 ]
 COMPANIES = {"阿里", "腾讯", "字节", "美团", "百度", "京东", "拼多多", "滴滴", "网易", "快手", "全厂"}
-SOLUTION_RE = re.compile(r"^(\d+)-.+\.md$")
-ALGO_H1_RE = re.compile(r"^# \d+\. .+（.+）$")
+# 题解文件名: `42-trapping-rain-water.md` 或 `offer40-least-k-numbers.md`(剑指题号是稳定 ID)
+SOLUTION_RE = re.compile(r"^(\d+|offer\d+)-.+\.md$")
+# H1: LeetCode 题为「42. 接雨水（Trapping Rain Water）」;剑指题无官方英文名,只要求中文题名
+ALGO_H1_RE = re.compile(r"^# (?:\d+\. .+（.+）|剑指 Offer(?: II)? \d+(?: - II)?\. .+)$")
 ALGO_SECTIONS = ["题目", "思路", "代码", "复杂度", "边界条件", "变式", "易错点", "面试追问", "关联题"]
 # 题号提及: 非行首的「数字. 」或「数字、」后跟中英文(行首是有序列表序号,不算)
 MENTION_RE = re.compile(r"(\d{1,4})[.、]\s?[A-Za-z一-龥]")
+# 剑指题号「剑指 Offer II 14.」形如 LeetCode 题号提及,扫描前先抹掉,否则 14/40/45 会被误判为欠链
+OFFER_TITLE_RE = re.compile(r"剑指 Offer(?: II)? \d+(?: - II)?\.")
 ALGO_INDEX = os.path.join(CONTENT, "indexes", "算法题索引.md")
 HOT_INDEX = os.path.join(CONTENT, "indexes", "高频题目索引.md")
 
@@ -339,7 +373,7 @@ def check_related_links():
                 if lm:
                     linked.add(lm.group(1))
         for lineno, line in enumerate(text_lines, 1):
-            bare = LINK_RE.sub("", line)
+            bare = OFFER_TITLE_RE.sub("", LINK_RE.sub("", line))
             for m in MENTION_RE.finditer(bare):
                 num = m.group(1)
                 if bare[: m.start()].strip() == "":
@@ -468,12 +502,13 @@ def check_topic_view():
     if not patterns:
         return errors
     names = {os.path.splitext(os.path.basename(p))[0] for p in patterns}
+    wl = gen_topics.whitelist()
     groups, _orphans = gen_topics.collect_groups(names)
     for path in patterns:
         name = os.path.splitext(os.path.basename(path))[0]
         old = read(path)
         try:
-            new = gen_topics.splice(old, gen_topics.render(groups[name]))
+            new = gen_topics.splice(old, gen_topics.render(name, groups[name], wl))
         except SystemExit as e:
             errors.append(f"algorithms/{name}.md {e}")
             continue
@@ -485,8 +520,13 @@ def check_topic_view():
 def check_hot_meta_sync():
     """N. 题解元数据行(权威源) vs 高频题目索引 A 表(视图) 逐行比对。"""
     errors = []
-    # 题号按整数归一:题解文件名允许零填充(01-two-sum.md)
-    actual = {str(int(num)): (path, base) for path, num, base in solution_files()}
+    # 题号按整数归一:题解文件名允许零填充(01-two-sum.md)。
+    # 剑指题(offerNN-)没有 LeetCode 题号,A 表里也不会出现,跳过。
+    actual = {
+        str(int(num)): (path, base)
+        for path, num, base in solution_files()
+        if num.isdigit()
+    }
     in_section_a = False
     for lineno, line in enumerate(read(HOT_INDEX).splitlines(), 1):
         if line.startswith("## "):
@@ -691,7 +731,8 @@ def main():
         ("O. 关系类型(关联题条目带白名单前缀)", check_relation_types()),
         ("P. 概念成色(入链覆盖 ≥2 个内容域)", check_concept_maturity()),
         ("Q. 概念视图(出现在哪里与真实入链一致)", check_concept_view()),
-        ("R. 套路视图(已解题目与 topics: frontmatter 一致)", check_topic_view()),
+        ("R. 套路视图(已解题目与 topics/techniques 分组一致)", check_topic_view()),
+        ("S. 技术词表(techniques 非空且每个 topic 有本页声明的词)", check_technique_vocab()),
     ]
     failed = False
     for name, errors in checks:

@@ -1,6 +1,8 @@
 ---
 topics:
   - 动态规划与贪心
+techniques:
+  - 股票状态机DP
 ---
 
 # 188. 买卖股票的最佳时机 IV（Best Time to Buy and Sell Stock IV）

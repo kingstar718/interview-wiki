@@ -1,6 +1,8 @@
 ---
 topics:
   - 图论
+techniques:
+  - 并查集
 ---
 
 # 990. 等式方程的可满足性（Satisfiability of Equality Equations）

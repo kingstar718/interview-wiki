@@ -1,6 +1,8 @@
 ---
 topics:
   - 栈与队列
+techniques:
+  - 单调栈与单调队列
 ---
 
 # 503. 下一个更大元素 II（Next Greater Element II）

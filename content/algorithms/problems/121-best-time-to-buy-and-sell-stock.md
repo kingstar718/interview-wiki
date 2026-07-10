@@ -2,6 +2,8 @@
 topics:
   - 动态规划与贪心
   - 数组与字符串
+techniques:
+  - 线性扫描维护状态
 ---
 
 # 121. 买卖股票的最佳时机（Best Time to Buy and Sell Stock）

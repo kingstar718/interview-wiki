@@ -1,6 +1,8 @@
 ---
 topics:
   - 数组与字符串
+techniques:
+  - 原地读写指针
 ---
 
 # 88. 合并两个有序数组（Merge Sorted Array）

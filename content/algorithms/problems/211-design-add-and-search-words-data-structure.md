@@ -1,6 +1,8 @@
 ---
 topics:
   - 字典树
+techniques:
+  - Trie前缀树
 ---
 
 # 211. 添加与搜索单词（Design Add and Search Words Data Structure）

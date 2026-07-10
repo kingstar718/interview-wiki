@@ -1,6 +1,8 @@
 ---
 topics:
   - 图论
+techniques:
+  - 图遍历
 ---
 
 # 200. 岛屿数量（Number of Islands）

@@ -1,6 +1,8 @@
 ---
 topics:
   - 数组与字符串
+techniques:
+  - 原地读写指针
 ---
 
 # 27. 移除元素（Remove Element）

@@ -1,6 +1,9 @@
 ---
 topics:
   - 链表
+techniques:
+  - 虚拟头节点
+  - 三指针反转
 ---
 
 # 25. K个一组翻转链表（Reverse Nodes in k-Group）

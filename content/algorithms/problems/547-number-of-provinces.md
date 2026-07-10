@@ -1,6 +1,8 @@
 ---
 topics:
   - 图论
+techniques:
+  - 并查集
 ---
 
 # 547. 省份数量（Number of Provinces）

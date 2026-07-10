@@ -1,6 +1,8 @@
 ---
 topics:
   - 链表
+techniques:
+  - 虚拟头节点
 ---
 
 # 92. 反转链表II（Reverse Linked List II）

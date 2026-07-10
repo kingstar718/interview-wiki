@@ -2,6 +2,8 @@
 topics:
   - 哈希表
   - 数组与字符串
+techniques:
+  - 哈希查表
 ---
 
 # 1. 两数之和（Two Sum）

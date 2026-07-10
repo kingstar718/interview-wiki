@@ -1,6 +1,8 @@
 ---
 topics:
   - 数组与字符串
+techniques:
+  - 矩阵操作
 ---
 
 # 54. 螺旋矩阵（Spiral Matrix）

@@ -1,6 +1,8 @@
 ---
 topics:
   - 栈与队列
+techniques:
+  - 单调栈与单调队列
 ---
 
 # 84. 柱状图中最大矩形（Largest Rectangle in Histogram）

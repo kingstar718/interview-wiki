@@ -1,6 +1,8 @@
 ---
 topics:
   - 排序与堆
+techniques:
+  - 对顶堆
 ---
 
 # 295. 数据流的中位数（Find Median from Data Stream）

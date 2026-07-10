@@ -1,6 +1,8 @@
 ---
 topics:
   - 二叉树
+techniques:
+  - 树的构造与序列化
 ---
 
 # 105. 从前序与中序遍历构造二叉树（Construct Binary Tree from Preorder and Inorder Traversal）

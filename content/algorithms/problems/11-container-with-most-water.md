@@ -2,6 +2,8 @@
 topics:
   - 双指针与滑动窗口
   - 数组与字符串
+techniques:
+  - 对撞指针
 ---
 
 # 11. 盛最多水的容器（Container With Most Water）

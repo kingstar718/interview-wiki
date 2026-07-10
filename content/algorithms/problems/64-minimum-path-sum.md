@@ -1,6 +1,8 @@
 ---
 topics:
   - 动态规划与贪心
+techniques:
+  - 二维DP
 ---
 
 # 64. 最小路径和（Minimum Path Sum）

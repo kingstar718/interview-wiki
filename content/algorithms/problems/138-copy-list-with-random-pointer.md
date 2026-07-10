@@ -1,6 +1,8 @@
 ---
 topics:
   - 链表
+techniques:
+  - 节点映射
 ---
 
 # 138. 复制带随机指针的链表（Copy List with Random Pointer）

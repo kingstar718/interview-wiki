@@ -1,6 +1,8 @@
 ---
 topics:
   - 位运算
+techniques:
+  - 异或自反
 ---
 
 # 136. 只出现一次的数字（Single Number）

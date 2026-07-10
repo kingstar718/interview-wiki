@@ -1,6 +1,8 @@
 ---
 topics:
   - 动态规划与贪心
+techniques:
+  - 贪心证明
 ---
 
 # 406. 根据身高重建队列（Queue Reconstruction by Height）

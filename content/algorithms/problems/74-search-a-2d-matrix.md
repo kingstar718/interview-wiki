@@ -1,6 +1,8 @@
 ---
 topics:
   - 二分查找
+techniques:
+  - 二分边界
 ---
 
 # 74. 搜索二维矩阵（Search a 2D Matrix）

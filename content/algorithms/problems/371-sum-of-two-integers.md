@@ -1,6 +1,8 @@
 ---
 topics:
   - 位运算
+techniques:
+  - 逐位构造
 ---
 
 # 371. 两整数之和（Sum of Two Integers）

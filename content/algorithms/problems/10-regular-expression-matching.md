@@ -1,6 +1,8 @@
 ---
 topics:
   - 动态规划与贪心
+techniques:
+  - 二维DP
 ---
 
 # 10. 正则表达式匹配（Regular Expression Matching）

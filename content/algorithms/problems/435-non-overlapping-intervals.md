@@ -1,6 +1,8 @@
 ---
 topics:
   - 动态规划与贪心
+techniques:
+  - 贪心证明
 ---
 
 # 435. 无重叠区间（Non-overlapping Intervals）

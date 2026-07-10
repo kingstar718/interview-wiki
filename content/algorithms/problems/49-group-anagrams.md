@@ -1,6 +1,8 @@
 ---
 topics:
   - 哈希表
+techniques:
+  - 哈希查表
 ---
 
 # 49. 字母异位词分组（Group Anagrams）

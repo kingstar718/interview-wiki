@@ -1,6 +1,8 @@
 ---
 topics:
   - 二分查找
+techniques:
+  - 二分边界
 ---
 
 # 153. 寻找旋转排序数组中的最小值（Find Minimum in Rotated Sorted Array）

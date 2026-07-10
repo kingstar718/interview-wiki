@@ -1,6 +1,8 @@
 ---
 topics:
   - 动态规划与贪心
+techniques:
+  - 贪心证明
 ---
 
 # 55. 跳跃游戏（Jump Game）

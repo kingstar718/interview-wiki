@@ -1,6 +1,8 @@
 ---
 topics:
   - 排序与堆
+techniques:
+  - 堆TopK
 ---
 
 # 347. 前 K 个高频元素（Top K Frequent Elements）

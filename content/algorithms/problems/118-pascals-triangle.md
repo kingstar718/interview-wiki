@@ -1,6 +1,8 @@
 ---
 topics:
   - 数组与字符串
+techniques:
+  - 模拟构造
 ---
 
 # 118. 杨辉三角（Pascal's Triangle）

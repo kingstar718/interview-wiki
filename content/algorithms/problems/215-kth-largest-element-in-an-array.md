@@ -1,6 +1,9 @@
 ---
 topics:
   - 排序与堆
+techniques:
+  - 堆TopK
+  - 快速选择
 ---
 
 # 215. 数组中的第 K 个最大元素（Kth Largest Element in an Array）

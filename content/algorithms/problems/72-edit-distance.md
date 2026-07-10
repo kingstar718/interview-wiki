@@ -1,6 +1,8 @@
 ---
 topics:
   - 动态规划与贪心
+techniques:
+  - 二维DP
 ---
 
 # 72. 编辑距离（Edit Distance）

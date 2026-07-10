@@ -1,6 +1,8 @@
 ---
 topics:
   - 图论
+techniques:
+  - 并查集
 ---
 
 # 1319. 连通网络的操作次数（Number of Operations to Make Network Connected）

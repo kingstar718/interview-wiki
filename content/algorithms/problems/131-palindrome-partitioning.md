@@ -1,6 +1,9 @@
 ---
 topics:
   - 回溯
+techniques:
+  - 回溯框架
+  - 剪枝
 ---
 
 # 131. 分割回文串（Palindrome Partitioning）

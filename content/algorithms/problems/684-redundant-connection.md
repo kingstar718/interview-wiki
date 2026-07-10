@@ -1,6 +1,8 @@
 ---
 topics:
   - 图论
+techniques:
+  - 并查集
 ---
 
 # 684. 冗余连接（Redundant Connection）
