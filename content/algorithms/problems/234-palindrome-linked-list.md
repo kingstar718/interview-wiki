@@ -143,4 +143,4 @@ public boolean isPalindrome(ListNode head) {
 
 - 同套路：[876. 链表的中间结点](876-middle-of-the-linked-list.md)（找中点）、[206. 反转链表](206-reverse-linked-list.md)（反转子过程）
 - 进阶：[143. 重排链表](143-reorder-list.md) —— 同样用到找中点 + 反转 + 双指针遍历的组合
-- 易混：[9. 回文数](https://leetcode.cn/problems/palindrome-number/)（数字回文，反转一半比较）、[125. 验证回文串](https://leetcode.cn/problems/valid-palindrome/)（字符串回文，双指针）
+- 易混：[9. 回文数](9-palindrome-number.md)（数字回文，反转一半比较）、[125. 验证回文串](125-valid-palindrome.md)（字符串回文，双指针）

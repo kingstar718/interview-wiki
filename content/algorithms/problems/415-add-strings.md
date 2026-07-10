@@ -68,7 +68,7 @@ public String addStrings(String num1, String num2) {
 ## 变式
 
 - **二进制相加**（[67. 二进制求和](https://leetcode.cn/problems/add-binary/)）：思路完全一样，只是逢 2 进 1。
-- **字符串相乘**（[43. 字符串相乘](https://leetcode.cn/problems/multiply-strings/)）：需要每一位相乘后错位相加，是本题的扩展。
+- **字符串相乘**（[43. 字符串相乘](43-multiply-strings.md)）：需要每一位相乘后错位相加，是本题的扩展。
 - **链表版两数相加**：见 [2. 两数相加](2-add-two-numbers.md)（逆序存储，正序还需先反转）。
 
 ## 易错点
@@ -87,5 +87,5 @@ public String addStrings(String num1, String num2) {
 ## 关联题
 
 - 同套路：[2. 两数相加](2-add-two-numbers.md)（链表版）、[66. 加一](66-plus-one.md)（数组版）
-- 进阶：[43. 字符串相乘](https://leetcode.cn/problems/multiply-strings/)（多位数乘法，每位相乘后错位相加）
+- 进阶：[43. 字符串相乘](43-multiply-strings.md)（多位数乘法，每位相乘后错位相加）
 - 知识点：大数模拟的 carry 中间变量 + 收尾补进位的三段式是"任意进制加法"的通用骨架

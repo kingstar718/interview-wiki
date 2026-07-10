@@ -67,7 +67,7 @@ private boolean check(TreeNode p, TreeNode q) {
 ## 变式
 
 - **迭代版**：用双端队列或两个队列同步存入左右子树的待比较节点
-- **[100. 相同的树](https://leetcode.cn/problems/same-tree/)**：判两棵树是否相同，改一下递归方向就是对称判定
+- **[100. 相同的树](100-same-tree.md)**：判两棵树是否相同，改一下递归方向就是对称判定
 - 判断树是否是自己的镜像：本题即是
 
 ## 易错点
