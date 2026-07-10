@@ -71,7 +71,7 @@ public List<List<String>> groupAnagrams(String[] strs) {
 
 ## 关联题
 
-- 同套路：242. 有效的字母异位词 —— 单对判断版，本题是它的批量聚合
+- 同套路：[242. 有效的字母异位词](242-valid-anagram.md) —— 单对判断版，本题是它的批量聚合
 - 进阶：[438. 找到字符串中所有字母异位词](438-find-all-anagrams-in-a-string.md) —— 规范化思想 + 滑动窗口
 - 知识点：HashMap 的 hashCode/equals 契约与 O(1) 查找，见[集合框架](集合框架.md)
 

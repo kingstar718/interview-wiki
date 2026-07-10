@@ -55,7 +55,7 @@ public int minPathSum(int[][] grid) {
 
 - **[62. 不同路径](62-unique-paths.md)**：方案数而不是和
 - **[63. 不同路径 II](63-unique-paths-ii.md)**：含障碍物
-- **[120. 三角形最小路径和](https://leetcode.cn/problems/triangle/)**：三角形网格版
+- **[120. 三角形最小路径和](120-triangle.md)**：三角形网格版
 
 ## 易错点
 
