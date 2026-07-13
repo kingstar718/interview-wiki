@@ -5,6 +5,8 @@
     python3 scripts/outline.py Redis            # 打印文件名含 "Redis" 的专题标题树+行号
     python3 scripts/outline.py --grep 缓存预热   # 全库定位考点: 标题命中 + 正文命中(标注所在小节)
     python3 scripts/outline.py --grep -t 预热    # 只搜标题,不搜正文
+    python3 scripts/outline.py --tech           # 列出 44 个算法技术词 + 各自覆盖题数
+    python3 scripts/outline.py --tech 单调栈    # 列出该技术词下的所有题解
 
 设计前提: 小节标题是稳定语义 ID(规范见 CONTRIBUTING.md),定位到标题即定位到考点。
 本脚本即时生成不落盘 —— 任何需要手工同步的清单最终都会烂掉。
@@ -108,12 +110,51 @@ def grep(keyword, title_only):
     return 0
 
 
+def tech(keyword):
+    """--tech: 按技术词检索题解。不给词就列出全部词表 + 覆盖数。
+
+    延迟导入 gen_topics: 它反过来依赖本模块的 parse_headings,顶层导入会成环。
+    """
+    import gen_topics as g
+
+    wl = g.whitelist()
+    vocab = sorted({t for v in wl.values() for t in v})
+    hits = {}
+    for path in g.problem_files():
+        for t in g.parse_techniques(g.read(path)):
+            hits.setdefault(t, []).append(path)
+
+    if not keyword:
+        print(f"技术词表 {len(vocab)} 词(权威源: 各套路页 frontmatter 的 techniques:)\n")
+        for pat, techs in sorted(wl.items()):
+            print(f"{pat}")
+            for t in techs:
+                print(f"  {t:<16} {len(hits.get(t, [])):>3} 题")
+        return 0
+
+    matched = [t for t in vocab if keyword in t]
+    if not matched:
+        print(f"「{keyword}」不在技术词表内。跑 outline.py --tech 看全部 {len(vocab)} 个词。")
+        return 1
+    for t in matched:
+        items = sorted(hits.get(t, []), key=lambda p: g.sort_key(os.path.basename(p)))
+        print(f"\n{t}({len(items)} 题)")
+        for p in items:
+            print(f"  {g.h1_title(p):<44} algorithms/problems/{os.path.basename(p)}")
+    return 0
+
+
 def main():
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    ap.add_argument("keyword", help="文件名关键词;配合 --grep 时为考点关键词")
+    ap.add_argument("keyword", nargs="?", help="文件名关键词;配合 --grep/--tech 时为考点/技术词")
     ap.add_argument("--grep", action="store_true", help="全库搜索模式(标题+正文)")
     ap.add_argument("-t", "--title-only", action="store_true", help="--grep 时只搜标题")
+    ap.add_argument("--tech", action="store_true", help="按技术词检索题解(不给词则列出全部词表)")
     args = ap.parse_args()
+    if args.tech:
+        return tech(args.keyword)
+    if not args.keyword:
+        ap.error("需要 keyword(或用 --tech 列出技术词表)")
     if args.grep:
         return grep(args.keyword, args.title_only)
     return show_outline(args.keyword)
