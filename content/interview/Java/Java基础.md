@@ -8,10 +8,15 @@
 | String 不可变 | final、字符存储、哈希缓存、安全性 | 字符串常量池、intern、拼接优化 |
 | equals/hashCode | 相等契约、哈希容器定位 | 只重写 equals 会怎样、可变 Key 风险 |
 | 抽象类与接口 | 单继承、多实现、状态与行为 | default 方法冲突、如何选型 |
+| 内部类 | 成员/静态/局部/匿名四类 | 内存泄漏、final 变量捕获 |
+| 枚举 | 类型安全、单例、携带数据 | 策略枚举、与常量对比 |
+| 不可变类 | final 字段、防御性拷贝 | 与 Record 的关系 |
+| 组合 vs 继承 | is-a vs has-a、耦合度 | "组合优于继承"原则 |
 | 反射与注解 | Class 元数据、运行期解析 | 性能开销、框架如何扫描、代理关系 |
 | SPI | META-INF/services、ServiceLoader 懒加载 | 上下文类加载器为何破坏双亲委派、Dubbo SPI 改进点 |
 | 泛型 | 类型擦除、编译期约束 | PECS、桥接方法、为何不能 new T |
-| Stream | 惰性求值、中间/终止操作 | 并行流线程池、副作用、性能边界 |
+| 异常 | 受检 vs 非受检、常见异常类 | 自定义异常、finally 执行时机 |
+| Stream | 惰性求值、中间/终止操作 | 方法引用、并行流陷阱、collector |
 | CompletableFuture | 任务编排、异常传播、线程池 | thenApply/thenCompose、超时和取消 |
 | IO/NIO | 阻塞模型、Channel/Buffer/Selector | 零拷贝、半包粘包、Netty 如何使用 |
 | 序列化 | 对象到字节、版本兼容 | serialVersionUID、安全风险、替代协议 |
@@ -589,6 +594,142 @@ Object obj = ois.readObject();
 - serialVersionUID 有什么用？→ 反序列化时的版本校验凭据：不显式声明时由编译器按类结构哈希自动生成，类一改动它就变 → 老数据反序列化直接抛 `InvalidClassException`；显式声明后增删字段可以兼容（新增字段读出默认值，删掉的字段被忽略）
 - 为什么说反序列化有安全风险？→ `readObject` 会执行对象图里各类的反序列化逻辑，攻击者用 gadget chain（如 Apache Commons Collections 链）可以达成远程代码执行；JDK 9（JEP 290，后移植到 8u121）引入反序列化过滤器，原则是**永远不反序列化不可信数据**
 - transient 和 static 字段会被序列化吗？→ 都不会。transient 是显式排除；static 属于类不属于对象实例
+
+---
+
+## 七、面向对象深入
+
+### 什么是内部类？内部类有哪些类型？使用场景是什么？
+
+频次 ★★ · 难度 🟡
+
+**是什么**：定义在另一个类内部的类。Java 支持四种内部类：
+
+| 类型 | 定义位置 | 特点 | 典型场景 |
+|------|---------|------|---------|
+| **成员内部类** | 类体内、方法外 | 可访问外部类所有成员；外部类实例存在后才能创建 | 紧密关联外部类逻辑的辅助类 |
+| **静态内部类** | 类体内，`static` 修饰 | 不依赖外部类实例，只能访问外部类静态成员 | 与外部类工具性关联（如 Builder 模式） |
+| **局部内部类** | 方法体内 | 作用域局限于方法内，可访问局部变量（需 final/effectively final） | 临时封装方法内逻辑 |
+| **匿名内部类** | 表达式位置（`new 接口(){}`） | 隐式继承类或实现接口，无类名，最简洁 | 回调、事件监听、一次性实现 |
+
+**为什么用静态内部类更安全**：非静态内部类隐式持有外部类 `this` 引用，如果内部类生命周期长于外部类（如被提交到线程池），会导致**外部类无法被 GC 回收**（内存泄漏）。静态内部类不持有外部引用，更安全。
+
+**常见追问**：匿名内部类为什么只能访问 final 局部变量？→ Java 通过**值拷贝**将局部变量复制到匿名内部类对象中，如果变量可变，内外不一致会产生语义歧义——所以强制 final/effectively final，保证内外看到的值一致。
+
+### this 和 super 关键字在 Java 中的作用和区别是什么？
+
+**是什么**：`this` 引用当前对象实例，`super` 引用父类部分。`this()` 调用本类其他构造器，`super()` 调用父类构造器（必须放构造器首行，两者不能同时出现）。
+
+**常见用法**：`this.field`（区分同名参数和实例变量）、`super.method()`（调用被重写的父类方法）、`super()`（子类构造器默认隐式调用父类无参构造器，父类没有无参构造器时必须显式调用）。
+
+### Java 中的枚举类型是如何定义的？枚举相比常量有什么优势？
+
+频次 ★★ · 难度 🟡
+
+**是什么**：`enum` 关键字定义枚举类型，每个枚举值是该类型的一个 `public static final` 实例。`enum` 默认继承 `java.lang.Enum`，不可再继承其他类，但可实现接口。
+
+**相比常量（`public static final int`）的优势**：
+- **类型安全**：编译器检查类型，不会把 `Color.RED` 误传成其他 int 值
+- **命名空间**：枚举值自带所属类型，不会像 int 常量那样全局污染
+- **可携带数据和行为**：枚举可以有字段、构造器、方法
+- **switch 友好**：Java 7+ switch 支持枚举，IDE 补全所有 case
+- **单例天然保证**：每个枚举值在 JVM 中只有一个实例，是实现单例的最安全方式
+
+**高级用法**：枚举构造器定义字段（如 `RED(0xFF0000)`），每个枚举值实现接口的不同行为（策略枚举），`values()` 遍历所有值。
+
+### 如何设计一个不可变类？
+
+频次 ★★ · 难度 🟡
+
+**是什么**：不可变类创建后其状态（字段值）不可改变。Java 的 `String`、`Integer`、`BigDecimal`、`Record` 都是不可变类。
+
+**设计规则**：
+1. 类声明为 `final`，防止子类破坏不可变性
+2. 所有字段 `private final`
+3. 不提供 setter 方法
+4. 如果字段是可变对象引用，**防御性拷贝**：构造器拷贝传入对象，getter 返回拷贝而非原始引用
+5. 可变操作返回新对象而非修改当前对象（`String.substring()` 返回新 `String`）
+
+**为什么不可变类线程安全**：状态不可变 → 不存在竞态条件 → 多线程随意共享，不需要同步。这是 `String` 作为 HashMap key 的原因——hashCode 可以缓存，不怕被改。
+
+**常见追问**：`final` 修饰引用类型字段，引用不能变但对象内容能变 → 需要防御性拷贝，或使用 `List.copyOf()` / `Collections.unmodifiableList()` 包装。
+
+### 组合与继承各有什么优缺点？什么情况下选择组合而不是继承？
+
+频次 ★★ · 难度 🟡
+
+**是什么**：继承用 `extends` 复用父类代码，组合在类内部持有另一个类的实例引用。
+
+| 维度 | 继承 | 组合 |
+|------|------|------|
+| 关系 | `is-a`（子类是父类） | `has-a`（包含关系） |
+| 耦合度 | 高（子类依赖父类实现细节） | 低（只依赖接口） |
+| 灵活性 | 编译时确定，不可变 | 运行时动态替换 |
+| 封装性 | 破坏封装（子类访问父类 protected 成员） | 不破坏封装 |
+| 扩展性 | 只能单继承 | 可组合多个行为 |
+
+**"组合优于继承"原则**：继承是强耦合——父类改实现子类可能跟着出问题。组合通过接口 + 委托实现更灵活的复用。只有当确实存在"is-a"关系且父类设计为继承而设计时（如模板方法模式），才用继承。
+
+### 泛型擦除是什么？它如何影响泛型运行时的行为？
+
+频次 ★★ · 难度 🟡
+
+**是什么**：Java 泛型通过**编译期类型擦除**实现。编译器将泛型类型参数替换为边界类型（默认 `Object`），在需要时插入强制类型转换。编译后字节码中不保留泛型信息。
+
+**影响**：
+- `List<String>` 和 `List<Integer>` 的 Class 对象相同（都是 `List.class`）——无法通过 `instanceof` 区分泛型参数类型
+- 不能 `new T()` 或 `new T[]`（运行时不知道 T 是什么）
+- 静态字段不能使用泛型类型参数（类级共享，与泛型实例化矛盾）
+- bridge method：编译器为保持多态自动生成桥接方法
+
+**常见追问**：泛型擦除为什么要保留？→ 兼容 Java 5 之前的原始类型（raw type），让旧代码不做任何修改就能在新 JVM 跑。C# 的泛型是运行时保留的（reified generics），各有取舍。
+
+---
+
+## 八、异常与函数式补充
+
+### Java 常见的异常类有哪些？
+
+频次 ★★ · 难度 🟡
+
+**运行时异常（RuntimeException，非受检）**：
+- `NullPointerException`：对象为 null 时调用方法/访问字段
+- `IndexOutOfBoundsException`：数组/集合索引越界（`ArrayIndexOutOfBoundsException`、`StringIndexOutOfBoundsException`）
+- `IllegalArgumentException`：方法参数不合法（含 `NumberFormatException`）
+- `IllegalStateException`：对象状态不满足方法调用条件
+- `ClassCastException`：类型转换错误
+- `ConcurrentModificationException`：迭代集合时被结构修改（fail-fast）
+- `ArithmeticException`：算术异常（如除零）
+
+**受检异常（Checked Exception，编译期强制处理）**：
+- `IOException`：I/O 操作失败（含 `FileNotFoundException`）
+- `SQLException`：数据库操作失败
+- `ClassNotFoundException`：`Class.forName()` 找不到类
+- `InterruptedException`：线程被中断
+
+**Error（不要求处理，通常无法恢复）**：
+- `OutOfMemoryError`：堆内存耗尽
+- `StackOverflowError`：递归过深
+- `NoClassDefFoundError`：编译时存在但运行时找不到的类
+
+### 如何在 Java 中自定义异常？
+
+**是什么**：继承 `Exception`（受检异常）或 `RuntimeException`（非受检异常），提供构造器，可选添加错误码等额外信息。`throw` 抛出异常实例，`throws` 声明方法可能抛出的异常类型。
+
+### Java 中的方法引用（Method References）是什么？如何使用？
+
+频次 ★★ · 难度 🟡
+
+**是什么**：当 Lambda 表达式只是调用一个已存在的方法时，可用方法引用作为更简洁的替代。`::` 语法。
+
+| 类型 | 语法 | Lambda 等价 |
+|------|------|------------|
+| 静态方法引用 | `ClassName::staticMethod` | `(args) -> ClassName.staticMethod(args)` |
+| 实例方法引用（特定对象） | `instance::method` | `(args) -> instance.method(args)` |
+| 实例方法引用（任意对象） | `ClassName::instanceMethod` | `(obj, args) -> obj.instanceMethod(args)` |
+| 构造器引用 | `ClassName::new` | `(args) -> new ClassName(args)` |
+
+**实例**：`list.forEach(System.out::println)`、`stream.map(String::toUpperCase)`、`stream.collect(Collectors.toCollection(ArrayList::new))`。
 
 ---
 
