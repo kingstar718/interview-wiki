@@ -52,7 +52,7 @@ public boolean canPartition(int[] nums) {
 
 - **[494. 目标和](https://leetcode.cn/problems/target-sum/)**：每个数前加 +/-，凑目标和——同样是 0-1 背包，`dp[j] += dp[j - num]` 计数
 - **[322. 零钱兑换](322-coin-change.md)**：完全背包，求最值
-- **1049. 最后一块石头的重量 II**：转化为 0-1 背包
+- **[1049. 最后一块石头的重量 II](1049-last-stone-weight-ii.md)**：转化为 0-1 背包
 
 ## 易错点
 

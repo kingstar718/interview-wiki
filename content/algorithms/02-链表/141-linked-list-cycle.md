@@ -61,7 +61,7 @@ public boolean hasCycle(ListNode head) {
 ## 关联题
 
 - 同套路：[142. 环形链表II](142-linked-list-cycle-ii.md)、[876. 链表的中间结点](876-middle-of-the-linked-list.md) —— 快慢指针三兄弟：判环、找入口、找中点
-- 进阶：202. 快乐数 —— 数字平方和序列判环，Floyd 思想脱离链表也能用
+- 进阶：[202. 快乐数](202-happy-number.md) —— 数字平方和序列判环，Floyd 思想脱离链表也能用
 - 易混：[160. 相交链表](160-intersection-of-two-linked-lists.md) —— 同是"双指针相遇"，但靠换轨对齐路程差，不是速度差
 - 知识点：环检测与 [JVM](JVM.md) 引用计数无法回收循环引用，是同一个"引用成环"问题
 

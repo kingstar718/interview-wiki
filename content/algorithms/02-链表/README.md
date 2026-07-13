@@ -3,7 +3,7 @@
 > 完整题单(含难度/频次/常考公司)见 [算法题索引.md](算法题索引.md#02-链表)。
 > 下列为本专题**已解题目**,按题号排序,点击进详解(思路/复杂度/Java 代码/变式/易错点)。
 
-## 已解题目(13)
+## 已解题目(15)
 
 - [2. 两数相加](2-add-two-numbers.md)
 - [19. 删除倒数第N个结点](19-remove-nth-node-from-end-of-list.md)
@@ -16,5 +16,7 @@
 - [142. 环形链表II](142-linked-list-cycle-ii.md)
 - [148. 排序链表](148-sort-list.md)
 - [160. 相交链表](160-intersection-of-two-linked-lists.md)
+- [203. 移除链表元素](203-remove-linked-list-elements.md)
 - [206. 反转链表](206-reverse-linked-list.md)
+- [707. 设计链表](707-design-linked-list.md)
 - [876. 链表的中间结点](876-middle-of-the-linked-list.md)
