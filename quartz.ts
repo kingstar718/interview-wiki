@@ -8,9 +8,9 @@ Explorer({
   // 顶层目录显示中文名(仅影响侧栏,不改真实路径/面包屑)
   mapFn: (node) => {
     const NAMES: Record<string, string> = {
-      indexes: "索引",
-      interview: "社招八股",
-      algorithms: "算法刷题",
+      interview: "面试专题",
+      algorithms: "算法题",
+      problems: "题库",
     }
     if (node.isFolder && NAMES[node.displayName]) {
       node.displayName = NAMES[node.displayName]
@@ -22,11 +22,13 @@ Explorer({
   sortFn: (a, b) => {
     const ORDER = [
       // 顶层(mapFn 改名后的显示名)
-      "索引",
-      "社招八股",
-      "算法刷题",
-      // indexes/(显示名取页面 H1,知识点索引的 H1 是「社招面试问题知识点」)
-      "社招面试问题知识点",
+      "知识点索引",
+      "算法题索引",
+      "高频题目索引",
+      "面试专题",
+      "算法题",
+      // indexes/(显示名取页面 H1)
+      "知识点索引",
       "算法题索引",
       "高频题目索引",
       // interview/ 分类(学习顺序)
@@ -78,8 +80,25 @@ Explorer({
       "面试问题深挖指南",
       "项目经历与场景题",
       "领域建模与代码设计",
-      // algorithms/(训练计划置顶,专题目录按编号回退排序)
-      "社招算法训练计划",
+      "HR面与软技能",
+      // algorithms/(套路节点在前,原始题目池在后;新增套路在此登记,否则会被
+      // 排到 problems/ 之后 —— 默认排序是"目录在前、文件在后",problems/
+      // 是这里唯一的子目录,不登记就会排到 13 个套路文件前面,顺序反了)
+      "数组与字符串",
+      "链表",
+      "栈与队列",
+      "哈希表",
+      "双指针与滑动窗口",
+      "二分查找",
+      "二叉树",
+      "图论",
+      "回溯",
+      "动态规划与贪心",
+      "排序与堆",
+      "字典树",
+      "位运算",
+      "算法总览",
+      "题库",
     ]
     const ra = ORDER.indexOf(a.displayName)
     const rb = ORDER.indexOf(b.displayName)
