@@ -9,3 +9,4 @@ tsconfig.tsbuildinfo
 private/
 quartz/cli/tui/dist/
 __pycache__/
+.claude/
