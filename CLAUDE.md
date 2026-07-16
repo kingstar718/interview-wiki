@@ -40,7 +40,7 @@ python3 scripts/check_index.py
 # 知识点索引自动生成(改完 interview 篇目 H3 后跑,从真实标题+锚点刷新,勿手编)
 python3 scripts/gen_index.py
 
-# 套路页「已解题目」+ 算法题索引 自动生成(改完题解 topics:/techniques:/元数据行后跑)
+# 算法题索引 自动生成(改完题解 topics:/techniques:/元数据行后跑,按套路→技术词分组刷新)
 python3 scripts/gen_topics.py
 
 # 内容定位(改前先跑,不用通读千行文件)
@@ -56,14 +56,14 @@ python3 scripts/outline.py --tech 单调栈    # 按算法技术词检索题解(
 1. **先领任务**:内容任务统一记录在 [TODO.md](./TODO.md)。动手前从「待办」领取;发现新缺口**先登记再做**,不要直接写。
 2. **先定位再写**:`outline.py --grep` 验证考点是否已覆盖(算法用 `--tech`),`outline.py <文件>` 看结构定插入位置;做查漏补缺前应先 Web 搜索多来源高频题单(如 JavaGuide/小林coding/掘金),确认该考点确实高频后再动手;小节结构、修改整合规范、写作要求见 [CONTRIBUTING.md](./CONTRIBUTING.md)(是什么 → 为什么 → 源码⭕ → 对比⭕ → 常见追问 → 通用概念⭕)。
 3. **同步**:正文写完后同步追问地图行、相关篇目互链;`知识点索引.md` 由 `scripts/gen_index.py` 从各篇目 H3 自动生成(真实标题 + github-slugger 锚点),改完跑脚本刷新,勿手编。新增篇目还要在 `quartz.ts` 的 Explorer 排序表(ORDER)登记位置,注意表里登记的是**页面 H1 标题**而非文件名。
-4. **收尾**:跑 `python3 scripts/gen_index.py` 刷新知识点索引 → `python3 scripts/gen_topics.py` 刷新套路页 → `python3 scripts/check_index.py`;完成项移到 TODO.md「已完成」并附 commit 短哈希。
+4. **收尾**:跑 `python3 scripts/gen_index.py` 刷新知识点索引 → `python3 scripts/gen_topics.py` 刷新算法题索引 → `python3 scripts/check_index.py`;完成项移到 TODO.md「已完成」并附 commit 短哈希。
 
 ## 分域原则(结构层面的硬约束)
 
 **算法是算法,八股是八股。**
 
 - `algorithms/` 与 `interview/` 是两个独立的域
-- 算法的概念层是 `algorithms/` 下的 13 个套路页(原子=题解 → 抽共性 → `## 已解题目` 反向视图)
+- 算法的概念层是 `algorithms/` 下的套路页(原子=题解 → 抽共性;题解按套路归类的反向视图在 `算法题索引.md`,由 `gen_topics.py` 生成)
 - 算法侧做细粒度归类用 `techniques:` 标签(见 [RFC-算法题标签方案.md](./RFC-算法题标签方案.md))。
 
 ## 内容约定
@@ -94,8 +94,8 @@ Quartz 的 `CrawlLinks` 配置为 `markdownLinkResolution: "shortest"`(Obsidian 
  - **文件名 = 稳定语义 ID**:`interview/` 下用语义名(`MySQL.md`、`集合框架.md`),**禁止位置型数字前缀**(`01-`);顺序在 `quartz.ts` 的 Explorer 排序表里表达,不编进文件名。
 - **文件名全库唯一**(README.md/index.md 除外):纯文件名链接方案的前提,新文件重名会被校验 B 拦截。
 - **例外**:`algorithms/problems/` 下的题号(`1-two-sum.md`)是稳定 ID,允许保留;`algorithms/` 下的套路页(`双指针与滑动窗口.md`)是语义名,同 `interview/` 命名规则,新增套路直接语义命名,不用数字序号。
-- **算法套路节点在 `algorithms/`**:题解用两级 frontmatter 声明归属 —— `topics:`(13 个粗套路,决定出现在哪页,校验 F)+ `techniques:`(44 个细技术词,决定落到页内哪个分组,校验 S)。词表权威源是**套路页自己的 frontmatter `techniques:`**,13 页并集即全局词表,同一个词可被多页声明。套路页 `## 已解题目` 由 `gen_topics.py` 反向分组生成(校验 R)。细则见 CONTRIBUTING.md。
-- 改完跑 `python3 scripts/check_index.py`,校验死链/文件名唯一/命名/文件集/分类一致/题解归属/关系类型/套路视图。
+- **算法套路节点在 `algorithms/`**:题解用两级 frontmatter 声明归属 —— `topics:`(粗套路,决定归入哪个套路,校验 F)+ `techniques:`(细技术词,决定落到 `算法题索引.md` 里哪个分组,校验 S)。词表权威源是**套路页自己的 frontmatter `techniques:`**,各页并集即全局词表,同一个词可被多页声明。题解按套路→技术词的反向分组视图整篇生成在 `算法题索引.md`(`gen_topics.py`)。细则见 CONTRIBUTING.md。
+- 改完跑 `python3 scripts/check_index.py`,校验死链/文件名唯一/命名/文件集/分类一致/题解归属/关系类型/技术词表。
 
 ## 部署
 

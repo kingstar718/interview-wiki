@@ -1,3 +1,10 @@
+---
+topics:
+  - 动态规划与贪心
+techniques:
+  - 二维DP
+---
+
 # 583. 两个字符串的删除操作（Delete Operation for Two Strings）
 
 频次 ★★★ · 难度 🟡 · 高频：字节
@@ -79,8 +86,4 @@ public int minDistance(String word1, String word2) {
 
 - 同套路：[1143. 最长公共子序列](1143-longest-common-subsequence.md) —— LCS 核心
 - 进阶：[72. 编辑距离](72-edit-distance.md) —— 允许插入/删除/替换
-- 知识点：LCS 变式 + 删除操作 DP 见[动态规划](algorithms/11-动态规划/README.md)
-
----
-
-[← 返回训练计划](社招算法训练计划.md)
+- 知识点：LCS 变式 + 删除操作 DP 见[动态规划](动态规划与贪心.md)

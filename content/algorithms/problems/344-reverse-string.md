@@ -1,3 +1,10 @@
+---
+topics:
+  - 数组与字符串
+techniques:
+  - 对撞指针
+---
+
 # 344. 反转字符串（Reverse String）
 
 频次 ★★★ · 难度 🟢 · 高频：全厂
@@ -62,7 +69,3 @@ public void reverseString(char[] s) {
 - 同套路：[541. 反转字符串 II](541-reverse-string-ii.md) —— 每 2k 个字符反转前 k 个，双指针的变体
 - 进阶：[151. 反转字符串中的单词](151-reverse-words-in-a-string.md) —— 反转整个字符串 + 反转每个单词
 - 知识点：双指针是处理数组/字符串反转的标准写法
-
----
-
-[← 返回训练计划](社招算法训练计划.md)

@@ -1,3 +1,10 @@
+---
+topics:
+  - 二叉树
+techniques:
+  - BST中序
+---
+
 # 538. 把二叉搜索树转换为累加树（Convert BST to Greater Tree）
 
 频次 ★★★ · 难度 🟡 · 高频：阿里/字节
@@ -94,8 +101,4 @@ public TreeNode convertBST(TreeNode root) {
 
 - 同套路：[230. 二叉搜索树中第K小的元素](230-kth-smallest-element-in-a-bst.md) —— 同样的中序遍历框架，但本题是反序
 - 进阶：[98. 验证二叉搜索树](98-validate-binary-search-tree.md) —— 中序遍历的升序性质是本题的基础
-- 知识点：BST 中序遍历变体（正序/反序）见[二叉树](algorithms/08-二叉树/README.md)
-
----
-
-[← 返回训练计划](社招算法训练计划.md)
+- 知识点：BST 中序遍历变体（正序/反序）见[二叉树](二叉树.md)

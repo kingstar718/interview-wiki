@@ -1,3 +1,10 @@
+---
+topics:
+  - 动态规划与贪心
+techniques:
+  - 背包
+---
+
 # 494. 目标和（Target Sum）
 
 频次 ★★★★ · 难度 🟡 · 高频：字节/腾讯
@@ -74,8 +81,4 @@ public int findTargetSumWays(int[] nums, int target) {
 
 - 同套路：[416. 分割等和子集](416-partition-equal-subset-sum.md) —— 0-1 背包判断
 - 进阶：[1049. 最后一块石头的重量 II](1049-last-stone-weight-ii.md) —— 0-1 背包最值
-- 知识点：0-1 背包计数模板见[动态规划](algorithms/11-动态规划/README.md)
-
----
-
-[← 返回训练计划](社招算法训练计划.md)
+- 知识点：0-1 背包计数模板见[动态规划](动态规划与贪心.md)

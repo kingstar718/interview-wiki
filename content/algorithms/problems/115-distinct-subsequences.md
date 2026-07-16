@@ -1,3 +1,10 @@
+---
+topics:
+  - 动态规划与贪心
+techniques:
+  - 二维DP
+---
+
 # 115. 不同的子序列（Distinct Subsequences）
 
 频次 ★★★★ · 难度 🔴 · 高频：字节/阿里
@@ -74,8 +81,4 @@ public int numDistinct(String s, String t) {
 
 - 同套路：[392. 判断子序列](392-is-subsequence.md) —— 判断版
 - 进阶：[1143. 最长公共子序列](1143-longest-common-subsequence.md) —— 二维 DP 同款
-- 知识点：计数型二维 DP 见[动态规划](algorithms/11-动态规划/README.md)
-
----
-
-[← 返回训练计划](社招算法训练计划.md)
+- 知识点：计数型二维 DP 见[动态规划](动态规划与贪心.md)

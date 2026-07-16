@@ -1,3 +1,10 @@
+---
+topics:
+  - 链表
+techniques:
+  - 虚拟头节点
+---
+
 # 707. 设计链表（Design Linked List）
 
 频次 ★★ · 难度 🟡 · 高频：字节

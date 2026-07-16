@@ -1,3 +1,10 @@
+---
+topics:
+  - 哈希表
+techniques:
+  - 哈希查表
+---
+
 # 242. 有效的字母异位词（Valid Anagram）
 
 频次 ★★★ · 难度 🟢 · 高频：全厂
@@ -76,7 +83,3 @@ public boolean isAnagram(String s, String t) {
 - 同套路：[49. 字母异位词分组](49-group-anagrams.md) —— 本题是单对判断版，分组题是它的批量聚合
 - 进阶：[438. 找到字符串中所有字母异位词](438-find-all-anagrams-in-a-string.md) —— 滑动窗口 + 计数，在长串中找所有异位词子串
 - 知识点：哈希表 O(1) 查找的原理见[集合框架](集合框架.md)
-
----
-
-[← 返回训练计划](社招算法训练计划.md)

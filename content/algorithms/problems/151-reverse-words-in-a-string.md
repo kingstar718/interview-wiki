@@ -1,3 +1,10 @@
+---
+topics:
+  - 数组与字符串
+techniques:
+  - 原地读写指针
+---
+
 # 151. 反转字符串中的单词（Reverse Words in a String）
 
 频次 ★★★★ · 难度 🟡 · 高频：字节/美团
@@ -102,10 +109,6 @@ private void reverse(char[] chars, int left, int right) {
 
 ## 关联题
 
-- 前置：[344. 反转字符串](344-reverse-string.md) —— 反转字符数组的基础操作
+- 基础：[344. 反转字符串](344-reverse-string.md) —— 反转字符数组的基础操作
 - 同套路：[27. 移除元素](27-remove-element.md) —— 双指针原地移除（去空格步骤的核心思想）
 - 进阶：186. 翻转字符串里的单词 II —— 输入是 `char[]`，可以直接 O(1) 额外空间
-
----
-
-[← 返回训练计划](社招算法训练计划.md)

@@ -1,3 +1,10 @@
+---
+topics:
+  - 二叉树
+techniques:
+  - BST中序
+---
+
 # 700. 二叉搜索树中的搜索（Search in a Binary Search Tree）
 
 频次 ★★ · 难度 🟢 · 高频：全厂
@@ -73,8 +80,4 @@ public TreeNode searchBST(TreeNode root, int val) {
 
 - 同套路：[98. 验证二叉搜索树](98-validate-binary-search-tree.md) —— 同样利用 BST 的区间性质
 - 进阶：[701. 二叉搜索树中的插入操作](701-insert-into-a-binary-search-tree.md) —— 搜索到空位置后插入
-- 知识点：BST 的搜索性质见[二叉树](algorithms/08-二叉树/README.md)
-
----
-
-[← 返回训练计划](社招算法训练计划.md)
+- 知识点：BST 的搜索性质见[二叉树](二叉树.md)

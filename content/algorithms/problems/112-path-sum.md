@@ -1,3 +1,10 @@
+---
+topics:
+  - 二叉树
+techniques:
+  - DFS
+---
+
 # 112. 路径总和（Path Sum）
 
 频次 ★★★ · 难度 🟢 · 高频：全厂
@@ -67,8 +74,4 @@ public boolean hasPathSum(TreeNode root, int targetSum) {
 
 - 同套路：[113. 路径总和 II](113-path-sum-ii.md) —— 回溯收集所有路径，本题是它的简化版
 - 进阶：[437. 路径总和 III](https://leetcode.cn/problems/path-sum-iii/) —— 任意起点终点，前缀和优化
-- 知识点：DFS 路径搜索模板见[二叉树](algorithms/08-二叉树/README.md)
-
----
-
-[← 返回训练计划](社招算法训练计划.md)
+- 知识点：DFS 路径搜索模板见[二叉树](二叉树.md)

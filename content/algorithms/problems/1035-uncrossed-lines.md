@@ -1,3 +1,10 @@
+---
+topics:
+  - 动态规划与贪心
+techniques:
+  - 二维DP
+---
+
 # 1035. 不相交的线（Uncrossed Lines）
 
 频次 ★★★ · 难度 🟡 · 高频：字节
@@ -70,8 +77,4 @@ public int maxUncrossedLines(int[] nums1, int[] nums2) {
 
 - 同套路：[1143. 最长公共子序列](1143-longest-common-subsequence.md) —— 字符串版 LCS
 - 进阶：[718. 最长重复子数组](718-maximum-length-of-repeated-subarray.md) —— 连续版
-- 知识点：LCS 问题建模 + 识别见[动态规划](algorithms/11-动态规划/README.md)
-
----
-
-[← 返回训练计划](社招算法训练计划.md)
+- 知识点：LCS 问题建模 + 识别见[动态规划](动态规划与贪心.md)

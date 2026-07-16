@@ -1,3 +1,10 @@
+---
+topics:
+  - 数组与字符串
+techniques:
+  - 滑动窗口
+---
+
 # 209. 长度最小的子数组（Minimum Size Subarray Sum）
 
 频次 ★★★ · 难度 🟡 · 高频：字节/阿里
@@ -55,4 +62,4 @@ public int minSubArrayLen(int target, int[] nums) {
 ## 关联题
 
 - 同套路：[3. 无重复字符的最长子串](3-longest-substring-without-repeating-characters.md)、[76. 最小覆盖子串](76-minimum-window-substring.md)
-- 知识点：滑动窗口模板见 [滑动窗口专题](algorithms/06-滑动窗口/README.md)
+- 知识点：滑动窗口模板见 [双指针与滑动窗口](双指针与滑动窗口.md)

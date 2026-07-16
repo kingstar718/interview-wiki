@@ -1,3 +1,10 @@
+---
+topics:
+  - 链表
+techniques:
+  - 虚拟头节点
+---
+
 # 203. 移除链表元素（Remove Linked List Elements）
 
 频次 ★★ · 难度 🟢 · 高频：全厂

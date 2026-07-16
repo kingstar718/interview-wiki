@@ -1,3 +1,10 @@
+---
+topics:
+  - 数组与字符串
+techniques:
+  - 原地读写指针
+---
+
 # 541. 反转字符串 II（Reverse String II）
 
 频次 ★★★ · 难度 🟢 · 高频：全厂
@@ -67,9 +74,5 @@ public String reverseStr(String s, int k) {
 
 ## 关联题
 
-- 前置：[344. 反转字符串](344-reverse-string.md) —— 本题的反转子串操作是它的直接套用
+- 基础：[344. 反转字符串](344-reverse-string.md) —— 本题的反转子串操作是它的直接套用
 - 进阶：[151. 反转字符串中的单词](151-reverse-words-in-a-string.md) —— 更复杂的反转场景（先整体反转再单词反转）
-
----
-
-[← 返回训练计划](社招算法训练计划.md)

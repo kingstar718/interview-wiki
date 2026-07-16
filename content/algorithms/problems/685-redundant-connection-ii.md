@@ -1,3 +1,10 @@
+---
+topics:
+  - 图论
+techniques:
+  - 并查集
+---
+
 # 685. 冗余连接 II（Redundant Connection II）
 
 频次 ★★★★ · 难度 🔴 · 高频：字节/阿里
@@ -114,8 +121,4 @@ class UnionFind {
 
 - 同套路：[684. 冗余连接](https://leetcode.cn/problems/redundant-connection/) —— 无向图版
 - 进阶：[207. 课程表](207-course-schedule.md) —— 有向图环检测
-- 知识点：有向图环检测 + 并查集见[图](algorithms/09-图/README.md)
-
----
-
-[← 返回训练计划](社招算法训练计划.md)
+- 知识点：有向图环检测 + 并查集见[图](图论.md)

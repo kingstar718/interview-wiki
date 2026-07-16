@@ -1,3 +1,10 @@
+---
+topics:
+  - 图论
+techniques:
+  - DFS
+---
+
 # 463. 岛屿的周长（Island Perimeter）
 
 频次 ★★★ · 难度 🟢 · 高频：字节
@@ -96,8 +103,4 @@ private int dfs(int[][] grid, int i, int j) {
 
 - 同套路：[200. 岛屿数量](200-number-of-islands.md) —— 沉没岛屿
 - 进阶：[695. 岛屿的最大面积](695-max-area-of-island.md) —— 求面积
-- 知识点：网格遍历（数学法 vs DFS）见[图](algorithms/09-图/README.md)
-
----
-
-[← 返回训练计划](社招算法训练计划.md)
+- 知识点：网格遍历（数学法 vs DFS）见[图](图论.md)

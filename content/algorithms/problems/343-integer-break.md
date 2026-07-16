@@ -1,3 +1,10 @@
+---
+topics:
+  - 动态规划与贪心
+techniques:
+  - 线性DP
+---
+
 # 343. 整数拆分（Integer Break）
 
 频次 ★★★ · 难度 🟡 · 高频：字节/腾讯
@@ -79,8 +86,4 @@ public int integerBreak(int n) {
 
 - 同套路：[279. 完全平方数](279-perfect-squares.md) —— 完全背包求最值
 - 进阶：[322. 零钱兑换](322-coin-change.md) —— 贪心不总是最优，DP 保底
-- 知识点：DP vs 数学贪心见[动态规划](algorithms/11-动态规划/README.md)
-
----
-
-[← 返回训练计划](社招算法训练计划.md)
+- 知识点：DP vs 数学贪心见[动态规划](动态规划与贪心.md)

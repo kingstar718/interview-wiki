@@ -1,3 +1,10 @@
+---
+topics:
+  - 回溯
+techniques:
+  - 回溯框架
+---
+
 # 491. 非递减子序列（Non-decreasing Subsequences）
 
 频次 ★★★ · 难度 🟡 · 高频：字节
@@ -80,8 +87,4 @@ private void backtrack(int[] nums, int start, List<Integer> path, List<List<Inte
 
 - 同套路：[90. 子集 II](90-subsets-ii.md) —— 排序去重法（对比学习）
 - 进阶：[47. 全排列 II](47-permutations-ii.md) —— 排列去重（`used[]` 数组法）
-- 知识点：回溯去重三种方法见[回溯](algorithms/10-回溯/README.md)
-
----
-
-[← 返回训练计划](社招算法训练计划.md)
+- 知识点：回溯去重三种方法见[回溯](回溯.md)

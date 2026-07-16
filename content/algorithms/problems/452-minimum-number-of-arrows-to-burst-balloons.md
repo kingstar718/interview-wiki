@@ -1,3 +1,10 @@
+---
+topics:
+  - 动态规划与贪心
+techniques:
+  - 贪心证明
+---
+
 # 452. 用最少数量的箭引爆气球（Minimum Number of Arrows to Burst Balloons）
 
 频次 ★★★★ · 难度 🟡 · 高频：字节/阿里
@@ -70,8 +77,4 @@ public int findMinArrowShots(int[][] points) {
 
 - 同套路：[435. 无重叠区间](435-non-overlapping-intervals.md) —— 相同贪心策略
 - 进阶：[56. 合并区间](https://leetcode.cn/problems/merge-intervals/) —— 按左边界排序
-- 知识点：区间贪心模板见[贪心](algorithms/12-贪心/README.md)
-
----
-
-[← 返回训练计划](社招算法训练计划.md)
+- 知识点：区间贪心模板见[贪心](动态规划与贪心.md)

@@ -1,3 +1,10 @@
+---
+topics:
+  - 动态规划与贪心
+techniques:
+  - 贪心证明
+---
+
 # 968. 监控二叉树（Binary Tree Cameras）
 
 频次 ★★★★ · 难度 🔴 · 高频：字节/阿里
@@ -96,8 +103,4 @@ private int dfs(TreeNode node) {
 
 - 同套路：[337. 打家劫舍 III](337-house-robber-iii.md) —— 树形 DP 另一经典
 - 进阶：[979. 在二叉树中分配硬币](https://leetcode.cn/problems/distribute-coins-in-binary-tree/) —— 树形贪心
-- 知识点：树形贪心之后序遍历状态机模板见[贪心](algorithms/12-贪心/README.md)
-
----
-
-[← 返回训练计划](社招算法训练计划.md)
+- 知识点：树形贪心之后序遍历状态机模板见[贪心](动态规划与贪心.md)

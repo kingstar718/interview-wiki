@@ -1,3 +1,10 @@
+---
+topics:
+  - 动态规划与贪心
+techniques:
+  - 背包
+---
+
 # 518. 零钱兑换 II（Coin Change II）
 
 频次 ★★★★ · 难度 🟡 · 高频：字节/美团
@@ -66,8 +73,4 @@ public int change(int amount, int[] coins) {
 
 - 同套路：[377. 组合总和 IV](377-combination-sum-iv.md) —— 排列数（内外层交换）
 - 进阶：[322. 零钱兑换](322-coin-change.md) —— 最少硬币数
-- 知识点：完全背包（组合 vs 排列）见[动态规划](algorithms/11-动态规划/README.md)
-
----
-
-[← 返回训练计划](社招算法训练计划.md)
+- 知识点：完全背包（组合 vs 排列）见[动态规划](动态规划与贪心.md)

@@ -1,3 +1,10 @@
+---
+topics:
+  - 二叉树
+techniques:
+  - BST中序
+---
+
 # 235. 二叉搜索树的最近公共祖先（Lowest Common Ancestor of a Binary Search Tree）
 
 频次 ★★★★ · 难度 🟢 · 高频：字节/阿里
@@ -91,8 +98,4 @@ public TreeNode lowestCommonAncestor(TreeNode root, TreeNode p, TreeNode q) {
 
 - 同套路：[236. 二叉树的最近公共祖先](236-lowest-common-ancestor-of-a-binary-tree.md) —— 普通二叉树版 LCA，比本题多一个难度等级
 - 进阶：[700. 二叉搜索树中的搜索](700-search-in-a-binary-search-tree.md) —— BST 的方向搜索是本题的基础
-- 知识点：BST 有序性在 LCA 场景下的应用见[二叉树](algorithms/08-二叉树/README.md)
-
----
-
-[← 返回训练计划](社招算法训练计划.md)
+- 知识点：BST 有序性在 LCA 场景下的应用见[二叉树](二叉树.md)

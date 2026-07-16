@@ -1,3 +1,10 @@
+---
+topics:
+  - 二叉树
+techniques:
+  - 树的构造与序列化
+---
+
 # 108. 将有序数组转换为二叉搜索树（Convert Sorted Array to Binary Search Tree）
 
 频次 ★★★★ · 难度 🟢 · 高频：字节/美团
@@ -73,8 +80,4 @@ private TreeNode build(int[] nums, int left, int right) {
 
 - 同套路：[109. 有序链表转换二叉搜索树](https://leetcode.cn/problems/convert-sorted-list-to-binary-search-tree/) —— 链表版，找中点方式不同
 - 进阶：[105. 从前序与中序遍历构造二叉树](105-construct-binary-tree-from-preorder-and-inorder-traversal.md) —— 同样通过二分递归构造树，但输入是两种遍历序列
-- 知识点：二分递归构造树的模式见[二叉树](algorithms/08-二叉树/README.md)
-
----
-
-[← 返回训练计划](社招算法训练计划.md)
+- 知识点：二分递归构造树的模式见[二叉树](二叉树.md)

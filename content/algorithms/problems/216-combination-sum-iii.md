@@ -1,3 +1,10 @@
+---
+topics:
+  - 回溯
+techniques:
+  - 回溯框架
+---
+
 # 216. 组合总和 III（Combination Sum III）
 
 频次 ★★★ · 难度 🟡 · 高频：字节
@@ -78,8 +85,4 @@ private void backtrack(int k, int remain, int start, List<Integer> path, List<Li
 
 - 同套路：[39. 组合总和](39-combination-sum.md) —— 可重复选版
 - 同套路：[77. 组合](77-combinations.md) —— 纯长度限制，无目标和
-- 知识点：回溯组合+目标和模板见[回溯](algorithms/10-回溯/README.md)
-
----
-
-[← 返回训练计划](社招算法训练计划.md)
+- 知识点：回溯组合+目标和模板见[回溯](回溯.md)

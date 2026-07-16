@@ -1,3 +1,10 @@
+---
+topics:
+  - 二叉树
+techniques:
+  - BST中序
+---
+
 # 669. 修剪二叉搜索树（Trim a Binary Search Tree）
 
 频次 ★★★ · 难度 🟡 · 高频：字节
@@ -77,8 +84,4 @@ public TreeNode trimBST(TreeNode root, int low, int high) {
 
 - 同套路：[450. 删除二叉搜索树中的节点](450-delete-node-in-a-bst.md) —— 单个节点删除，需要处理接替逻辑
 - 进阶：[701. 二叉搜索树中的插入操作](701-insert-into-a-binary-search-tree.md) —— 插入也是利用 BST 性质搜索位置
-- 知识点：BST 区间性质在批量操作中的应用见[二叉树](algorithms/08-二叉树/README.md)
-
----
-
-[← 返回训练计划](社招算法训练计划.md)
+- 知识点：BST 区间性质在批量操作中的应用见[二叉树](二叉树.md)

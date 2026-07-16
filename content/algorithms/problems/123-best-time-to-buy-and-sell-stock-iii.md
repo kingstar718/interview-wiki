@@ -1,3 +1,10 @@
+---
+topics:
+  - 动态规划与贪心
+techniques:
+  - 股票状态机DP
+---
+
 # 123. 买卖股票的最佳时机 III（Best Time to Buy and Sell Stock III）
 
 频次 ★★★★ · 难度 🔴 · 高频：字节/阿里/腾讯
@@ -75,9 +82,5 @@ public int maxProfit(int[] prices) {
 ## 关联题
 
 - 同套路：[188. 买卖股票 IV](188-best-time-to-buy-and-sell-stock-iv.md) —— 通用 k 次交易
-- 入门：[121. 买卖股票 I](121-best-time-to-buy-and-sell-stock.md) —— 只交易 1 次
-- 知识点：股票系列状态机 DP 见[动态规划](algorithms/11-动态规划/README.md)
-
----
-
-[← 返回训练计划](社招算法训练计划.md)
+- 基础：[121. 买卖股票 I](121-best-time-to-buy-and-sell-stock.md) —— 只交易 1 次
+- 知识点：股票系列状态机 DP 见[动态规划](动态规划与贪心.md)

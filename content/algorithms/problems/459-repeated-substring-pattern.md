@@ -1,3 +1,10 @@
+---
+topics:
+  - 数组与字符串
+techniques:
+  - 模拟构造
+---
+
 # 459. 重复的子字符串（Repeated Substring Pattern）
 
 频次 ★★★ · 难度 🟢 · 高频：全厂
@@ -87,9 +94,5 @@ public boolean repeatedSubstringPattern(String s) {
 
 ## 关联题
 
-- 前置：[28. 找出字符串中第一个匹配项的下标](28-find-the-index-of-the-first-occurrence-in-a-string.md) —— KMP 算法及 next 数组的构建过程
+- 基础：[28. 找出字符串中第一个匹配项的下标](28-find-the-index-of-the-first-occurrence-in-a-string.md) —— KMP 算法及 next 数组的构建过程
 - 知识点：KMP 的 next 数组不仅用于字符串匹配，还能解决"重复子串"类问题，是模式匹配的经典数据结构
-
----
-
-[← 返回训练计划](社招算法训练计划.md)
