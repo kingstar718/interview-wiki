@@ -1,3 +1,10 @@
+---
+topics:
+  - 动态规划与贪心
+techniques:
+  - 线性DP
+---
+
 # 746. 使用最小花费爬楼梯（Min Cost Climbing Stairs）
 
 频次 ★★★ · 难度 🟢 · 高频：字节
@@ -62,8 +69,4 @@ public int minCostClimbingStairs(int[] cost) {
 
 - 同套路：[70. 爬楼梯](70-climbing-stairs.md) —— 无 cost 基础版
 - 进阶：[509. 斐波那契数](509-fibonacci-number.md) —— DP 入门
-- 知识点：带权 DP 的滚动优化见[动态规划](algorithms/11-动态规划/README.md)
-
----
-
-[← 返回训练计划](社招算法训练计划.md)
+- 知识点：带权 DP 的滚动优化见[动态规划](动态规划与贪心.md)

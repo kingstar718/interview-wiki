@@ -1,3 +1,10 @@
+---
+topics:
+  - 动态规划与贪心
+techniques:
+  - 中心扩展
+---
+
 # 647. 回文子串（Palindromic Substrings）
 
 频次 ★★★★ · 难度 🟡 · 高频：字节/腾讯/美团
@@ -92,8 +99,4 @@ public int countSubstrings(String s) {
 
 - 同套路：[5. 最长回文子串](5-longest-palindromic-substring.md) —— 找最长回文子串
 - 进阶：[516. 最长回文子序列](516-longest-palindromic-subsequence.md) —— 子序列版
-- 知识点：中心扩展法 + 回文 DP 见[动态规划](algorithms/11-动态规划/README.md)
-
----
-
-[← 返回训练计划](社招算法训练计划.md)
+- 知识点：中心扩展法 + 回文 DP 见[动态规划](动态规划与贪心.md)

@@ -1,3 +1,10 @@
+---
+topics:
+  - 动态规划与贪心
+techniques:
+  - 背包
+---
+
 # 279. 完全平方数（Perfect Squares）
 
 频次 ★★★★ · 难度 🟡 · 高频：字节/腾讯
@@ -92,8 +99,4 @@ public int numSquares(int n) {
 
 - 同套路：[322. 零钱兑换](322-coin-change.md) —— 完全背包求最少硬币数
 - 进阶：[343. 整数拆分](343-integer-break.md) —— DP 拆分求最大乘积
-- 知识点：完全背包 + BFS 最短路径见[动态规划](algorithms/11-动态规划/README.md)
-
----
-
-[← 返回训练计划](社招算法训练计划.md)
+- 知识点：完全背包 + BFS 最短路径见[动态规划](动态规划与贪心.md)

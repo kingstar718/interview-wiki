@@ -47,8 +47,6 @@
     O. 关系类型   —— 题解「## 关联题」每条目必须以白名单类型前缀开头(同套路/进阶/
                     基础/易混/知识点)。关系区是图的边,类型必须可机器解析;条目里
                     是否带链接由 J 项管(未收录的题允许纯文本,收录后 J 会催回补)
-    R. 套路视图   —— 套路页「已解题目」由 gen_topics.py 从题解 topics: frontmatter
-                    生成,内容须与真实 frontmatter 一致(漂移检测,镜像 Q 项之于 P 项)
 
 任一检查失败 -> 退出码 1，可直接接入 CI / pre-commit / AI 改完自检。
 """
@@ -405,28 +403,6 @@ def check_relation_types():
     return errors
 
 
-def check_topic_view():
-    """R. 套路页「已解题目」须与题解 topics: frontmatter 真实分组一致(镜像 Q 项)。"""
-    errors = []
-    patterns = list(gen_topics.pattern_files())
-    if not patterns:
-        return errors
-    names = {os.path.splitext(os.path.basename(p))[0] for p in patterns}
-    wl = gen_topics.whitelist()
-    groups, _orphans = gen_topics.collect_groups(names)
-    for path in patterns:
-        name = os.path.splitext(os.path.basename(path))[0]
-        old = read(path)
-        try:
-            new = gen_topics.splice(old, gen_topics.render(name, groups[name], wl))
-        except SystemExit as e:
-            errors.append(f"algorithms/{name}.md {e}")
-            continue
-        if new != old:
-            errors.append(f"algorithms/{name}.md 的「已解题目」已过期 -> 跑 python3 scripts/gen_topics.py")
-    return errors
-
-
 def check_hot_meta_sync():
     """N. 题解元数据行(权威源) vs 高频题目索引 A 表(视图) 逐行比对。"""
     errors = []
@@ -652,7 +628,6 @@ def main():
         ("M. 锚点死链(归一化匹配)", check_anchor_links(by_name)),
         ("N. 高频表一致(题解权威源==高频索引 A 表)", check_hot_meta_sync()),
         ("O. 关系类型(关联题条目带白名单前缀)", check_relation_types()),
-        ("R. 套路视图(已解题目与 topics/techniques 分组一致)", check_topic_view()),
         ("S. 技术词表(techniques 非空且每个 topic 有本页声明的词)", check_technique_vocab()),
     ]
     failed = False

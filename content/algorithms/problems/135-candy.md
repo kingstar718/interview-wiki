@@ -1,3 +1,10 @@
+---
+topics:
+  - 动态规划与贪心
+techniques:
+  - 贪心证明
+---
+
 # 135. 分发糖果（Candy）
 
 频次 ★★★★ · 难度 🔴 · 高频：字节/阿里/腾讯
@@ -84,8 +91,4 @@ public int candy(int[] ratings) {
 
 - 同套路：[455. 分发饼干](455-assign-cookies.md) —— 不同贪心策略
 - 进阶：[42. 接雨水](https://leetcode.cn/problems/trapping-rain-water/) —— 两遍扫描思路
-- 知识点：相邻约束贪心模板见[贪心](algorithms/12-贪心/README.md)
-
----
-
-[← 返回训练计划](社招算法训练计划.md)
+- 知识点：相邻约束贪心模板见[贪心](动态规划与贪心.md)

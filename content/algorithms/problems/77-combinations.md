@@ -1,3 +1,10 @@
+---
+topics:
+  - 回溯
+techniques:
+  - 回溯框架
+---
+
 # 77. 组合（Combinations）
 
 频次 ★★★★ · 难度 🟡 · 高频：字节/阿里
@@ -72,8 +79,4 @@ private void backtrack(int n, int k, int start, List<Integer> path, List<List<In
 
 - 同套路：[39. 组合总和](39-combination-sum.md) —— 可重复选版
 - 进阶：[216. 组合总和 III](216-combination-sum-iii.md) —— 加目标和约束
-- 知识点：回溯组合模板见[回溯](algorithms/10-回溯/README.md)
-
----
-
-[← 返回训练计划](社招算法训练计划.md)
+- 知识点：回溯组合模板见[回溯](回溯.md)

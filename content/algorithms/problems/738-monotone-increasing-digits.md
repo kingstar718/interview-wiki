@@ -1,3 +1,10 @@
+---
+topics:
+  - 动态规划与贪心
+techniques:
+  - 贪心证明
+---
+
 # 738. 单调递增的数字（Monotone Increasing Digits）
 
 频次 ★★★ · 难度 🟡 · 高频：字节
@@ -77,8 +84,4 @@ public int monotoneIncreasingDigits(int n) {
 
 - 同套路：[402. 移掉 K 位数字](https://leetcode.cn/problems/remove-k-digits/) —— 贪心 + 单调栈
 - 进阶：[670. 最大交换](https://leetcode.cn/problems/maximum-swap/) —— 交换变体
-- 知识点：数字位贪心模板见[贪心](algorithms/12-贪心/README.md)
-
----
-
-[← 返回训练计划](社招算法训练计划.md)
+- 知识点：数字位贪心模板见[贪心](动态规划与贪心.md)

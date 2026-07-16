@@ -1,22 +1,18 @@
 #!/usr/bin/env python3
-"""生成算法套路节点的「已解题目」清单 —— 纯标准库。
+"""生成 content/算法题索引.md —— 纯标准库。
 
 用法:
-    python3 scripts/gen_topics.py            # 刷新所有套路页 + content/算法题索引.md
+    python3 scripts/gen_topics.py            # 刷新 content/算法题索引.md
     python3 scripts/gen_topics.py --check    # 只检查是否需要刷新(CI 用,退出码 1 = 有漂移)
 
-两份产物:
-    algorithms/<套路>.md 的 `## 已解题目`   —— 标记块内生成
+产物:
     content/算法题索引.md                   —— 整篇生成(套路 → 技术词 → 题目双链)
 
 为什么需要本脚本:
     `algorithms/problems/` 是扁平题目池,题目归属哪个套路不再由目录体现,
     而是题解 frontmatter 的 `topics:` 字段(权威源,可多值 —— 一题可能同时属于
-    「数组与字符串」和「双指针与滑动窗口」)。套路页的 `## 已解题目` 是这份
-    frontmatter 的视图,原则:视图永远生成,绝不手写。
-
-    这里是正向分组(frontmatter 直接声明归属,
-    不需要从正文链接里反推),所以更简单 —— 不涉及锚点分组。
+    「数组与字符串」和「双指针与滑动窗口」)。算法题索引是这份 frontmatter 的
+    视图,原则:视图永远生成,绝不手写。
 
 两级归属:
     topics:     粗套路(13 个),决定题目出现在哪个套路页
@@ -43,8 +39,6 @@ PROBLEMS = os.path.join(ALGORITHMS, "problems")
 
 ALGO_INDEX = os.path.join(CONTENT, "算法题索引.md")
 
-BEGIN = "<!-- gen:problems:begin 由 scripts/gen_topics.py 生成，勿手编 -->"
-END = "<!-- gen:problems:end -->"
 UNTAGGED = "未标注技术"
 
 FRONTMATTER_RE = re.compile(r"^---\n(.*?\n)---\n", re.DOTALL)
@@ -284,29 +278,6 @@ def collect_groups(pattern_names):
     return groups, orphans
 
 
-def render(name, group, wl=None):
-    """迁移期:本套路只要还有题没标注 techniques,就整页退回平铺列表(旧行为)。
-
-    全标注完才切换成分组显示 —— 否则页面会变成「几个小组 + 一大坨未标注」,
-    比平铺还难读。这条规则让回填可以按套路逐个推进,不影响其余套路页。
-    """
-    if wl is None:
-        wl = whitelist()
-    if not group:
-        return "_暂无题解。_"
-
-    def lines_of(items):
-        return "\n".join(f"- [{title}]({base})" for _k, base, title in items)
-
-    if group.get(UNTAGGED):
-        flat = sorted({e for items in group.values() for e in items}, key=lambda e: e[0])
-        return lines_of(flat)
-
-    return "\n\n".join(
-        f"### {t}\n\n{lines_of(group[t])}" for t in wl.get(name, []) if group.get(t)
-    )
-
-
 def audit_vocab(groups, wl):
     """词表成色审计(只提示,不拦)。
 
@@ -327,13 +298,6 @@ def audit_vocab(groups, wl):
             print(f"      {t}")
 
 
-def splice(text, body):
-    i, j = text.find(BEGIN), text.find(END)
-    if i == -1 or j == -1:
-        raise SystemExit(f"缺少 {BEGIN} / {END} 标记")
-    return text[: i + len(BEGIN)] + "\n" + body + "\n" + text[j:]
-
-
 def main():
     check_only = "--check" in sys.argv
     patterns = list(pattern_files())
@@ -345,23 +309,6 @@ def main():
     groups, orphans = collect_groups(names)
 
     drift = []
-    for path in patterns:
-        name = os.path.splitext(os.path.basename(path))[0]
-        old = read(path)
-        try:
-            new = splice(old, render(name, groups[name], wl))
-        except SystemExit as e:
-            print(f"✗ {os.path.relpath(path, ROOT)}: {e}")
-            return 1
-        if new == old:
-            continue
-        if check_only:
-            drift.append(os.path.relpath(path, ROOT))
-        else:
-            with open(path, "w", encoding="utf-8") as f:
-                f.write(new)
-            print(f"刷新 {os.path.relpath(path, ROOT)}")
-
     # 算法题索引:整篇生成(同 gen_index.py 的知识点索引),不留手写余地
     new_index = render_index(groups, wl)
     if read(ALGO_INDEX) != new_index:

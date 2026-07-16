@@ -1,3 +1,10 @@
+---
+topics:
+  - 二叉树
+techniques:
+  - 递归
+---
+
 # 404. 左叶子之和（Sum of Left Leaves）
 
 频次 ★★ · 难度 🟢 · 高频：全厂
@@ -72,8 +79,4 @@ public int sumOfLeftLeaves(TreeNode root) {
 
 - 同套路：[112. 路径总和](112-path-sum.md) —— 递归时在叶子节点做判断的模式
 - 进阶：[513. 找树左下角的值](513-find-bottom-left-tree-value.md) —— 同样关注"左"侧，但找的是最底层最左的节点
-- 知识点：递归时从父节点视角判断子节点属性的模式见[二叉树](algorithms/08-二叉树/README.md)
-
----
-
-[← 返回训练计划](社招算法训练计划.md)
+- 知识点：递归时从父节点视角判断子节点属性的模式见[二叉树](二叉树.md)

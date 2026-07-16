@@ -1,3 +1,10 @@
+---
+topics:
+  - 二叉树
+techniques:
+  - 递归
+---
+
 # 617. 合并二叉树（Merge Two Binary Trees）
 
 频次 ★★ · 难度 🟢 · 高频：全厂
@@ -77,8 +84,4 @@ public TreeNode mergeTrees(TreeNode root1, TreeNode root2) {
 
 - 同套路：[226. 翻转二叉树](226-invert-binary-tree.md) —— 同样是对树的结构变换操作，递归模板一致
 - 进阶：[101. 对称二叉树](101-symmetric-tree.md) —— 同时遍历两棵树的递归模式，但比较逻辑不同
-- 知识点：同时遍历两棵树的递归模板见[二叉树](algorithms/08-二叉树/README.md)
-
----
-
-[← 返回训练计划](社招算法训练计划.md)
+- 知识点：同时遍历两棵树的递归模板见[二叉树](二叉树.md)

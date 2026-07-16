@@ -1,3 +1,10 @@
+---
+topics:
+  - 二叉树
+techniques:
+  - BST中序
+---
+
 # 701. 二叉搜索树中的插入操作（Insert into a Binary Search Tree）
 
 频次 ★★★ · 难度 🟢 · 高频：全厂
@@ -89,8 +96,4 @@ public TreeNode insertIntoBST(TreeNode root, int val) {
 
 - 同套路：[450. 删除二叉搜索树中的节点](450-delete-node-in-a-bst.md) —— 删除比插入复杂，需要处理三种情况
 - 进阶：[700. 二叉搜索树中的搜索](700-search-in-a-binary-search-tree.md) —— 搜索是插入的前置操作
-- 知识点：BST 增删改查模板见[二叉树](algorithms/08-二叉树/README.md)
-
----
-
-[← 返回训练计划](社招算法训练计划.md)
+- 知识点：BST 增删改查模板见[二叉树](二叉树.md)

@@ -1,3 +1,10 @@
+---
+topics:
+  - 二叉树
+techniques:
+  - 递归返回值设计
+---
+
 # 337. 打家劫舍 III（House Robber III）
 
 频次 ★★★★ · 难度 🟡 · 高频：字节/阿里
@@ -75,8 +82,4 @@ private int[] dfs(TreeNode node) {
 
 - 同套路：[198. 打家劫舍](198-house-robber.md) —— 一维数组版
 - 进阶：[213. 打家劫舍 II](213-house-robber-ii.md) —— 环形数组版
-- 知识点：树形 DP 模板见[动态规划](algorithms/11-动态规划/README.md)
-
----
-
-[← 返回训练计划](社招算法训练计划.md)
+- 知识点：树形 DP 模板见[动态规划](动态规划与贪心.md)

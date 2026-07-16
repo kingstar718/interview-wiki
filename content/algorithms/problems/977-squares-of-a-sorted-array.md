@@ -1,3 +1,10 @@
+---
+topics:
+  - 数组与字符串
+techniques:
+  - 对撞指针
+---
+
 # 977. 有序数组的平方（Squares of a Sorted Array）
 
 频次 ★★★ · 难度 🟢 · 高频：字节

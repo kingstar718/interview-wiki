@@ -1,3 +1,10 @@
+---
+topics:
+  - 数组与字符串
+techniques:
+  - 模拟构造
+---
+
 # 28. 找出字符串中第一个匹配项的下标（Find the Index of the First Occurrence in a String）
 
 频次 ★★★★ · 难度 🟡 · 高频：字节/阿里
@@ -117,7 +124,3 @@ public int strStr(String haystack, String needle) {
 
 - 同套路：[459. 重复的子字符串](459-repeated-substring-pattern.md) —— KMP 的 next 数组应用，判断字符串是否由子串重复构成
 - 知识点：字符串匹配算法族——KMP（前缀表）/ BM（右向左）/ RK（哈希滚动）各自的核心思想
-
----
-
-[← 返回训练计划](社招算法训练计划.md)

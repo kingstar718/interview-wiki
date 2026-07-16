@@ -1,3 +1,10 @@
+---
+topics:
+  - 二叉树
+techniques:
+  - DFS
+---
+
 # 257. 二叉树的所有路径（Binary Tree Paths）
 
 频次 ★★★ · 难度 🟢 · 高频：美团
@@ -78,8 +85,4 @@ private void dfs(TreeNode node, StringBuilder sb, List<String> res) {
 
 - 同套路：[113. 路径总和 II](113-path-sum-ii.md) —— 同样是收集所有根到叶子的路径，但按和过滤
 - 进阶：[112. 路径总和](112-path-sum.md) —— 只判断是否存在，不需要收集路径
-- 知识点：回溯模板（选择 → 递归 → 撤销）见[二叉树](algorithms/08-二叉树/README.md)
-
----
-
-[← 返回训练计划](社招算法训练计划.md)
+- 知识点：回溯模板（选择 → 递归 → 撤销）见[二叉树](二叉树.md)

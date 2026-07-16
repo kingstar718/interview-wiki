@@ -1,3 +1,10 @@
+---
+topics:
+  - 图论
+techniques:
+  - DFS
+---
+
 # 130. 被围绕的区域（Surrounded Regions）
 
 频次 ★★★★ · 难度 🟡 · 高频：字节/阿里/腾讯
@@ -93,8 +100,4 @@ private void dfs(char[][] board, int i, int j) {
 
 - 同套路：[200. 岛屿数量](200-number-of-islands.md) —— 沉没岛屿
 - 进阶：[1020. 飞地的数量](1020-number-of-enclaves.md) —— 统计被包围数量
-- 知识点：逆向思维 + 边界出发 DFS 见[图](algorithms/09-图/README.md)
-
----
-
-[← 返回训练计划](社招算法训练计划.md)
+- 知识点：逆向思维 + 边界出发 DFS 见[图](图论.md)

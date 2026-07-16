@@ -1,3 +1,10 @@
+---
+topics:
+  - 二叉树
+techniques:
+  - BFS层序
+---
+
 # 513. 找树左下角的值（Find Bottom Left Tree Value）
 
 频次 ★★★ · 难度 🟡 · 高频：字节
@@ -103,8 +110,4 @@ private void dfs(TreeNode node, int depth) {
 
 - 同套路：[199. 二叉树的右视图](199-binary-tree-right-side-view.md) —— 同样是层序遍历取特定位置，但取每层最后一个
 - 进阶：[404. 左叶子之和](404-sum-of-left-leaves.md) —— 关注"左"侧，但统计的是叶子节点和非叶子节点
-- 知识点：BFS 层序遍历 + 方向入队技巧见[二叉树](algorithms/08-二叉树/README.md)
-
----
-
-[← 返回训练计划](社招算法训练计划.md)
+- 知识点：BFS 层序遍历 + 方向入队技巧见[二叉树](二叉树.md)

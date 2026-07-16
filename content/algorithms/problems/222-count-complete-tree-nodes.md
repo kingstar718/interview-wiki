@@ -1,3 +1,10 @@
+---
+topics:
+  - 二叉树
+techniques:
+  - 递归
+---
+
 # 222. 完全二叉树的节点个数（Count Complete Tree Nodes）
 
 频次 ★★★ · 难度 🟡 · 高频：字节/阿里
@@ -97,8 +104,4 @@ public int countNodes(TreeNode root) {
 
 - 同套路：[104. 二叉树的最大深度](104-maximum-depth-of-binary-tree.md) —— 高度的计算是本题的基础
 - 进阶：[110. 平衡二叉树](110-balanced-binary-tree.md) —— 同样利用高度信息做剪枝优化
-- 知识点：完全二叉树的结构性质见[二叉树](algorithms/08-二叉树/README.md)
-
----
-
-[← 返回训练计划](社招算法训练计划.md)
+- 知识点：完全二叉树的结构性质见[二叉树](二叉树.md)

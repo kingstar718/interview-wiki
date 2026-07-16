@@ -1,3 +1,10 @@
+---
+topics:
+  - 图论
+techniques:
+  - DFS
+---
+
 # 827. 最大人工岛（Making A Large Island）
 
 频次 ★★★★ · 难度 🔴 · 高频：字节/阿里
@@ -92,8 +99,4 @@ public int largestIsland(int[][] grid) {
 
 - 同套路：[695. 岛屿的最大面积](695-max-area-of-island.md) —— 基础版
 - 进阶：[200. 岛屿数量](200-number-of-islands.md) —— 计数版
-- 知识点：岛屿编号 + 连通分量合并见[图](algorithms/09-图/README.md)
-
----
-
-[← 返回训练计划](社招算法训练计划.md)
+- 知识点：岛屿编号 + 连通分量合并见[图](图论.md)

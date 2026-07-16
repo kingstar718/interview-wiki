@@ -1,3 +1,10 @@
+---
+topics:
+  - 栈与队列
+techniques:
+  - 表达式与嵌套栈
+---
+
 # 1047. 删除字符串中的所有相邻重复项（Remove All Adjacent Duplicates In String）
 
 频次 ★★★ · 难度 🟢 · 高频：全厂
@@ -90,7 +97,3 @@ public String removeDuplicates(String s) {
 - 同套路：[20. 有效的括号](20-valid-parentheses.md) —— 栈处理"配对消除"的经典模板
 - 进阶：1209. 删除字符串中的所有相邻重复项 II —— 每次删除 k 个重复项，栈需要记录字符和连续出现次数
 - 知识点：栈的"回看上一个"特性在括号匹配、表达式求值、路径简化等场景中反复出现
-
----
-
-[← 返回训练计划](社招算法训练计划.md)

@@ -1,3 +1,10 @@
+---
+topics:
+  - 动态规划与贪心
+techniques:
+  - 二维DP
+---
+
 # 516. 最长回文子序列（Longest Palindromic Subsequence）
 
 频次 ★★★★ · 难度 🟡 · 高频：字节/腾讯
@@ -75,8 +82,4 @@ public int longestPalindromeSubseq(String s) {
 
 - 同套路：[5. 最长回文子串](5-longest-palindromic-substring.md) —— 连续版
 - 进阶：[647. 回文子串](647-palindromic-substrings.md) —— 计数版
-- 知识点：子序列 DP + 区间 DP 见[动态规划](algorithms/11-动态规划/README.md)
-
----
-
-[← 返回训练计划](社招算法训练计划.md)
+- 知识点：子序列 DP + 区间 DP 见[动态规划](动态规划与贪心.md)

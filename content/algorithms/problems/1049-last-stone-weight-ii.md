@@ -1,3 +1,10 @@
+---
+topics:
+  - 动态规划与贪心
+techniques:
+  - 背包
+---
+
 # 1049. 最后一块石头的重量 II（Last Stone Weight II）
 
 频次 ★★★ · 难度 🟡 · 高频：字节
@@ -67,8 +74,4 @@ public int lastStoneWeightII(int[] stones) {
 
 - 同套路：[416. 分割等和子集](416-partition-equal-subset-sum.md) —— 判断能否平分
 - 进阶：[494. 目标和](494-target-sum.md) —— 计算方案数
-- 知识点：0-1 背包的三种变体（判断/最值/计数）见[动态规划](algorithms/11-动态规划/README.md)
-
----
-
-[← 返回训练计划](社招算法训练计划.md)
+- 知识点：0-1 背包的三种变体（判断/最值/计数）见[动态规划](动态规划与贪心.md)

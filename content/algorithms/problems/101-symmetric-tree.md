@@ -1,3 +1,10 @@
+---
+topics:
+  - 二叉树
+techniques:
+  - 递归
+---
+
 # 101. 对称二叉树（Symmetric Tree）
 
 频次 ★★★ · 难度 🟢 · 高频：字节
@@ -78,8 +85,4 @@ private boolean isMirror(TreeNode left, TreeNode right) {
 
 - 同套路：[226. 翻转二叉树](226-invert-binary-tree.md) —— 翻转后自比等价于对称判定
 - 进阶：[100. 相同的树](https://leetcode.cn/problems/same-tree/) —— 判断两棵树是否完全相同，递归逻辑更简单（直接比较而非交叉）
-- 知识点：二叉树递归模板见[二叉树](algorithms/08-二叉树/README.md)
-
----
-
-[← 返回训练计划](社招算法训练计划.md)
+- 知识点：二叉树递归模板见[二叉树](二叉树.md)

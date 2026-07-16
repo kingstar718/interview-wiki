@@ -1,3 +1,10 @@
+---
+topics:
+  - 哈希表
+techniques:
+  - 哈希查表
+---
+
 # 349. 两个数组的交集（Intersection of Two Arrays）
 
 频次 ★★★ · 难度 🟢 · 高频：全厂
@@ -74,7 +81,3 @@ public int[] intersection(int[] nums1, int[] nums2) {
 
 - 进阶：350. 两个数组的交集 II —— 不要求结果唯一，需要保留重复元素出现的次数
 - 知识点：HashSet 的 O(1) 查找原理见[集合框架](集合框架.md)
-
----
-
-[← 返回训练计划](社招算法训练计划.md)

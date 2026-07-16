@@ -1,3 +1,10 @@
+---
+topics:
+  - 图论
+techniques:
+  - 图遍历
+---
+
 # 127. 单词接龙（Word Ladder）
 
 频次 ★★★★ · 难度 🔴 · 高频：字节/阿里/腾讯
@@ -87,8 +94,4 @@ public int ladderLength(String beginWord, String endWord, List<String> wordList)
 
 - 同套路：[126. 单词接龙 II](https://leetcode.cn/problems/word-ladder-ii/) —— 求所有最短路径
 - 进阶：[433. 最小基因变化](https://leetcode.cn/problems/minimum-genetic-mutation/) —— 同款 BFS
-- 知识点：BFS 最短路径 + 图建模见[图](algorithms/09-图/README.md)
-
----
-
-[← 返回训练计划](社招算法训练计划.md)
+- 知识点：BFS 最短路径 + 图建模见[图](图论.md)

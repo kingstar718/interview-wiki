@@ -1,3 +1,10 @@
+---
+topics:
+  - 动态规划与贪心
+techniques:
+  - 贪心证明
+---
+
 # 860. 柠檬水找零（Lemonade Change）
 
 频次 ★★★ · 难度 🟢 · 高频：字节
@@ -81,8 +88,4 @@ public boolean lemonadeChange(int[] bills) {
 
 - 同套路：[455. 分发饼干](455-assign-cookies.md) —— 贪心入门
 - 进阶：[322. 零钱兑换](322-coin-change.md) —— 找零的 DP 版本
-- 知识点：贪心之"资源消耗优先级"模板见[贪心](algorithms/12-贪心/README.md)
-
----
-
-[← 返回训练计划](社招算法训练计划.md)
+- 知识点：贪心之"资源消耗优先级"模板见[贪心](动态规划与贪心.md)
