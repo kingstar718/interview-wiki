@@ -23,6 +23,8 @@ jobs:
         run: npm ci
       - name: Install Quartz plugins
         run: npx tsx ./quartz/plugins/loader/install-plugins.ts
+      - name: Patch graph plugin (decode Chinese-character slugs)
+        run: bash scripts/patch-graph-plugin.sh
       - name: Check index consistency
         run: python3 scripts/check_index.py
       - name: Build Quartz

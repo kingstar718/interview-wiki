@@ -165,6 +165,8 @@ plugins:
       position: left
       priority: 50
   # ---------- 右栏 ----------
+  # 注:该源无 tag、loader 只支持 --branch(不支持 commit pin),故无法锁版本。
+  # 图谱中文节点 URL 编码的修复靠 build 里的 patch-graph-plugin.sh 保证(见 package.json)。
   - source: github:quartz-community/graph
     enabled: true
     layout:
