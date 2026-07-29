@@ -34,29 +34,55 @@ interview-wiki/
 npm ci                      # 首次装依赖(Node ≥22)
 npx quartz build --serve    # http://localhost:8080
 
-# 索引自检(改完目录/索引/分类后必跑,纯标准库,退出码非 0 即有问题)
-python3 scripts/check_index.py
-
-# 知识点索引自动生成(改完 interview 篇目 H3 后跑,从真实标题+锚点刷新,勿手编)
-python3 scripts/gen_index.py
-
-# 算法题索引 自动生成(改完题解 topics:/techniques:/元数据行后跑,按套路→技术词分组刷新)
-python3 scripts/gen_topics.py
-
 # 内容定位(改前先跑,不用通读千行文件)
 python3 scripts/outline.py Redis           # 打印专题标题树+行号
 python3 scripts/outline.py --grep 缓存预热  # 全库定位考点(标题+正文,正文命中标注所在小节)
 python3 scripts/outline.py --tech 单调栈    # 按算法技术词检索题解(不带参数则列出 44 词+覆盖数)
+
+# 索引刷新(生成物,勿手编)
+python3 scripts/gen_index.py      # 改完 interview 篇目 H3 后跑(知识点索引)
+python3 scripts/gen_topics.py     # 改完题解 topics/techniques/元数据行后跑(套路页+算法题索引)
+
+# 校验(CI 也会跑,本地先过一遍)
+python3 scripts/check_index.py    # 16 项校验;Windows GBK 终端需加环境变量 PYTHONIOENCODING=utf-8
 ```
+
+**改什么跑什么**（改完立即跑，不等收尾）：
+
+| 改了什么 | 跑什么 |
+|---------|--------|
+| interview/ 篇目的 H3 标题 | `gen_index.py` |
+| 题解的 `topics:` / `techniques:` | `gen_topics.py` |
+| 题解的元数据行 | `gen_topics.py` + 手工同步 `高频题目索引.md` |
+| 文件分类归属 | 移动文件 → 同步索引底部专题清单 |
+| 任何改动 | `check_index.py`（最后一道关）
 
 ## 内容工作流(新增/修改必读)
 
 > 检索/新增/修改的分任务操作手册在 [CONTRIBUTING.md](./CONTRIBUTING.md) 顶部「操作手册」一节(新增分四条路:八股小节/八股篇目/算法题解/技术词)。下面是骨架。
 
 1. **先领任务**:内容任务统一记录在 [TODO.md](./TODO.md)。动手前从「待办」领取;发现新缺口**先登记再做**,不要直接写。
-2. **先定位再写**:`outline.py --grep` 验证考点是否已覆盖(算法用 `--tech`),`outline.py <文件>` 看结构定插入位置;做查漏补缺前应先 Web 搜索多来源高频题单(如 JavaGuide/小林coding/掘金),确认该考点确实高频后再动手;小节结构、修改整合规范、写作要求见 [CONTRIBUTING.md](./CONTRIBUTING.md)(是什么 → 为什么 → 源码⭕ → 对比⭕ → 常见追问 → 通用概念⭕)。
+2. **先定位再写**:
+   - `outline.py --grep <考点>` 验证是否已覆盖（算法用 `--tech`）
+   - `outline.py <文件>` 看标题树+行号，决定插入位置
+   - 做查漏补缺前先 Web 搜索多来源高频题单（JavaGuide/小林coding/掘金），确认考点确实高频后再动手
+   - 小节结构、写作模板、整合规范见 [CONTRIBUTING.md](./CONTRIBUTING.md)（是什么 → 为什么 → 源码⭕ → 对比⭕ → 常见追问 → 通用概念⭕）
 3. **同步**:正文写完后同步追问地图行、相关篇目互链;`知识点索引.md` 由 `scripts/gen_index.py` 从各篇目 H3 自动生成(真实标题 + github-slugger 锚点),改完跑脚本刷新,勿手编。新增篇目还要在 `quartz.ts` 的 Explorer 排序表(ORDER)登记位置,注意表里登记的是**页面 H1 标题**而非文件名。
 4. **收尾**:跑 `python3 scripts/gen_index.py` 刷新知识点索引 → `python3 scripts/gen_topics.py` 刷新算法题索引 → `python3 scripts/check_index.py`;完成项移到 TODO.md「已完成」并附 commit 短哈希。
+
+### 操作技巧
+
+**编辑**：
+- Edit 工具是 exact string match，`old_string` 必须与文件 byte-by-byte 一致（换行符、缩进、标点一个不差）
+- 匹配失败第一反应：**重新 Read 目标区域，复制原文**，不要凭记忆写
+- 大段删除时 Edit 容易因换行符（LF）匹配失败，兜底用 PowerShell 的 `IndexOf` 定位 + `Substring` 截断
+- 本仓库文件使用 **LF 换行**（`\n`），不是 Windows 默认的 CRLF（`\r\n`）
+
+**读取**：
+- 改前用 Grep 找行号，再用 `Read` 的 `offset`/`limit` 精准截取 10-30 行，**不要从头读到尾**
+- 跨文件修改时并行 Read 多个目标段，互不阻塞
+
+**Windows 编码**：`outline.py`、`check_index.py` 输出含 Unicode（✓✗），GBK 终端会崩，加 `PYTHONIOENCODING=utf-8` 环境变量即可。
 
 ## 分域原则(结构层面的硬约束)
 
