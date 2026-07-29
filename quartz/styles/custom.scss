@@ -2,3 +2,195 @@
 @use "./fonts";
 
 // put your custom CSS here!
+
+// ============================================================================
+// 正文列表缩进:按嵌套层级 / 断点逐档收窄
+// ============================================================================
+// Quartz 没给正文 ul/ol 设过 padding-left,走的是 UA 默认的 40px —— 绝对像素,
+// 每层嵌套叠加一次。桌面正文 ~800px 时它只占 5%,手机 343px 时占到 12%,
+// 三级嵌套后一行只剩 ~223px(中文约 11 字)。本库的追问地图、易错点大量用三级列表,
+// 所以这里改成相对缩进:嵌套层收一档,窄屏再收一档。
+// 只作用于 article,不碰 Explorer / TOC 侧栏的列表。
+//
+// 注意:custom.scss 是在 @layer quartz-base 之外拼接的(componentResources.ts),
+// 未分层样式优先级高于整个 base/callouts,所以这里不需要靠特异性去压。
+
+article {
+  ul,
+  ol {
+    padding-left: 1.6rem;
+  }
+
+  // 有序列表标记要放得下 "10." 这样的两位数
+  ol {
+    padding-left: 1.9rem;
+  }
+
+  // 二级及更深:后代选择器天然覆盖所有 >=2 层
+  ul ul,
+  ul ol,
+  ol ul,
+  ol ol {
+    padding-left: 1.3rem;
+  }
+
+  ul ol,
+  ol ol {
+    padding-left: 1.7rem;
+  }
+
+  @media all and ($mobile) {
+    ul {
+      padding-left: 1.1rem;
+    }
+
+    ol {
+      padding-left: 1.6rem;
+    }
+
+    ul ul,
+    ol ul {
+      padding-left: 0.95rem;
+    }
+
+    ul ol,
+    ol ol {
+      padding-left: 1.5rem;
+    }
+
+    // callout / 引用块自带左右留白,里面的列表再紧一档
+    .callout,
+    blockquote {
+      ul {
+        padding-left: 0.9rem;
+      }
+
+      ol {
+        padding-left: 1.45rem;
+      }
+    }
+
+    // 容器自身的左右留白在窄屏也收一档
+    // (callout 本身就是 blockquote,靠 .callout 的类特异性压住下面的 blockquote 规则)
+    .callout {
+      padding: 0 0.75rem;
+    }
+
+    blockquote {
+      padding-left: 0.75rem;
+    }
+  }
+}
+
+// ============================================================================
+// 正文行宽:给长文一个 measure 上限
+// ============================================================================
+// 实测 1440px 视口下正文宽 770px,≥1500px 屏上到 850px(.page 上限 1500 减两侧 320
+// 边栏)。850/16 ≈ 每行 53 个中文字,远超中文长文 30~45 字的舒适区,回行容易串行。
+// 平板档同样宽(1199px 时 center 约 842px),所以断点用 not($mobile) 而不是 $desktop。
+//
+// 只收正文流,表格 / 代码块 / 图表不收 —— 它们本来就需要横向空间,收了反而要横滚。
+
+@media all and not ($mobile) {
+  article .markdown-preview-view > :is(p, ul, ol, blockquote, h1, h2, h3, h4, h5, h6, hr) {
+    max-width: 44rem; // 704px ≈ 44 个中文字
+  }
+}
+
+// ============================================================================
+// 行高:中文长文放宽到 1.75
+// ============================================================================
+// base.scss 是 line-height: 1.6rem —— 一是 1.6 倍对方块字偏挤(拉丁文没问题),
+// 二是写成 rem 而非无单位,子元素改了字号行高不会跟着走。
+
+article {
+  p,
+  li {
+    line-height: 1.75;
+  }
+}
+
+// ============================================================================
+// 行内代码:不在连字符 / 标点处断行
+// ============================================================================
+// `-XX:PretenureSizeThreshold` 会被拆成 "-" + "XX:..." 两行,灰底也跟着断开。
+// keep-all 抑制词内的软换行点;继承来的 overflow-wrap: break-word 仍作兜底,
+// 真正塞不下的超长 token 还是会断,不会撑破容器。
+
+article :not(pre) > code {
+  word-break: keep-all;
+}
+
+// 但表格单元格是例外:列宽由内容的 min-content 决定,keep-all 会让
+// `ThreadLocalMap`、`DirectByteBuffer` 这类长 token 变成不可压缩的硬下限,
+// 把整张表顶到溢出裁切。这里换成 anywhere —— 它计入 min-content,列能缩回来,
+// 且只在真的放不下时才断,不像 break-all 那样无条件拆。
+article .table-container :not(pre) > code {
+  word-break: normal;
+  overflow-wrap: anywhere;
+}
+
+// ============================================================================
+// 表格:窄屏挤压兜底 + 可横滚提示
+// ============================================================================
+// 三列表在 390px 下每列只分到 ~70px(≈4 个中文字),且第三列被裁在视口外,
+// 而 .table-container 的横滚没有任何视觉提示,用户不知道右边还有内容。
+
+// 滚动阴影(经典纯 CSS 方案):内容溢出时两侧浮现阴影,滚到头自动消失。
+// background-attachment 的 local/scroll 配合是关键 —— 遮罩跟着内容走,阴影不动。
+article .table-container {
+  background:
+    linear-gradient(to right, var(--light) 30%, transparent) left center,
+    linear-gradient(to left, var(--light) 30%, transparent) right center,
+    radial-gradient(farthest-side at 0 50%, rgb(0 0 0 / 15%), transparent) left center,
+    radial-gradient(farthest-side at 100% 50%, rgb(0 0 0 / 15%), transparent) right center;
+  background-repeat: no-repeat;
+  background-size:
+    40px 100%,
+    40px 100%,
+    14px 100%,
+    14px 100%;
+  background-attachment: local, local, scroll, scroll;
+}
+
+@media all and ($mobile) {
+  article .table-container > table {
+    // base.scss 的 margin: 1rem + padding: 1.5rem 是按桌面写的,
+    // 窄屏下这 80px 直接从可用宽度里扣 —— 可用宽从 278px 回到 358px。
+    margin: 1rem 0;
+    padding: 0;
+
+    th,
+    td {
+      min-width: 0; // 原为 75px,三列硬撑 225px 起步
+      padding: 0.35rem 0.4rem;
+    }
+
+    // 首列通常是行标签,auto 布局会把它压到最窄(「运行时内存」被折成 3 行)。
+    // 给一个有界的下限偏袒它一点;不用 nowrap —— 首列是长句子的表会被撑到横滚。
+    th:first-child,
+    td:first-child {
+      min-width: 4.5rem;
+    }
+
+    & > * {
+      line-height: 1.7; // 原为 2rem,窄屏太松,行数一多就要滑很久
+    }
+  }
+}
+
+// ============================================================================
+// 目录(TOC):未激活项提高对比度
+// ============================================================================
+// 组件样式是 color: var(--dark) + opacity: .35,亮色下等效 #b0b0b0,对比度仅 2.1:1。
+// 组件 CSS 和本文件同为未分层,且 <link> 顺序在 index.css 之后 —— 平特异性会输,
+// 所以这里多带一级 .sidebar 提高特异性压住它。
+// .6 → 亮色约 4.9:1、暗色约 7.7:1,都过 AA。
+
+.sidebar .toc ul.toc-content > li > a {
+  opacity: 0.6;
+
+  &.in-view {
+    opacity: 1;
+  }
+}
