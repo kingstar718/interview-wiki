@@ -4,16 +4,16 @@
 
 | 主问题 | 必讲关键点 | 下一层追问 |
 |--------|------------|------------|
-| JDK 升级 | 版本收益、依赖兼容、灰度验证 | 反射强封装、Jakarta 迁移 |
-| JDK 24/26 | Stream Gatherers、Class-File API、HTTP/3、G1 同步优化 | Virtual Thread pinning 修复、Final 字段限制信号 |
-| Record | 数据载体、自动方法、浅不可变 | 与 Lombok、实体类的区别 |
-| sealed class | 封闭类型层次 | 与 enum、普通接口如何选择 |
-| 模式匹配 | 类型判断、绑定、穷尽检查 | null 分支、可读性边界 |
-| 虚拟线程 | M:N、阻塞卸载、IO 场景 | pinning、ThreadLocal、连接池 |
-| Scoped Value | 只读上下文、作用域 | 与 ThreadLocal 的生命周期区别 |
+| [JDK 升级](#java-8172125-应重点关注什么) | 版本收益、依赖兼容、灰度验证 | 反射强封装、Jakarta 迁移 |
+| [JDK 24/26](#jdk-2426-有什么关键变化) | Stream Gatherers、Class-File API、HTTP/3、G1 同步优化 | Virtual Thread pinning 修复、Final 字段限制信号 |
+| [Record](#record-是什么) | 数据载体、自动方法、浅不可变 | 与 Lombok、实体类的区别 |
+| [sealed class](#sealed-class-解决什么问题) | 封闭类型层次 | 与 enum、普通接口如何选择 |
+| [模式匹配](#switch-模式匹配有什么价值) | 类型判断、绑定、穷尽检查 | null 分支、可读性边界 |
+| [虚拟线程](#虚拟线程是什么) | M:N、阻塞卸载、IO 场景 | pinning、ThreadLocal、连接池 |
+| [Scoped Value](#scoped-value-解决什么问题) | 只读上下文、作用域 | 与 ThreadLocal 的生命周期区别 |
 | [结构化并发](#结构化并发structuredtaskscope解决什么问题) | 作用域绑定、异常短路、父子任务 | 与 CF/ES 对比、与虚拟线程关系 |
-| Stream | 惰性、无副作用、并行池 | parallelStream 为什么可能变慢 |
-| JPMS | 模块依赖和强封装 | 与 Maven 多模块的区别 |
+| [Stream](#stream-并行执行要注意什么) | 惰性、无副作用、并行池 | parallelStream 为什么可能变慢 |
+| [JPMS](#模块系统-jpms-解决什么问题) | 模块依赖和强封装 | 与 Maven 多模块的区别 |
 
 现代 Java 特性要回答“是否已正式发布、项目是否实际采用、迁移成本是什么”，不要把预览特性当成稳定能力。
 
