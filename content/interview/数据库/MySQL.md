@@ -24,10 +24,10 @@
 | [连接池](#数据库连接池hikaricp为什么这么快) | ConcurrentBag、FastList、字节码代理 | 连接数公式、maxLifetime 与 wait_timeout 的关系 |
 | [主从复制](#主从复制过程) | binlog、relay log、重放 | 延迟、读写一致性、故障切换 |
 | [分库分表](#分库分表) | 拆分键、路由、扩容 | 分布式事务、跨库查询、全局 ID |
-| 索引种类 | 主键/唯一/普通/联合/全文索引 | 聚簇 vs 二级索引、索引创建时机 |
-| 悲观锁/乐观锁 | 先锁后操作 vs 先操作后验证 | 版本号、ABA 问题、适用场景 |
-| 数据库对象 | 视图、存储过程、触发器 | 为什么互联网公司不推荐 |
-| 备份恢复 | 逻辑/物理/快照备份、PITR | 备份验证、延迟从库 |
+| [索引种类](#索引有哪些种类) | 主键/唯一/普通/联合/全文索引 | 聚簇 vs 二级索引、索引创建时机 |
+| [悲观锁/乐观锁](#悲观锁和乐观锁的区别) | 先锁后操作 vs 先操作后验证 | 版本号、ABA 问题、适用场景 |
+| [数据库对象](#数据库的视图和存储过程是什么有什么区别) | 视图、存储过程、触发器 | 为什么互联网公司不推荐 |
+| [备份恢复](#数据库的备份和恢复策略有哪些) | 逻辑/物理/快照备份、PITR | 备份验证、延迟从库 |
 
 数据库题必须结合具体 SQL、索引和隔离级别回答；脱离查询条件谈“会不会加锁”通常没有意义。
 
@@ -389,13 +389,34 @@ InnoDB 成为默认引擎的原因：事务支持、行级锁、崩溃恢复（c
 
 ### MVCC 实现原理
 
-聚簇索引记录有两个隐藏列：`trx_id`（事务 ID）和 `roll_pointer`（指向 undo log）。
+**是什么**：MVCC（Multi-Version Concurrency Control）通过**undo log 版本链** + **Read View** 实现读不阻塞写、写不阻塞读。
 
-Read View 可见性判断规则：
-- trx_id < min_trx_id：已提交，**可见**
-- trx_id >= max_trx_id：之后启动的事务，**不可见**
-- trx_id 在 m_ids 中：事务仍活跃，**不可见**
-- trx_id 不在 m_ids 中：事务已提交，**可见**
+**undo log 版本链**：聚簇索引记录有两个隐藏列——`trx_id`（最近修改该记录的事务 ID）和 `roll_pointer`（指向上一个版本 undo log 的指针）。每次 UPDATE 不直接覆盖数据，而是生成新版本并串成链表：
+
+```text
+记录版本链（从新到旧）：
+[trx_id=110, name='A'] → [trx_id=105, name='B'] → [trx_id=100, name='C']  ← undo log
+  ↑ 当前数据               ↑ 旧版本                  ↑ 最老版本
+```
+
+**Read View 可见性判断**：事务启动时生成 Read View，包含三个关键字段：
+
+```text
+Read View 结构：
+- m_ids:   当前活跃事务 ID 列表（未提交的事务）
+- min_trx_id: m_ids 中的最小值
+- max_trx_id: 已分配的最大事务 ID + 1（下一个要生成的事务 ID）
+```
+
+判断规则：
+- `trx_id < min_trx_id`：已提交，**可见**
+- `trx_id >= max_trx_id`：之后启动的事务，**不可见**
+- `trx_id` 在 `m_ids` 中：事务仍活跃，**不可见**（沿 roll_pointer 找上一个版本）
+- `trx_id` 不在 `m_ids` 中且 `trx_id < max_trx_id`：事务已提交，**可见**
+
+**RC 与 RR 的 Read View 生成时机**：
+- **RC（读已提交）**：**每条 SQL** 执行前都生成新的 Read View，同一事务内多次查询可能看到不同结果（不可重复读的根源）
+- **RR（可重复读）**：**事务中第一条 SQL** 生成 Read View，之后不再变化，保证同一事务内多次查询结果一致
 
 ### 滥用大事务的弊端
 
@@ -411,9 +432,23 @@ Read View 可见性判断规则：
 | 读什么 | Read View 里的历史版本（MVCC） | 最新已提交版本，并**加锁** |
 | 防幻读手段 | Read View 天然看不到新插入行 | **临键锁**（记录锁 + 间隙锁）锁住范围，阻止插入 |
 
+```sql
+-- 示例：RR 下快照读 vs 当前读的行为差异
+-- 事务 A                                事务 B
+BEGIN;
+SELECT * FROM users WHERE age > 20;
+-- 结果: [Alice(22), Bob(25)]
+                                         INSERT INTO users VALUES ('Eve', 23);
+                                         COMMIT;
+SELECT * FROM users WHERE age > 20;
+-- 结果: [Alice(22), Bob(25)]  ← 快照读，看不到新行
+SELECT * FROM users WHERE age > 20 FOR UPDATE;
+-- 结果: [Alice(22), Bob(25), Eve(23)]  ← 当前读，看到了
+```
+
 **RR 级别幻读没有被完全解决**，两个经典漏网场景：
-1. 快照读之间夹了一次**当前读**：`SELECT`（看不到新行）→ `UPDATE` 碰了新插入的行（当前读，trx_id 变成自己的）→ 再 `SELECT` 就看见了
-2. 先快照读，别的事务插入并提交，本事务再 `UPDATE`/`FOR UPDATE` 同一范围 → 影响行数和之前看到的不一致
+1. **快照读之间夹了当前读**：`SELECT`（快照读，看不到新行）→ `UPDATE` 碰了新插入的行（当前读，trx_id 变成自己的）→ 再 `SELECT` 就看见了
+2. **先快照读，别的事务插入提交，本事务再当前读**：`UPDATE`/`FOR UPDATE` 同一范围，影响行数比预期多
 
 **答题要点**：先分清两种读，再说 MVCC 防快照读幻读、临键锁防当前读幻读，最后主动补"混用两种读仍可能幻读"——这是区分背题和理解的关键点。要彻底避免：一开始就用 `SELECT ... FOR UPDATE` 或上串行化。
 
@@ -521,10 +556,23 @@ MySQL 页大小 16KB，OS 页 4KB，写页不是原子操作，中途断电会�
 
 ### EXPLAIN 关键字段
 
-- type：全表扫描(ALL) < 全索引扫描(index) < 范围扫描(range) < 非唯一索引扫描(ref) < 唯一索引扫描(eq_ref) < 常量扫描(const)
-- key：实际使用的索引
-- rows：扫描行数
-- Extra：Using filesort（慢）、Using temporary（慢）、Using index（好，覆盖索引）
+```sql
+-- 示例：对用户表按手机号查询
+EXPLAIN SELECT name, age FROM users WHERE phone = '13800138000';
+-- 输出（简化）：
+-- +----+-----------+-------+------+---------+------+--------+---------------------+
+-- | id | table     | type  | key  | rows    | Extra                                    |
+-- +----+-----------+-------+------+---------+------+--------+---------------------+
+-- |  1 | users     | ref   | idx_phone | 1 | Using index condition (索引下推)         |
+-- +----+-----------+-------+------+---------+------+--------+---------------------+
+```
+
+| 字段 | 含义 | 好坏判断 |
+|------|------|---------|
+| **type** | 访问类型 | ALL（最差）< index < range < ref < eq_ref < const（最好） |
+| **key** | 实际使用的索引 | NULL 表示没用到索引 |
+| **rows** | 预估扫描行数 | 越小越好，与实际行数差距大说明统计信息过期 |
+| **Extra** | 附加信息 | `Using filesort`（需排序，慢）、`Using temporary`（需临时表，慢）、`Using index`（覆盖索引，好）、`Using index condition`（索引下推，好） |
 
 ### 慢查询解决方案
 
@@ -542,11 +590,33 @@ MySQL 页大小 16KB，OS 页 4KB，写页不是原子操作，中途断电会�
 
 ### 主从复制过程
 
-1. 主库写 binlog，提交事务
-2. 从库 I/O 线程拉取 binlog 写入 relay log
-3. 从库回放线程读取 relay log 更新数据
+**三步流程**：
 
-异步复制，存在主从延迟问题。
+```text
+主库                                   从库
+┌─────────────────┐          ┌─────────────────┐
+│ 事务提交写 binlog │──I/O──→│ I/O 线程写入     │
+│ binlog 是二进制    │ 拉取   │ relay log        │
+│ 日志，记录所有修改  │        │                  │
+└─────────────────┘          │ SQL 回放线程      │
+                              │ 读取 relay log    │
+                              │ 在从库上重放      │
+                              └─────────────────┘
+```
+
+1. **主库**：事务提交时写 binlog（二进制日志，记录所有数据变更）
+2. **从库 I/O 线程**：连接到主库，拉取 binlog 写入本地 **relay log**（中继日志）
+3. **从库 SQL 回放线程**：读取 relay log 并在从库上逐条执行，保持与主库一致
+
+**binlog 三种格式**：
+
+| 格式 | 记录内容 | 优点 | 缺点 |
+|------|---------|------|------|
+| **STATEMENT** | 原始 SQL 语句 | 日志量小 | 非确定性函数（`NOW()`、`UUID()`）在主从不一致 |
+| **ROW**（默认） | 每行变更前后数据 | 精确，无歧义 | 日志量大（批量更新尤其明显） |
+| **MIXED** | 自动切换：确定性用 STATEMENT，否则用 ROW | 兼顾体积和准确性 | 仍有边界情况 |
+
+**异步复制**：主库提交事务不等待从库确认，存在主从延迟。
 
 **常见追问**
 - 主从延迟怎么处理？→ 写后读一致性走主库，或等从库 `seconds_behind_master` 追平。半同步复制（`rpl_semi_sync_master_wait_point = AFTER_SYNC`）保证至少一个从库收到 binlog 才返回客户端。
@@ -610,6 +680,27 @@ MySQL 页大小 16KB，OS 页 4KB，写页不是原子操作，中途断电会�
 | 遍历连接列表 | `ArrayList`/`CopyOnWriteArrayList` | **`FastList`**：重写 `remove()`，从数组尾部开始找（大概率命中最近添加的元素），避免正向遍历 |
 | Connection 代理 | JDK 动态代理（反射调用，较慢） | **字节码生成代理**（编译期生成委托类），方法调用无反射开销 |
 | 字段可见性 | 部分用 volatile 保守同步 | 大量用**无锁 CAS** 和状态位运算，缩小同步范围 |
+
+```java
+// HikariCP ConcurrentBag.borrow() 核心逻辑（简化）
+public T borrow(long timeout, final TimeUnit timeUnit) {
+    // 1. 先从 ThreadLocal 取（自己上次用过的连接，零竞争）
+    final List<Object> list = threadList.get();
+    for (int i = list.size() - 1; i >= 0; i--) {
+        final Object entry = list.remove(i);
+        if (state == STATE_NOT_IN_USE && compareAndSetState(entry, STATE_NOT_IN_USE, STATE_IN_USE))
+            return entry;  // 命中，直接返回
+    }
+    // 2. ThreadLocal 没命中，从共享队列取（CAS 竞争）
+    while (timeout > 0) {
+        final Object entry = sharedQueue.poll(timeout);
+        if (entry != null && compareAndSetState(entry, STATE_NOT_IN_USE, STATE_IN_USE))
+            return entry;
+    }
+    // 3. 都拿不到，新建连接（需要加锁）
+    return createConnection();
+}
+```
 
 **核心参数体系**：
 

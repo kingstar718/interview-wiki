@@ -20,6 +20,7 @@
 | [秒杀场景](#秒杀场景设计) | 库存扣减、分段锁、原子操作 | 与 DB 一致性、缓存预热衔接 |
 | [事务与原子性](#如何保证-redis-原子性) | Lua 脚本、MULTI/EXEC | 回滚缺失、watch 乐观锁 |
 | [布隆过滤器](#布隆过滤器) | 位图+哈希、误判率 | 不可删除、计数布隆 |
+| [版本演进](#十版本演进) | 5/6/7 核心特性 | 多线程 IO、ACL、Function、listpack、sharded-pubsub |
 
 Redis 题要区分“命令原子”与“业务操作原子”，也要说明高可用不等于强一致。
 
@@ -68,13 +69,15 @@ Redis 题要区分“命令原子”与“业务操作原子”，也要说明�
 
 ### Redis 数据结构
 
-| 类型 | 说明 | 场景 |
-|------|------|------|
-| **String** | 字符串 | 缓存、计数 |
-| **List** | 有序列表 | 消息队列、排行榜 |
-| **Set** | 无序集合 | 去重、关注列表 |
-| **Sorted Set** | 有序集合 | 排行榜、优先级队列 |
-| **Hash** | 哈希 | 对象存储 |
+| 类型 | 外部表现 | 内部编码 | 编码转换条件 |
+|------|---------|---------|-------------|
+| **String** | 字符串 | **int**（整数）、**embstr**（≤44 字节短串）、**raw**（>44 字节） | 存整数时用 int，短串用 embstr（一次性分配，只读，修改后变 raw），超长用 raw |
+| **List** | 有序列表 | **quicklist**（压缩链表，每个节点是 ziplist 片段） | 一直用 quicklist，没有转换逻辑 |
+| **Hash** | 哈希 | **listpack**（Redis 7.0）→ **hashtable** | 元素 > 512 或某 key/value 长度 > 64 字节，升为 hashtable |
+| **Set** | 无序集合 | **intset**（整数集合）→ **hashtable** | 全整数且元素 ≤ 512 用 intset，否则升为 hashtable |
+| **Zset** | 有序集合 | **listpack**（Redis 7.0）→ **skiplist + dict** | 元素 < 128 且每个值 < 64 字节用 listpack，否则升为跳表+哈希表 |
+
+**编码转换为什么是单向的（只能升不能降）？** 降级要重新扫描确认是否满足条件，代价高；且升上去后通常不会回退，降级反而可能误判。唯一例外是 Zset 在删除元素后可能触发反向转换（Redis 6.2+）。
 
 ---
 
@@ -300,6 +303,20 @@ min-replicas-max-lag 10      # 从库复制延迟超 10s 视为不在线
 
 **通用概念**：gossip 是**去中心化的最终一致元数据扩散**——不设权威节点，靠随机传播收敛，代价是拓扑变更有秒级感知延迟；对照集中式元数据（Kafka 的 Controller/ZooKeeper，见[消息队列](消息队列.md)）。哈希槽本身是**预分片（pre-sharding）**：先把 key 空间切成固定份数再谈份数归谁，迁移只动"槽→节点"映射，粒度可控，对照一致性哈希的算法隐式映射（见[分布式系统](分布式系统.md)）。
 
+### Gossip 协议：PFAIL → FAIL 状态扩散
+
+**是什么**：Cluster 中每个节点维护一个**集群状态表**（含其他节点状态、槽位映射），通过 gossip 协议定期随机交换，最终所有节点收敛到一致视图。
+
+**状态机**：PFAIL（疑似故障，主观）→ FAIL（确认故障，客观）
+
+1. **PFAIL**：节点 A 向节点 B 发 PING 超时（`cluster-node-timeout`，默认 15s），A 将 B 标记为 `PFAIL`（`CLUSTER_NODE_PFAIL`）。这是单节点视角，**不传播**
+2. **FAIL**：A 通过 gossip 消息中的 PFAIL 信息知道**集群中过半主节点**也认为 B 不可达，将 B 升级为 `FAIL`（`CLUSTER_NODE_FAIL`），随 gossip 扩散全网
+3. 收到 FAIL 消息的节点不论是否赞同，都立即标记 B 为 FAIL，确保收敛速度
+
+**gossip 消息格式**（PING/PONG 包内带）：每条 gossip 消息携带 `CLUSTERMSG_TYPE_GOSSIP` 条目，含节点 ID、IP:Port、当前状态（PFAIL/FAIL），每条消息带 2~3 个随机节点 + 1 个"最久没联系"的节点，确保整个集群拓扑每 `N` 轮可收敛。
+
+**PFAIL → FAIL 为什么需要多数派**：防止网络分区造成误判——A 被分区后认为自己"挂了"，但集群多数节点可达，不会触发 FAIL，避免了双主写入。
+
 ---
 
 **通用概念**：槽是「key → 节点」之间的间接层。16384 远大于节点数,所以迁移粒度细、权重可调;与一致性哈希的虚拟节点同构,区别只在这张映射表是算出来的还是存出来的。
@@ -378,19 +395,63 @@ int randomExpire = 3600 + random.nextInt(600);  // 3600-4200 秒
 
 ### String 使用 SDS 存储
 
-SDS 结构包含 len（字符串长度）、alloc（分配空间）、flags（类型标识）、buf[]（实际数据）。优势：
-- O(1) 获取长度（C 字符串需遍历）
-- 二进制安全（不依赖 `\0` 结尾）
-- 不会缓冲区溢出（自动扩容）
+**是什么**：SDS（Simple Dynamic String）是 Redis 自己封装的字符串结构，替代 C 原生字符串。
+
+```c
+// Redis 7.0 SDS 结构（简化）
+struct sdshdr {
+    int      len;     // 已用字节数（buf 中字符串长度）= O(1)
+    int      alloc;   // 已分配字节数（不含头和空终止符）
+    char     buf[];   // 字符数组，以 \0 结尾（兼容 C 字符串函数）
+    // 还有 5 种变体 sdshdr5/8/16/32/64，按字符串长度选用不同头大小
+};
+```
+
+优势：
+- **O(1) 获取长度**：C 字符串需遍历，SDS 直接读 `len`
+- **二进制安全**：不依赖 `\0` 结尾，可存图片/序列化数据
+- **不会缓冲区溢出**：`alloc` 记录容量，追加前自动扩容（预分配，减少 realloc 次数）
+- **空间预分配**：`len < 1MB` 时分配 `2*len`，`len ≥ 1MB` 时分配 `len + 1MB`，减少内存重分配次数
 
 ### Zset 底层实现
+
+```c
+// Redis 7.0 zset 结构
+typedef struct zset {
+    dict *dict;     // key=元素, value=score, 用于 O(1) 查分值
+    zskiplist *zsl; // 跳表, 按 score 排序, 用于范围操作
+} zset;
+```
 
 - 元素 < 128 个且每个值 < 64 字节：压缩列表（Redis 7.0 改用 listpack）
 - 不满足上述条件：跳表
 
 ### 跳表实现原理
 
-多层有序链表，通过头节点的多层指针快速定位数据。层高通过随机数决定：生成 [0,1] 随机数，< 0.25 则层数 +1，最大层高 64。查找时间复杂度 O(logN)。
+```c
+// Redis 7.0 跳表节点与跳表结构（简化）
+typedef struct zskiplistNode {
+    sds                 ele;        // 元素值
+    double              score;      // 分值
+    struct zskiplistNode *backward; // 后退指针
+    struct zskiplistLevel {
+        struct zskiplistNode *forward; // 前进指针
+        unsigned long          span;   // 跨度（用于快速计算 rank）
+    } level[];                          // 柔性数组，每个节点层高随机
+} zskiplistNode;
+
+typedef struct zskiplist {
+    struct zskiplistNode *header, *tail; // 头尾指针
+    unsigned long length;                // 节点数
+    int level;                           // 当前最大层高
+} zskiplist;
+```
+
+**层高决定**：生成 [0,1] 随机数，`< 0.25` 则层数 +1，最大层高 64（`ZSKIPLIST_MAXLEVEL`）。平均层高约 1.33（`1/(1-0.25)`），每个节点平均 1.33 个前进指针，内存开销可控。
+
+**查找过程**：从头节点最高层出发，每层向前走直到下一个节点 score ≥ 目标值，然后降一层继续，直到最底层找到目标或确认不存在，O(log N)。
+
+**span 的作用**：`level[i].span` 记录从当前节点到 `forward` 的"步数"，用于快速计算元素排名（`ZRANK`），无需遍历计数。
 
 ### Redis 为什么用跳表而非 B+树？
 
@@ -404,12 +465,37 @@ SDS 结构包含 len（字符串长度）、alloc（分配空间）、flags（�
 
 ### 压缩列表与 listpack
 
-- 压缩列表：连续内存块，缺点是可能发生连锁更新。
-- listpack（Redis 5.0）：不记录前一个节点长度，只记录当前节点长度，避免连锁更新。
+**压缩列表（ziplist）**：Redis 早期为减少内存占用设计的紧凑数据结构，由连续内存块组成，每个节点记录前一个节点的长度（用于反向遍历）。问题在于**连锁更新**：某节点长度变化（如从 253 字节变为 254 字节）后，它的 `prevlen` 需要从 1 字节扩展到 5 字节，这个变化会向后传播，可能触发后续节点级联扩展，最坏情况 O(n²)。
+
+**listpack（Redis 5.0 引入）**：不记录前一个节点长度，只记录**当前**节点长度。反向遍历通过从尾部开始的固定格式实现，彻底消除了连锁更新。Redis 7.0 将 listpack 全面替换了压缩列表（Hash/Zset 底层、List 的 quicklist 节点内存储）。
+
+**为什么要替换**：压缩列表在 Redis 早期内存紧张时很有效，但连锁更新在最坏情况下能导致写操作延迟从 O(1) 飙升到 O(n²)。listpack 用略有增加的头开销（每个节点多 1 字节）换来了延迟确定性。
 
 ### 哈希表渐进式 rehash
 
-分三步：分配哈希表 2 -> 迁移数据 -> 释放旧表。采用**渐进式 rehash**：每次增删查改操作时，顺带迁移一个索引位置的数据。迁移期间，读写操作在两个哈希表中同时进行。
+```c
+// Redis 7.0 dict 结构（简化）
+typedef struct dict {
+    dictEntry **table;              // 哈希表数组
+    unsigned long size;             // 表大小（2 的幂）
+    unsigned long sizemask;         // size - 1，用于计算索引
+    unsigned long used;             // 已用节点数
+} dictht;
+
+typedef struct dict {
+    dictht ht[2];                   // ht[0] 在用，ht[1] 扩容时分配
+    long rehashidx;                 // -1 表示未在 rehash，否则记录当前迁移到的桶索引
+    // ...
+} dict;
+```
+
+**rehash 三步**：
+1. 为 `ht[1]` 分配空间（`ht[0].used` 的 2 倍幂）
+2. 将 `rehashidx` 从 -1 设为 0，开始渐进式迁移
+3. 每次增删查改操作时，顺带迁移 `ht[0]` 中 `rehashidx` 桶的整个链表到 `ht[1]`，`rehashidx++`
+4. 迁移完成后，交换 `ht[0]` 和 `ht[1]`，`rehashidx` 置回 -1
+
+**迁移期间的行为**：读操作同时查 `ht[0]` 和 `ht[1]`，写操作只在 `ht[1]` 上新增（确保 `ht[0]` 只减不增），最终 `ht[0]` 变空。
 
 **通用概念**：这是把一次 O(n) 的停顿摊还到后续 n 次操作里。与 [集合框架](集合框架.md#arraylist-扩容机制) 的扩容不同的是，那里的摊还是**分析出来的性质**，这里是**设计出来的手段**——Redis 单线程，一次性 rehash 会造成可感知的尾延迟，所以主动把它切碎。
 
@@ -433,6 +519,31 @@ SDS 结构包含 len（字符串长度）、alloc（分配空间）、flags（�
 
 Redis 将客户端 socket 的 fd 注册到 epoll 监听列表，同时监控多个 fd 的读写情况。采用 Reactor 设计模式。
 
+```c
+// Redis 事件循环核心（ae.c，简化）
+void aeMain(aeEventLoop *eventLoop) {
+    eventLoop->stop = 0;
+    while (!eventLoop->stop) {
+        // 1. 调用 epoll_wait 等待事件就绪，最多阻塞 100ms
+        //    （期间顺便处理定时任务，如过期 key 的定期删除）
+        aeProcessEvents(eventLoop, AE_ALL_EVENTS);
+    }
+}
+
+// aeProcessEvents 简化流程
+int aeProcessEvents(aeEventLoop *el, int flags) {
+    // 1. 计算最近定时任务到期时间 → epoll_wait 超时时间
+    // 2. epoll_wait 获取就绪事件列表
+    // 3. 遍历就绪事件，先处理读事件（如客户端命令请求）
+    // 4. 再处理写事件（如命令结果写回客户端）
+    // 5. 处理到期定时任务
+}
+```
+
+**事件类型**：可读事件（客户端发命令）、可写事件（结果可写回）、定时事件（过期 key 清理、AOF 刷盘）。
+
+**为什么用 epoll 而非 select**：① epoll O(1) 就绪事件获取，select O(n) 遍历全量 fd；② epoll 维护内核事件表，避免每次传入全量 fd 集合；③ 用内存映射（mmap）传递数据，减少内核用户态拷贝。
+
 ---
 
 ## 七、事务
@@ -440,8 +551,24 @@ Redis 将客户端 socket 的 fd 注册到 epoll 监听列表，同时监控多�
 ### 如何保证 Redis 原子性？
 
 - 单条命令天然原子性（单线程执行）
-- 多条命令：Lua 脚本（Redis 将整个 Lua 脚本作为整体执行）
-- Redis 事务（MULTI/EXEC）：正常执行时可保证原子性，但某个操作失败时不会回滚
+- 多条命令：**Lua 脚本**（Redis 将整个 Lua 脚本作为整体执行，是推荐的多命令原子执行方式）
+- Redis 事务（**MULTI/EXEC**）：正常执行时整体原子，但某个操作失败时**不会回滚**（语法错误才不执行，运行期错误跳过继续）
+
+**WATCH 乐观锁**：结合事务实现 CAS（Compare and Set）——`WATCH key` 监视一个或多个 key，在 `EXEC` 执行前如果被监视的 key 被**其他客户端修改**，当前事务被取消（返回 nil）。
+
+```redis
+WATCH stock:10086          # 监视库存
+stock = GET stock:10086    # 读取当前库存
+if stock > 0 then
+    MULTI
+    DECR stock:10086       # 扣减库存
+    EXEC                   # 若 stock:10086 在此期间被其他客户端修改，EXEC 返回 nil
+else
+    UNWATCH
+end
+```
+
+WATCH 的实现原理（Redis 源码）：每个客户端结构体 `client` 中维护一个 `watched_keys` 列表，记录 WATCH 的 key。当 `signalModifiedKey()` 被调用（任何修改 key 的命令都会触发），该 key 上所有 WATCH 的客户端都被标记 `CLIENT_DIRTY_CAS`，随后 `EXEC` 时检查标志，如果脏则拒绝执行事务。
 
 ---
 
@@ -450,8 +577,30 @@ Redis 将客户端 socket 的 fd 注册到 epoll 监听列表，同时监控多�
 ### 过期删除策略
 
 Redis 采用 **惰性删除 + 定期删除** 组合策略：
-- 惰性删除：访问 key 时检查是否过期，过期则删除
-- 定期删除：每秒 10 次随机抽查 20 个 key，已过期比例 > 25% 则继续抽查，单次不超过 25ms
+- **惰性删除**：访问 key 时调用 `expireIfNeeded()` 检查是否过期，过期则删除。确保查询不被过期 key 污染，但过期 key 不访问就一直占内存。
+
+```c
+// Redis 7.0 定期删除核心逻辑（expire.c，简化）
+#define ACTIVE_EXPIRE_CYCLE_LOOKUPS_PER_LOOP 20  // 每次抽查数
+#define ACTIVE_EXPIRE_CYCLE_SLOW_TIME_PERC 25     // 单次最多占 CPU 时间的 25%
+
+void activeExpireCycle(int type) {
+    for (int i = 0; i < dbs; i++) {
+        do {
+            // 1. 随机抽查 20 个过期 key
+            for (j = 0; j < ACTIVE_EXPIRE_CYCLE_LOOKUPS_PER_LOOP; j++) {
+                if (expire dict 中随机取一个 key
+                    && 调用 expireIfNeeded() 删除过期 key)
+                    expired++;
+            }
+            // 2. 已过期比例 > 25% 则继续下一轮，最多跑 25ms
+        } while (expired > ACTIVE_EXPIRE_CYCLE_LOOKUPS_PER_LOOP / 4
+                 && 运行时间 < 25ms);
+    }
+}
+```
+
+- **定期删除**：`serverCron` 每秒调用 `activeExpireCycle` 10 次，随机抽查 20 个 key，已过期比例 > 25% 则继续下一轮，单次不超过 25ms。
 
 ### 内存淘汰策略（8 种）
 
@@ -487,10 +636,30 @@ Redis 采用 **惰性删除 + 定期删除** 组合策略：
 
 ### 缓存与 MySQL 数据一致性
 
-读：旁路缓存策略（cache 未命中从 DB 加载）
-写：先更新 DB，再删除缓存
+读：旁路缓存策略（cache 未命中从 DB 加载）。
+写：先更新 DB，再删除缓存。
 
-最终一致性方案：
+```java
+// 读：Cache Aside Pattern
+public V get(String key) {
+    V val = redis.get(key);
+    if (val == null) {
+        val = db.query(key);          // 缓存未命中，查 DB
+        redis.set(key, val, ttl);     // 回写缓存，设过期时间作为兜底
+    }
+    return val;
+}
+
+// 写：先更新 DB，再删除缓存
+public void update(String key, V newVal) {
+    db.update(key, newVal);           // 1. 更新数据库
+    redis.del(key);                   // 2. 删除缓存（不是更新缓存）
+}
+```
+
+**为什么是删缓存而不是更新缓存**：写操作频繁时更新缓存，每次写都要改缓存，浪费性能；且并发写导致缓存被回写旧值——删缓存是"懒加载"，下次读时再回写最新数据。
+
+**最终一致性方案**：
 - 删除缓存失败重试（消息队列）
 - 订阅 binlog 删除缓存（Canal + MQ）
 
@@ -614,4 +783,41 @@ public User getUser(int id) {
 - Cluster 模式下 mget 怎么用？→ 用 hash tag（`{user}:1`、`{user}:2`）强制同槽，或客户端按槽拆分成多次请求再聚合
 
 **通用概念**：pipeline 本质是**批处理摊薄固定开销**（网络 RTT 是固定成本，批量把它摊薄到每条命令上），同类模式：Kafka 生产者的 `linger.ms` 攒批发送（见[消息队列](消息队列.md)）、MySQL 的 `rewriteBatchedStatements` 批量插入、系统调用的缓冲 IO。
+
+---
+
+## 十、版本演进
+
+### Redis 5.0（2018）
+
+| 特性 | 说明 |
+|------|------|
+| **Stream 数据类型** | 支持消息持久化、消费者组、ACK 确认，对标 Kafka 的轻量级消息队列 |
+| **RDB 不再阻塞** | 子进程 RDB 期间父进程不再用写时复制阻塞（`save` 选项优化） |
+| **集群管理工具** | `redis-cli --cluster` 替代 Ruby 脚本 `redis-trib.rb` |
+| **listpack** | 新的紧凑列表编码，替代压缩列表，避免连锁更新 |
+
+### Redis 6.0（2020）
+
+| 特性 | 说明 |
+|------|------|
+| **多线程 I/O** | 默认关闭，`io-threads N` 开启。网络读写分离到 IO 线程，**命令执行仍在主线程**，保证原子性不受影响 |
+| **RESP3 协议** | 新协议支持推送通知（`push` 类型）、客户端缓存（`CLIENT CACHING`/`CLIENT TRACKING`），减少网络往返 |
+| **ACL 权限控制** | `ACL SETUSER` 按用户限制命令/Key 权限，替代 `requirepass` 单一密码 |
+| **SSL/TLS** | 原生支持 TLS 加密连接，不再依赖 stunnel 代理 |
+| **客户端缓存（Tracking）** | 服务端跟踪客户端访问的 key，key 变化时主动推送失效通知，配合本地缓存实现"响应式缓存" |
+| **Lazy Free** | `UNLINK`、`FLUSHALL ASYNC`、`FLUSHDB ASYNC` 异步释放大 key，避免主线程阻塞 |
+
+### Redis 7.0（2022）
+
+| 特性 | 说明 |
+|------|------|
+| **Function** | 替代 Lua 脚本的新方案：脚本存入 Redis 本身（`FUNCTION LOAD`），支持按库名调用，可管理、可替换，不污染全局命名空间 |
+| **listpack 全面替换 ziplist** | Hash/Zset 底层的压缩列表全部替换为 listpack，消除连锁更新风险 |
+| **集群扩缩容加速** | `CLUSTER SETSLOT` 支持批量槽迁移，`MIGRATE` 支持多 key 单次传输 |
+| **AOF 改进** | 混合持久化下 AOF 重写效率提升，大文件分段处理 |
+| **sharded-pubsub** | 在 Cluster 中 pubsub 消息按 slot 分片，不再全网广播，节点数多时带宽节省显著 |
+| **Redis 官方 Stack** | 统一的模块发行版：RedisJSON、RedisSearch、RedisTimeSeries、RedisBloom 等打包一键部署 |
+
+**版本选型建议**：生产至少用 6.0（多线程 IO + SSL + ACL），能用 7.0 用 7.0（Function + listpack 全面替换 + sharded-pubsub）。5.0 之前的版本不再建议使用。
 
