@@ -257,6 +257,56 @@ public enum Status {
 
 ---
 
+### Java 8+ 时间 API（java.time）
+
+频次 ★★★ · 难度 🟡
+
+**是什么**：Java 8 引入 `java.time` 包，解决旧版 `Date`/`Calendar` 的线程不安全、设计混乱、时区处理困难等问题。
+
+**新旧对比**：
+
+| 旧 API（Java 8 前） | 新 API（java.time） | 说明 |
+|-------------------|--------------------|------|
+| `java.util.Date` | `Instant` | 时间戳，精确到纳秒 |
+| `java.util.Calendar` | `LocalDate` / `LocalTime` / `LocalDateTime` | 无时区的日期时间 |
+| `SimpleDateFormat`（线程不安全） | `DateTimeFormatter`（线程安全） | 格式化/解析，不可变且线程安全 |
+| `new Date(year, month, day)` | `LocalDate.of(2024, 1, 15)` | 构造方式，新 API 无 month 偏移 |
+
+**核心类**：
+
+```java
+// 1. 日期时间
+LocalDate today = LocalDate.now();                    // 2024-01-15
+LocalTime now = LocalTime.now();                      // 14:30:00
+LocalDateTime dt = LocalDateTime.now();               // 2024-01-15T14:30:00
+
+// 2. 时间戳（面向机器，UTC）
+Instant instant = Instant.now();                      // 2024-01-15T06:30:00Z
+
+// 3. 时区处理
+ZonedDateTime zdt = ZonedDateTime.now(ZoneId.of("Asia/Shanghai"));
+
+// 4. 时间间隔
+Duration d = Duration.between(start, end);            // 秒/纳秒精度
+Period p = Period.between(startDate, endDate);        // 年月日精度
+
+// 5. 线程安全的格式化
+DateTimeFormatter fmt = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+LocalDateTime.parse("2024-01-15 14:30:00", fmt);       // 解析
+dt.format(fmt);                                        // 格式化
+
+// 6. 日期运算（返回新对象，不可变）
+LocalDate nextWeek = today.plusWeeks(1);               // 加一周
+LocalDate firstDay = today.withDayOfMonth(1);          // 当月第一天
+```
+
+**常见追问**：
+- `SimpleDateFormat` 为什么不安全？→ 内部 `Calendar` 是共享可变状态，多线程并发调用 `format()`/`parse()` 导致数据错乱。`DateTimeFormatter` 不可变，无此问题
+- `LocalDate` 和 `Date` 的转换？→ `Date.from(instant)` / `date.toInstant().atZone(zoneId).toLocalDate()`
+- 新旧系统互操作时注意什么？→ 数据库驱动 4.2+ 支持 `LocalDate` ↔ `java.sql.Date` 直接映射；`Instant` 是 UTC 时间戳，`LocalDateTime` 不带时区，跨时区系统用 `Instant` 或 `ZonedDateTime`
+
+---
+
 ## 二、面向对象与设计模式
 
 ### 面向对象六大设计原则？

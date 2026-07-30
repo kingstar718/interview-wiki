@@ -544,6 +544,42 @@ int aeProcessEvents(aeEventLoop *el, int flags) {
 
 **为什么用 epoll 而非 select**：① epoll O(1) 就绪事件获取，select O(n) 遍历全量 fd；② epoll 维护内核事件表，避免每次传入全量 fd 集合；③ 用内存映射（mmap）传递数据，减少内核用户态拷贝。
 
+### RESP 协议（Redis Serialization Protocol）
+
+频次 ★★ · 难度 🟡
+
+**是什么**：RESP 是 Redis 客户端与服务端之间的**通信协议**，Redis 6.0 之前为 RESP 2，6.0+ 引入 RESP 3。
+
+**RESP 2 五种数据类型**：
+
+| 类型 | 首字节 | 格式示例 | 说明 |
+|------|--------|---------|------|
+| **简单字符串** | `+` | `+OK\r\n` | 状态回复，如 `SET` 成功 |
+| **错误** | `-` | `-ERR unknown command\r\n` | 错误信息 |
+| **整数** | `:` | `:1\r\n` | 整数回复，如 `EXISTS` |
+| **批量字符串** | `$` | `$5\r\nhello\r\n` | 二进制安全，`$-1` 表示 nil |
+| **数组** | `*` | `*2\r\n$3\r\nGET\r\n$3\r\nkey\r\n` | 多条回复，`*-1` 表示 nil |
+
+```text
+// 交互示例：SET key hello
+客户端发：*3\r\n$3\r\nSET\r\n$3\r\nkey\r\n$5\r\nhello\r\n
+服务端回：+OK\r\n
+
+// 交互示例：GET key
+客户端发：*2\r\n$3\r\nGET\r\n$3\r\nkey\r\n
+服务端回：$5\r\nhello\r\n
+```
+
+**RESP 3 新特性**（Redis 6.0+）：
+- 新增 `push` 类型（`>` 开头），服务端主动推送消息（用于客户端缓存失效通知、`MONITOR`、Pub/Sub 等）
+- 新增 `map`、`set`、`null` 等类型，客户端不需要再猜测数据结构
+- 支持**客户端缓存**（Server-assisted client caching）：服务端跟踪客户端访问的 key，key 变化时主动推送失效通知，配合本地缓存大幅减少网络往返
+
+**为什么 RESP 这么设计**：
+- **文本可读**：`+OK\r\n` 人类可读，调试方便
+- **解析简单**：首字节决定类型，无复杂的序列化/反序列化
+- **二进制安全**：批量字符串带长度前缀，可存任意二进制数据
+
 ---
 
 ## 七、事务

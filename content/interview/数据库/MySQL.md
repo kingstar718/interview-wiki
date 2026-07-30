@@ -262,6 +262,33 @@ InnoDB 成为默认引擎的原因：事务支持、行级锁、崩溃恢复（c
 - 最好自增（随机值如 UUID 会导致页分裂、碎片）
 - 不建议用业务字段
 
+### 索引下推（ICP）与 Multi-Range Read（MRR）
+
+频次 ★★★ · 难度 🟡
+
+**索引下推（ICP, Index Condition Pushdown）**：MySQL 5.6+ 优化，将 `WHERE` 条件中**能用索引判断的部分**从服务层"下推"到存储引擎层提前过滤，减少回表次数。
+
+```sql
+-- 联合索引 (zip, last_name)，查询邮编以 10 开头且姓王的人
+SELECT * FROM users WHERE zip LIKE '10%' AND last_name = '王';
+
+-- 没有 ICP：引擎用 zip 范围扫描找到所有 '10%' 的记录，全部回表
+-- → 把完整行返回给 Server 层，Server 再过滤 last_name = '王'
+-- 有 ICP：引擎扫描索引时直接用 last_name 条件过滤，只回表满足条件的行
+-- → 减少回表次数
+```
+
+**MRR（Multi-Range Read）**：MySQL 5.6+ 优化，将随机回表转为顺序回表。当二级索引范围查询需要回大量行时，MRR 先收集主键值并排序，再统一回表，把随机 I/O 变成顺序 I/O。
+
+```text
+无 MRR：二级索引扫描 → 随机回表（按主键无序访问） → 大量随机 I/O
+有 MRR：二级索引扫描 → 收集主键 ID → 按主键排序 → 顺序回表 → 顺序 I/O
+```
+
+**EXPLAIN 标识**：`Extra` 字段出现 `Using index condition` 表示触发了 ICP；`Using MRR` 表示触发了 MRR。
+
+**ICP vs MRR 分工**：ICP 减少回表次数（过滤），MRR 优化回表效率（排序），两者可以同时生效。
+
 ### 区分度低的字段（如性别）不建议建索引
 
 区分度 = count(DISTINCT col) / count(*)。区分度接近 0，回表开销大，索引形同虚设。
