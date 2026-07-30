@@ -52,6 +52,7 @@ Explorer({
       "SpringCloud微服务",
       "MyBatis",
       "Netty与RPC",
+      "Dubbo",
       // 数据库/
       "MySQL",
       "Redis",
@@ -67,6 +68,7 @@ Explorer({
       "数据结构与算法",
       // 分布式与架构/
       "分布式系统",
+      "配置中心",
       "系统设计",
       "安全认证",
       "生产排障",
