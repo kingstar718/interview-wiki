@@ -190,8 +190,7 @@ def render_index(groups, wl):
         "",
         "> **本页由 `scripts/gen_topics.py` 生成，勿手编。** 改题解的 `topics:`/`techniques:`/元数据行后跑一次脚本即可。",
         ">",
-        "> 三级结构:**套路**(为什么这些题是同一类) → **技术词**(具体用哪一招) → **题目**。",
-        "> 一题可以横跨多个套路(如「接雨水」同时是数组、双指针、单调栈),各处指向的是同一份物理题解。",
+        "> 结构:**套路**(为什么这些题是同一类) → **题目**(技术词以标签形式标注)。一题可以横跨多个套路(如「接雨水」同时是数组、双指针、单调栈),各处指向的是同一份物理题解。",
         ">",
         "> 频次:★★★★★ 几乎必考 / ★★★★ 高频 / ★★★ 常见 / ★★ 偶考。难度:🟢 易 / 🟡 中 / 🔴 难。",
         "> 难度/频次/公司以**题解元数据行**为权威源,本页是它的视图。公司标注为大致倾向,以实际面试为准。",
@@ -202,25 +201,24 @@ def render_index(groups, wl):
         "## 怎么用这份索引",
         "",
         "1. **按套路刷,不按题号刷**。每个套路先做代表题建立模式,再横向扩展变式——套路页里「为什么这些题是同一个套路」才是主线。",
-        "2. **技术词是套路内部的分工**。同一个套路下的技术词彼此不可替代(如双指针下的「对撞指针」与「滑动窗口」),搞混了就会硬套模板。",
+        "2. **技术词以标签形式标注**在题目行尾(如 `#对撞指针`),同一个套路下的技术词彼此不可替代,搞混了就会硬套模板。",
         "3. **高频题(★★★★★)优先**,见 [高频算法题 Top 40](高频题目索引.md#a-高频算法题-top-40)。",
         "4. 每题留 Java 解 + 复杂度 + 一句变式;难题写关联题互链,`## 关联题` 是知识图谱的边。",
         "5. 推荐顺序:数组/链表/二叉树 → 双指针滑窗/二分/哈希表 → 回溯/动态规划 → 图论/栈与队列 → 排序与堆/字典树/位运算。",
         "",
         "## 套路速查",
         "",
-        f"共 {len(wl)} 个套路、{len({t for v in wl.values() for t in v})} 个技术词、{total} 篇题解。",
+        f"共 {len(wl)} 个套路、{total} 篇题解。",
         "",
-        "| 套路 | 题数 | 技术词 |",
-        "|---|---|---|",
+        "| 套路 | 题数 |",
+        "|---|---|",
     ]
-    # 技术词在速查表里不做锚点链接:同一个词可被多页声明(`回溯框架` 同属二叉树与回溯),
-    # 本页会出现两个同名 H3,锚点必然撞车。列纯文本,读者往下翻即可。
+    # 技术词不再作为单独层级展示,改为行内标签 `#技术词` 附在题目行尾。
+    # 速查表简化:只保留套路名和题数。
     for name in order:
         g = groups[name]
         cnt = len({e[1] for items in g.values() for e in items})
-        techs = " / ".join(t for t in wl[name] if g.get(t))
-        out.append(f"| [{name}]({name}.md) | {cnt} | {techs} |")
+        out.append(f"| [{name}]({name}.md) | {cnt} |")
     out.append("")
     out.append("---")
 
@@ -234,7 +232,6 @@ def render_index(groups, wl):
             items = g.get(t)
             if not items:
                 continue
-            out += [f"### {t}", ""]
             for _k, base, title in items:
                 stem = os.path.splitext(base)[0]
                 meta = solution_meta(os.path.join(PROBLEMS, base))
@@ -243,7 +240,7 @@ def render_index(groups, wl):
                     stars, diff, comps = meta
                     parts = [x for x in (diff, stars, "/".join(comps)) if x]
                     tail = " · " + " · ".join(parts)
-                out.append(f"- [[{stem}|{title}]]{tail}")
+                out.append(f"- [[{stem}|{title}]]{tail}  `#{t}`")
             out.append("")
     return "\n".join(out).rstrip() + "\n"
 
