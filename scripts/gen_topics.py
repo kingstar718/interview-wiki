@@ -113,6 +113,25 @@ def sort_key(base):
     return (0, int(n[5:]) if n.startswith("offer") else int(n))
 
 
+def meta_sort_key(filename, meta):
+    """根据元数据生成排序键:频次降序(★越多越靠前)→难度升序(🟢<🟡<🔴)→题号升序。
+
+    meta 是 solution_meta() 的返回值 (stars, diff, comps) 或 None。
+    filename 用于同优先级内按题号排序(如 1-two-sum → 1)。
+    """
+    num = 0
+    m = NUM_RE.match(filename)
+    if m:
+        n = m.group(1)
+        num = int(n[5:]) if n.startswith("offer") else int(n)
+    if meta is None:
+        return (0, 0, 0, num)  # 无元数据排最后,按题号升序
+    stars, diff, _comps = meta
+    star_cnt = stars.count("★") if stars else 0
+    diff_order = {"🟢": 0, "🟡": 1, "🔴": 2}.get(diff, 1)
+    return (1, -star_cnt, diff_order, num)
+
+
 def h1_title(path):
     for _lineno, level, text in parse_headings(path):
         if level == 1:
@@ -260,7 +279,10 @@ def collect_groups(pattern_names):
             continue
         techs = parse_techniques(text)
         title = h1_title(path)
-        entry = (sort_key(base), base, title)
+        meta = solution_meta(path)
+        # 按频次降序→难度升序排序,同优先级内按题号升序
+        key = meta_sort_key(base, meta)
+        entry = (key, base, title)
         for t in topics:
             if t not in groups:
                 orphans.append(f"{base} (未知套路「{t}」)")
