@@ -44,6 +44,9 @@
     N. 高频表一致 —— 高频题目索引 A 表(高频算法题 Top N)同为题解元数据行的视图:
                     已解题必须带链接且指向该题解、逐行比对难度/热度/公司(同 K 项口径,
                     公司只比集合不比顺序 —— 表里按主考公司在前书写)
+    T. 英语元数据行 —— 英语学习/ 每篇 H1 下必须有「等级 L2 · 每天 … · 场景:…」元数据行,
+                    格式合规且每个「场景→小节」指向的 H2 在本篇真实存在(它是
+                    英语学习索引.md 的权威源,写错会静默生成死链)
     O. 关系类型   —— 题解「## 关联题」每条目必须以白名单类型前缀开头(同套路/进阶/
                     基础/易混/知识点)。关系区是图的边,类型必须可机器解析;条目里
                     是否带链接由 J 项管(未收录的题允许纯文本,收录后 J 会催回补)
@@ -60,6 +63,7 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from slug import slugify, slugify_headings  # 与 Quartz 同源的 github-slugger 规则
 from outline import parse_headings  # 跳过围栏代码块提取标题
 import gen_topics  # 套路页题目分组的唯一实现,F/R 项复用它,避免两套解析漂移
+import gen_english  # 英语篇元数据行的唯一解析实现,T 项复用它,同上
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 CONTENT = os.path.join(ROOT, "content")
@@ -496,6 +500,20 @@ def check_solution_structure():
     return errors
 
 
+def check_english_meta():
+    """T. 英语篇元数据行格式 + 场景指向的小节存在 + 索引无漂移(复用 gen_english)。"""
+    notes = gen_english.parse_notes(strict=False)
+    errors = list(gen_english.parse_notes.errors)
+    if errors:
+        return errors  # 元数据行本身有错时,渲染结果无意义,不再比漂移
+    # 改了元数据行却没跑 gen_english.py -> 索引静默过期,CI 必须拦住
+    want = gen_english.render(notes).rstrip("\n")
+    got = read(gen_english.INDEX).rstrip("\n") if os.path.isfile(gen_english.INDEX) else ""
+    if want != got:
+        errors.append("英语学习索引.md 与篇目元数据行漂移,请跑 python3 scripts/gen_english.py")
+    return errors
+
+
 def check_map_on_top():
     """G. 专题第一个 H2 必须是无章号地图(interview 用「面试追问地图」,英语学习用「学习地图」)。"""
     errors = []
@@ -644,6 +662,7 @@ def main():
         ("N. 高频表一致(题解权威源==高频索引 A 表)", check_hot_meta_sync()),
         ("O. 关系类型(关联题条目带白名单前缀)", check_relation_types()),
         ("S. 技术词表(techniques 非空且每个 topic 有本页声明的词)", check_technique_vocab()),
+        ("T. 英语元数据行(等级/场景格式 + 场景指向的小节存在)", check_english_meta()),
     ]
     failed = False
     for name, errors in checks:

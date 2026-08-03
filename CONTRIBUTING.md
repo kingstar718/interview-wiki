@@ -85,20 +85,23 @@
 |---|---|---|---|
 | `content/知识点索引.md` | **整篇生成**（不含标记块，全文都是产物）| `gen_index.py` | —（`--check` 检漂移）|
 | `content/算法题索引.md` | **整篇生成**（套路 → 题目双链，技术词为行内标签）| `gen_topics.py` | —（`--check` 检漂移）|
+| `content/英语学习索引.md` | **整篇生成**（按等级学 + 按场景查双视图）| `gen_english.py` | —（校验 T 检漂移）|
 
 `content/高频题目索引.md` 是唯一**手写**的索引——热度排名带主观判断，生成不出来，所以保留校验 N 逐行比对它与题解元数据行。
 
 小节标题是**稳定语义 ID**，发布后不轻改——改了会打断所有指向 `文件.md#锚点` 的链接（校验 M 拦死链）。
 
-## 四、收尾：三条命令，顺序不能乱
+## 四、收尾：四条命令，顺序不能乱
 
 ```bash
 python3 scripts/gen_index.py      # 刷新知识点索引（读 interview/ 的 H3）
 python3 scripts/gen_topics.py     # 刷新算法题索引（按套路→技术词分组，读题解 topics/techniques/元数据行）
-python3 scripts/check_index.py    # 15 项校验，退出码非 0 即有问题
+python3 scripts/gen_english.py    # 刷新英语学习索引（读英语篇元数据行的等级/场景）
+python3 scripts/check_index.py    # 16 项校验，退出码非 0 即有问题
 ```
 
-两个 `gen_*.py` 都支持 `--check`：只检测漂移不改文件，CI 用这个。
+三个 `gen_*.py` 都支持 `--check`：只检测漂移不改文件。英语索引的漂移已被校验 T 兜住，
+所以 CI 只跑 `check_index.py` 也能拦住「改了元数据行忘记刷新索引」。
 
 ---
 
@@ -204,5 +207,6 @@ python3 scripts/check_index.py    # 15 项校验，退出码非 0 即有问题
 | 知识点索引 | `知识点索引.md` | 由 `gen_index.py` 从篇目真实 H3 + github-slugger 锚点自动生成,勿手编;改完 H3 跑 `python3 scripts/gen_index.py` 刷新 |
 | 算法题索引 | `content/算法题索引.md` | 由 `gen_topics.py` 从题解 `topics:` + `techniques:` 整篇生成(按套路分组,技术词为行内标签),勿手编;改完跑 `python3 scripts/gen_topics.py` 刷新 |
 | 互链 | 相关篇目 | 正文提到其他专题的机制时就近加链接 |
-| 校验 | 仓库根目录 | `python3 scripts/check_index.py` 退出码为 0(15 项) |
+| 英语学习索引 | `content/英语学习索引.md` | 由 `gen_english.py` 从英语篇元数据行(等级/每天投入/场景→小节)整篇生成,勿手编;改完跑 `python3 scripts/gen_english.py` 刷新 |
+| 校验 | 仓库根目录 | `python3 scripts/check_index.py` 退出码为 0(16 项) |
 | 待办 | `TODO.md` | 完成项移入「已完成」，附 commit |

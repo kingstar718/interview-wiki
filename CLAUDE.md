@@ -14,9 +14,10 @@ interview-wiki/
 ├── .github/workflows/deploy.yml  # CI:校验 → 构建 → 发布 GitHub Pages
 ├── content/             # 笔记源码(Quartz 渲染此目录)
 │   ├── index.md           # 站点首页(不写篇数,手写计数必漂移)
-│   ├── 知识点索引.md      # 三大索引:知识点/算法题(均脚本生成)/高频题目(手写)
+│   ├── 知识点索引.md      # 四大索引:知识点/算法题/英语学习(均脚本生成)+高频题目(手写)
 │   ├── 算法题索引.md
 │   ├── 高频题目索引.md
+│   ├── 英语学习索引.md
 │   ├── interview/         # 面试专题,按分类分目录(Java/框架/数据库/中间件/
 │   │                      #   计算机基础/分布式与架构/工程实践/面试)
 │   ├── algorithms/        # 算法题,14 个套路节点 + problems/ 扁平题目池
@@ -43,6 +44,7 @@ python3 scripts/outline.py --tech 单调栈    # 按算法技术词检索题解(
 # 索引刷新(生成物,勿手编)
 python3 scripts/gen_index.py      # 改完 interview 篇目 H3 后跑(知识点索引)
 python3 scripts/gen_topics.py     # 改完题解 topics/techniques/元数据行后跑(套路页+算法题索引)
+python3 scripts/gen_english.py    # 改完英语篇元数据行后跑(英语学习索引)
 
 # 校验(CI 也会跑,本地先过一遍)
 python3 scripts/check_index.py    # 16 项校验;Windows GBK 终端需加环境变量 PYTHONIOENCODING=utf-8
@@ -55,6 +57,7 @@ python3 scripts/check_index.py    # 16 项校验;Windows GBK 终端需加环境�
 | interview/ 篇目的 H3 标题 | `gen_index.py` |
 | 题解的 `topics:` / `techniques:` | `gen_topics.py` |
 | 题解的元数据行 | `gen_topics.py` + 手工同步 `高频题目索引.md` |
+| 英语篇的元数据行(等级/场景) | `gen_english.py` |
 | 文件分类归属 | 移动文件 → 同步索引底部专题清单 |
 | 任何改动 | `check_index.py`（最后一道关）
 
