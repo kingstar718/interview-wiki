@@ -18,16 +18,16 @@
     A. 死链      —— 所有 .md 链接与 [[双链]] 都能按上述语义 resolve
     B. 文件名唯一 —— 纯文件名链接方案的前提: 除 README.md/index.md 外,
                     全库 .md 文件名不得重复(重复会导致链接歧义)
-    C. 命名规范  —— interview/ 下禁止位置型数字前缀 (^数字-)
+    C. 命名规范  —— interview/ 与 英语学习/ 下禁止位置型数字前缀 (^数字-)
                     (algorithms/problems/ 例外: 题号是稳定 ID，允许)
     D. 文件集    —— interview/ 实际文件 == 枢纽「专题文件清单」收录
     E. 分类一致  —— interview/<分类>/ 目录名 == 枢纽清单中该文件的分类名
     F. 题解归属  —— algorithms/problems/ 下每个题解必须有非空 topics: frontmatter,
                     且每个值都对应 algorithms/ 下存在的套路页(防止拼写错误指向
                     不存在的套路、防止题解游离在任何套路视图之外)
-    G. 地图置顶  —— interview/ 专题第一个 H2 必须是无章号的「## 面试追问地图」
-                    (面试问题深挖指南豁免)
-    H. 标题无编号 —— interview/ 的 H3-H6 小节标题禁止数字编号开头(^数字[.、]):
+    G. 地图置顶  —— interview/ 专题第一个 H2 必须是无章号的「## 面试追问地图」,
+                    英语学习/ 则为「## 学习地图」(面试问题深挖指南豁免)
+    H. 标题无编号 —— interview/ 与 英语学习/ 的 H3-H6 小节标题禁止数字编号开头(^数字[.、]):
                     小节标题是稳定语义 ID,同 C 项原则(401/502 等状态码开头合法)
     I. 元数据行  —— 「频次 ★ · 难度 🟡 · 高频：公司」行出现即校验(interview + 算法题解):
                     ★ 1~5 个、难度限 🟢🟡🔴、公司限约定清单(算法侧可用「全厂」)、段序固定
@@ -50,6 +50,7 @@
 
 任一检查失败 -> 退出码 1，可直接接入 CI / pre-commit / AI 改完自检。
 """
+import itertools
 import os
 import re
 import sys
@@ -65,6 +66,7 @@ CONTENT = os.path.join(ROOT, "content")
 HUB = os.path.join(CONTENT, "知识点索引.md")
 INTERVIEW = os.path.join(CONTENT, "interview")
 ALGORITHMS = os.path.join(CONTENT, "algorithms")
+ENGLISH = os.path.join(CONTENT, "英语学习")
 PROBLEMS = os.path.join(ALGORITHMS, "problems")
 
 LINK_RE = re.compile(r"\[[^\]]*\]\(([^)]+)\)")
@@ -162,7 +164,7 @@ def check_unique_names(by_name):
 def check_naming():
     """C. interview/ 下禁止位置型数字前缀(含分类子目录)。"""
     errors = []
-    for folder in ("interview",):
+    for folder in ("interview", "英语学习"):
         d = os.path.join(CONTENT, folder)
         if not os.path.isdir(d):
             continue
@@ -277,6 +279,9 @@ def check_technique_vocab():
 
 MAP_HEADING = "## 面试追问地图"
 MAP_EXEMPT = {"面试问题深挖指南.md"}
+# 英语学习是独立于 interview/ 的第三个域: 同样要求「首个 H2 是导航地图 + 小节标题无编号」,
+# 但它不是面试专题,地图叫「学习地图」。D/E 不适用(那两项绑知识点索引的专题文件清单,八股专属)。
+ENGLISH_MAP_HEADING = "## 学习地图"
 H2_RE = re.compile(r"^##\s")
 NUM_SECTION_RE = re.compile(r"^#{3,6}\s+\d+[.、．]\s")
 META_TRIGGER_RE = re.compile(r"^(频次 |难度 )")
@@ -300,6 +305,14 @@ HOT_INDEX = os.path.join(CONTENT, "高频题目索引.md")
 
 def interview_files():
     for root, _dirs, files in os.walk(INTERVIEW):
+        for f in sorted(files):
+            if f.endswith(".md"):
+                yield os.path.join(root, f)
+
+
+def english_files():
+    """英语学习域(第三个域,不进知识点索引的专题清单,故 D/E 不覆盖它)。"""
+    for root, _dirs, files in os.walk(ENGLISH):
         for f in sorted(files):
             if f.endswith(".md"):
                 yield os.path.join(root, f)
@@ -484,24 +497,26 @@ def check_solution_structure():
 
 
 def check_map_on_top():
-    """G. 专题第一个 H2 必须是无章号地图。"""
+    """G. 专题第一个 H2 必须是无章号地图(interview 用「面试追问地图」,英语学习用「学习地图」)。"""
     errors = []
-    for path in interview_files():
+    for path, expected in [(p, MAP_HEADING) for p in interview_files()] + [
+        (p, ENGLISH_MAP_HEADING) for p in english_files()
+    ]:
         if os.path.basename(path) in MAP_EXEMPT:
             continue
         rel = os.path.relpath(path, ROOT)
         lines = strip_code(read(path))
         first_h2 = next(((i, ln) for i, ln in enumerate(lines, 1) if H2_RE.match(ln)), None)
-        if first_h2 is None or first_h2[1].strip() != MAP_HEADING:
+        if first_h2 is None or first_h2[1].strip() != expected:
             got = first_h2[1].strip() if first_h2 else "(无 H2)"
-            errors.append(f"{rel} 第一个 H2 应为「{MAP_HEADING}」,实际是「{got}」")
+            errors.append(f"{rel} 第一个 H2 应为「{expected}」,实际是「{got}」")
     return errors
 
 
 def check_section_naming():
     """H. H3-H6 小节标题禁止数字编号开头(小节标题是稳定语义 ID)。"""
     errors = []
-    for path in interview_files():
+    for path in itertools.chain(interview_files(), english_files()):
         rel = os.path.relpath(path, ROOT)
         for lineno, line in enumerate(strip_code(read(path)), 1):
             if NUM_SECTION_RE.match(line):

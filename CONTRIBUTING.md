@@ -84,7 +84,7 @@
 | 生成物 | 形态 | 脚本 | 校验 |
 |---|---|---|---|
 | `content/知识点索引.md` | **整篇生成**（不含标记块，全文都是产物）| `gen_index.py` | —（`--check` 检漂移）|
-| `content/算法题索引.md` | **整篇生成**（套路 → 技术词 → 题目双链）| `gen_topics.py` | —（`--check` 检漂移）|
+| `content/算法题索引.md` | **整篇生成**（套路 → 题目双链，技术词为行内标签）| `gen_topics.py` | —（`--check` 检漂移）|
 
 `content/高频题目索引.md` 是唯一**手写**的索引——热度排名带主观判断，生成不出来，所以保留校验 N 逐行比对它与题解元数据行。
 
@@ -172,7 +172,7 @@ python3 scripts/check_index.py    # 15 项校验，退出码非 0 即有问题
   - **`techniques` 以「代码实际实现的解法」为准，不是「思路里提到的解法」**。检索标签的契约是：按标签找过来，能看到对应的代码。`720-词典中最长的单词` 思路首列 Trie 但代码是排序+哈希集，故标 `哈希查表` 而非 `Trie前缀树`。
   - `模拟构造` 是兜底词（按题意直接模拟、没有可归纳的技术）。**覆盖数超过 8 题就要复查**，说明有题被偷懒归类了。
   - 词表成色由 `gen_topics.py` 打印审计（仅覆盖 1 题的词会高亮），**不做硬校验**。曾试过「每词 ≥N 题」的阈值：N=3 逼出 `快速选择`→`堆TopK`、`BST中序`→`递归返回值设计` 两个语义上就错的合并；降到 N=2 后 `快速选择` 自己又只剩 1 题。词表条数不是成本（回填才是），拿条数下限去卡语义精确是拿错了东西当约束。
-- **成员列表绝不手写**：`content/算法题索引.md` 由 `python3 scripts/gen_topics.py` 从全库题解的 `topics:` / `techniques:` frontmatter 整篇生成，按套路 → 技术词分组，勿手编（`--check` 检漂移）。
+- **成员列表绝不手写**：`content/算法题索引.md` 由 `python3 scripts/gen_topics.py` 从全库题解的 `topics:` / `techniques:` frontmatter 整篇生成，按套路分组、技术词以行内标签标注在题目行尾，勿手编（`--check` 检漂移）。
 
 ## 修改与整合规范
 
@@ -202,7 +202,7 @@ python3 scripts/check_index.py    # 15 项校验，退出码非 0 即有问题
 |--------|------|------|
 | 追问地图 | 专题文件顶部表格 | 新增/修改对应行，"下一层追问"列要和正文的常见追问呼应 |
 | 知识点索引 | `知识点索引.md` | 由 `gen_index.py` 从篇目真实 H3 + github-slugger 锚点自动生成,勿手编;改完 H3 跑 `python3 scripts/gen_index.py` 刷新 |
-| 算法题索引 | `content/算法题索引.md` | 由 `gen_topics.py` 从题解 `topics:` + `techniques:` 整篇生成(按套路 → 技术词分组),勿手编;改完跑 `python3 scripts/gen_topics.py` 刷新 |
+| 算法题索引 | `content/算法题索引.md` | 由 `gen_topics.py` 从题解 `topics:` + `techniques:` 整篇生成(按套路分组,技术词为行内标签),勿手编;改完跑 `python3 scripts/gen_topics.py` 刷新 |
 | 互链 | 相关篇目 | 正文提到其他专题的机制时就近加链接 |
 | 校验 | 仓库根目录 | `python3 scripts/check_index.py` 退出码为 0(15 项) |
 | 待办 | `TODO.md` | 完成项移入「已完成」，附 commit |
