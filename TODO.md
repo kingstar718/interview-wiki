@@ -11,6 +11,12 @@
 
 ## 已完成
 
+### 算法侧(2026-08-05)
+
+- [x] 新增 [刷题方案](content/algorithms/刷题方案.md) — 两阶段路线(随想录筑基 94 题 → Hot100 验收 50 道新题),每章标注必刷/跳过及跳过理由,Hard 白名单按题解元数据行 ★★★★★ 筛出 6 道;连带:`gen_topics.py` 排除名单 + `quartz.ts` ORDER 登记 + 算法总览「推荐学习路径」章瘦身为链接(消除"一刷要不要看答案"的口径冲突)+ 首页快速入口
+- [x] 补题解 437 路径总和III、35 搜索插入位置 — Hot100 仅缺这两道,补齐后 Hot100 100/100 全覆盖
+- [x] 合并三对同题号重复题解 — 108/28/518 各存了两份(文件名不同所以校验 B 放行,但同题两份题解元数据打架、索引里各占一行)。按 LeetCode 官方 slug 保留一份并合入另一份的独有内容,删 `108-convert-sorted-array-to-bst` / `28-implement-strstr` / `518-coin-change-2`;顺带把 `quartz.ts` ORDER 漏登记的「数学」补上(此前它排到了 problems/ 之后)
+
 ### 站点侧(2026-08-03 逐条核实)
 
 - [x] 暗色模式手动切换按钮 — 已装 `quartz-community/darkmode` 插件(quartz.config.yaml:151, enabled: true),构建产物含 `class="darkmode"`;注意 config 第 40 行的 `darkMode:` 是**配色定义**不是开关,两者容易混

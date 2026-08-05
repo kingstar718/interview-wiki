@@ -3,6 +3,7 @@ topics:
   - 二叉树
 techniques:
   - 树的构造与序列化
+  - 递归
 ---
 
 # 108. 将有序数组转换为二叉搜索树（Convert Sorted Array to Binary Search Tree）
@@ -62,6 +63,8 @@ private TreeNode build(int[] nums, int left, int right) {
 ## 变式
 
 - **[109. 有序链表转换 BST](https://leetcode.cn/problems/convert-sorted-list-to-binary-search-tree/)**：链表无法 O(1) 取中间元素，需要快慢指针找中点，或者中序遍历 + 全局指针
+- **[105. 从前序与中序遍历构造二叉树](105-construct-binary-tree-from-preorder-and-inorder-traversal.md)**：同样是递归分治建树，但输入是两种遍历序列
+- **[110. 平衡二叉树](110-balanced-binary-tree.md)**：反过来判断一棵树是否高度平衡
 - 要求"最平衡"（左右节点数差 ≤ 1）：`mid = (left + right) / 2` 即可保证
 - 转换为任意 BST（不要求平衡）：取第一个元素为根，其余递归到右子树
 
@@ -70,11 +73,13 @@ private TreeNode build(int[] nums, int left, int right) {
 - 递归终止条件 `left > right` 而非 `left == right`——`left == right` 时还要创建单个节点
 - mid 计算用 `left + (right - left) / 2` 防溢出，不要用 `(left + right) / 2`
 - 左子树范围 `[left, mid - 1]`，右子树范围 `[mid + 1, right]`——mid 作为根不参与子树递归
+- 题目要求高度平衡但**不要求答案唯一**——中间元素取左中位数或右中位数都能通过，别被示例输出带偏
 
 ## 面试追问
 
 - **为什么取中间元素能保证高度平衡？** 二分后左右子数组长度差 ≤ 1，递归构造出的子树高度差也 ≤ 1。数学归纳法可证
 - **链表版（109）怎么做？** 快慢指针找中点，O(n log n)；或者中序遍历 + 全局指针模拟，O(n) 且不需要找中点
+- **数组有重复值怎么办？** BST 要求左子树严格小于根，有重复值时通常把相等的一段归到同一侧（取左边第一个不等的位置作边界）。本题保证升序无重复，不需要处理，但面试问到要能说清取舍
 
 ## 关联题
 

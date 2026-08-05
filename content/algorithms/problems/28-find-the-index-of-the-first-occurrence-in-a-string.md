@@ -113,7 +113,8 @@ public int strStr(String haystack, String needle) {
 
 - `buildNext` 中 `i` 从 1 开始（`next[0]` 默认为 0），不是从 0 开始
 - 匹配失败时 `j = next[j - 1]` 而不是 `j = next[j]`——`next[j-1]` 表示 `j-1` 位置的最长相等前后缀长度，即回退后应该对齐的位置
-- 暴力法循环条件 `i <= n - m`，注意是 `<=` 不是 `<`
+- 暴力法循环条件 `i <= n - m`，注意是 `<=` 不是 `<`（两串等长时要取到等号）
+- 逐字符比较用 `charAt`，不要用 `substring(i, i+m).equals(needle)`——后者每次新建字符串，白白多出 O(m) 的时间和空间
 
 ## 面试追问
 
@@ -123,4 +124,5 @@ public int strStr(String haystack, String needle) {
 ## 关联题
 
 - 同套路：[459. 重复的子字符串](459-repeated-substring-pattern.md) —— KMP 的 next 数组应用，判断字符串是否由子串重复构成
-- 知识点：字符串匹配算法族——KMP（前缀表）/ BM（右向左）/ RK（哈希滚动）各自的核心思想
+- 易混：[3. 无重复字符的最长子串](3-longest-substring-without-repeating-characters.md) —— 同样在字符串上推进窗口，但那是"边扩边缩"的滑动窗口，本题是固定长度逐位比对，别混成一类
+- 知识点：字符串匹配算法族——KMP（前缀表）/ BM（右向左）/ RK（哈希滚动）各自的核心思想，见[数组与字符串](数组与字符串.md)
