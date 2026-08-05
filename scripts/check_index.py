@@ -64,6 +64,7 @@ from slug import slugify, slugify_headings  # 与 Quartz 同源的 github-slugge
 from outline import parse_headings  # 跳过围栏代码块提取标题
 import gen_topics  # 套路页题目分组的唯一实现,F/R 项复用它,避免两套解析漂移
 import gen_english  # 英语篇元数据行的唯一解析实现,T 项复用它,同上
+import gen_ai  # AI 篇元数据行的唯一解析实现,U 项复用它,同上
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 CONTENT = os.path.join(ROOT, "content")
@@ -71,6 +72,7 @@ HUB = os.path.join(CONTENT, "知识点索引.md")
 INTERVIEW = os.path.join(CONTENT, "interview")
 ALGORITHMS = os.path.join(CONTENT, "algorithms")
 ENGLISH = os.path.join(CONTENT, "英语学习")
+AI = os.path.join(CONTENT, "AI提效")
 PROBLEMS = os.path.join(ALGORITHMS, "problems")
 
 LINK_RE = re.compile(r"\[[^\]]*\]\(([^)]+)\)")
@@ -286,6 +288,7 @@ MAP_EXEMPT = {"面试问题深挖指南.md"}
 # 英语学习是独立于 interview/ 的第三个域: 同样要求「首个 H2 是导航地图 + 小节标题无编号」,
 # 但它不是面试专题,地图叫「学习地图」。D/E 不适用(那两项绑知识点索引的专题文件清单,八股专属)。
 ENGLISH_MAP_HEADING = "## 学习地图"
+AI_MAP_HEADING = "## 学习地图"
 H2_RE = re.compile(r"^##\s")
 NUM_SECTION_RE = re.compile(r"^#{3,6}\s+\d+[.、．]\s")
 META_TRIGGER_RE = re.compile(r"^(频次 |难度 )")
@@ -317,6 +320,16 @@ def interview_files():
 def english_files():
     """英语学习域(第三个域,不进知识点索引的专题清单,故 D/E 不覆盖它)。"""
     for root, _dirs, files in os.walk(ENGLISH):
+        for f in sorted(files):
+            if f.endswith(".md"):
+                yield os.path.join(root, f)
+
+
+def ai_files():
+    """AI 提效域(第四个域,同英语域:不进知识点索引的专题清单,故 D/E 不覆盖它)。"""
+    if not os.path.isdir(AI):
+        return
+    for root, _dirs, files in os.walk(AI):
         for f in sorted(files):
             if f.endswith(".md"):
                 yield os.path.join(root, f)
@@ -514,12 +527,25 @@ def check_english_meta():
     return errors
 
 
+def check_ai_meta():
+    """U. AI 篇元数据行格式 + 场景指向的小节存在 + 索引无漂移(复用 gen_ai,同 T)。"""
+    notes = gen_ai.parse_notes(strict=False)
+    errors = list(gen_ai.parse_notes.errors)
+    if errors:
+        return errors
+    want = gen_ai.render(notes).rstrip("\n")
+    got = read(gen_ai.INDEX).rstrip("\n") if os.path.isfile(gen_ai.INDEX) else ""
+    if want != got:
+        errors.append("AI提效索引.md 与篇目元数据行漂移,请跑 python3 scripts/gen_ai.py")
+    return errors
+
+
 def check_map_on_top():
     """G. 专题第一个 H2 必须是无章号地图(interview 用「面试追问地图」,英语学习用「学习地图」)。"""
     errors = []
     for path, expected in [(p, MAP_HEADING) for p in interview_files()] + [
         (p, ENGLISH_MAP_HEADING) for p in english_files()
-    ]:
+    ] + [(p, AI_MAP_HEADING) for p in ai_files()]:
         if os.path.basename(path) in MAP_EXEMPT:
             continue
         rel = os.path.relpath(path, ROOT)
@@ -534,7 +560,7 @@ def check_map_on_top():
 def check_section_naming():
     """H. H3-H6 小节标题禁止数字编号开头(小节标题是稳定语义 ID)。"""
     errors = []
-    for path in itertools.chain(interview_files(), english_files()):
+    for path in itertools.chain(interview_files(), english_files(), ai_files()):
         rel = os.path.relpath(path, ROOT)
         for lineno, line in enumerate(strip_code(read(path)), 1):
             if NUM_SECTION_RE.match(line):
@@ -663,6 +689,7 @@ def main():
         ("O. 关系类型(关联题条目带白名单前缀)", check_relation_types()),
         ("S. 技术词表(techniques 非空且每个 topic 有本页声明的词)", check_technique_vocab()),
         ("T. 英语元数据行(等级/场景格式 + 场景指向的小节存在)", check_english_meta()),
+        ("U. AI 元数据行(等级/场景格式 + 场景指向的小节存在)", check_ai_meta()),
     ]
     failed = False
     for name, errors in checks:
