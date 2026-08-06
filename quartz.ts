@@ -1,10 +1,23 @@
 import { loadQuartzConfig, loadQuartzLayout } from "./quartz/plugins/loader/config-loader"
-import { Explorer } from "./.quartz/plugins"
+import { componentRegistry } from "./quartz/components/registry"
 
 // Explorer 排序表:YAML 放不下函数,在此覆盖(quartz.config.yaml 里的 explorer 注释指向这里)。
+//
+// 为什么直接调 componentRegistry 而不是 `import { Explorer } from "./.quartz/plugins"`:
+//   `.quartz/` 被 .gitignore 忽略,CI 每次 fresh install 重新生成 index.ts,而它对
+//   「组件类」插件的导出形态变过 —— 旧版生成注册函数
+//   (`Explorer: (...a) => componentRegistry.setOptionOverrides("explorer", a[0])`),
+//   新版改成直接 re-export 组件工厂 (`export { Explorer } from "./explorer"`)。
+//   在新版下 `Explorer({...})` 只是造了个没人接收的组件,覆盖被静默丢弃:
+//   构建照样成功,但线上侧栏退回默认排序 + 英文目录名(本地因为 .quartz 是旧版缓存,
+//   看起来正常 —— 这正是「本地中文、线上英文」的成因)。
+//   componentRegistry 是 vendored 的(quartz/components/registry.ts,进版本库),
+//   config-loader 的 buildLayoutForEntries 始终从它读 getOptionOverrides,
+//   所以直接写它对两种 index.ts 形态都成立。
+//
 // 注意:sortFn/mapFn 会被 toString() 序列化到页面、在浏览器端 eval,
 // 因此必须自包含 —— 排序表/改名表只能写在函数体内,不能引用外部变量。
-Explorer({
+componentRegistry.setOptionOverrides("explorer", {
   // 顶层目录显示中文名(仅影响侧栏,不改真实路径/面包屑)
   mapFn: (node) => {
     const NAMES: Record<string, string> = {
