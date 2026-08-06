@@ -7,7 +7,7 @@ techniques:
 
 # 72. 编辑距离（Edit Distance）
 
-频次 ★★★★★ · 难度 🔴 · 高频：字节/阿里/腾讯
+频次 ★★★★★ · 难度 🟡 · 高频：字节/阿里/腾讯
 
 ## 题目
 
@@ -80,4 +80,3 @@ public int minDistance(String word1, String word2) {
 - 同套路：[1143. 最长公共子序列](1143-longest-common-subsequence.md) —— 同型二维 DP
 - 进阶：[10. 正则表达式匹配](10-regular-expression-matching.md) —— 更复杂的字符串匹配 DP
 - 知识点：编辑距离的三种操作语义见[动态规划](动态规划与贪心.md)
-
