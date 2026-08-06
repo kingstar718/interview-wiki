@@ -10,7 +10,8 @@ interview-wiki/
 ├── quartz/              # Quartz 框架源码(vendor 自 jackyzha0/quartz v4 分支,勿随意改)
 ├── quartz.config.yaml   # 站点配置(插件/主题/baseUrl,中文站点设置在此)
 ├── quartz.ts            # Explorer sortFn/mapFn 覆盖(分类排序表在此,新增篇目要登记;
-│                        #   函数会序列化到浏览器执行,排序表必须写在函数体内)
+│                        #   函数会序列化到浏览器执行,排序表必须写在函数体内;
+│                        #   覆盖必须走 componentRegistry,不能 import .quartz/plugins,原因见文件内注释)
 ├── .github/workflows/deploy.yml  # CI:校验 → 构建 → 发布 GitHub Pages
 ├── content/             # 笔记源码(Quartz 渲染此目录)
 │   ├── index.md           # 站点首页(不写篇数,手写计数必漂移)
@@ -123,6 +124,8 @@ Quartz 的 `CrawlLinks` 配置为 `markdownLinkResolution: "shortest"`(Obsidian 
 - **文件名不唯一时写 content 根全路径**:目前全库文件名唯一(`index.md` 除外),没有需要写全路径的页面;将来若出现同名文件,链接必须写 `[x](interview/Java/JVM.md)` 这样的 content 根全路径
 - **禁止相对路径多段链接**(`../interview/JVM.md`、`problems/1-two-sum.md`):Quartz 会把多段路径当作从 content 根出发解析,相对写法必死链。`check_index.py` 检查项 A 会拦截
 - 代码块/行内代码里的 `[[...]]` 不会被转换,不算链接
+- **URL 只小写 ASCII,中文原样保留**:`AI提效/LLM应用开发.md` → `/ai提效/llm应用开发`。写 md 链接时不用管大小写(按文件名匹配),但**手写外链/分享链接要用小写形式**;`public/` 下同时存在 `AI提效/` 目录是 Quartz 自动生成的 289 字节跳转桩(`<meta http-equiv="refresh">`),不是重复内容,别手删
+- **侧栏中文目录名 ≠ 真实路径**:`interview`/`algorithms`/`problems` 是真实英文目录名,侧栏显示的「面试专题/算法题/题库」来自 `quartz.ts` 的 Explorer `mapFn` 改名表,只影响显示,链接和 URL 仍用英文名
 
 ## 命名与索引约定(AI 快速定位/校验/修改)
 
