@@ -12,7 +12,6 @@ interview-wiki/
 ├── quartz.ts            # Explorer sortFn/mapFn 覆盖(分类排序表在此,新增篇目要登记;
 │                        #   函数会序列化到浏览器执行,排序表必须写在函数体内;
 │                        #   覆盖必须走 componentRegistry,不能 import .quartz/plugins,原因见文件内注释)
-├── .github/workflows/deploy.yml  # CI:校验 → 构建 → 发布 GitHub Pages
 ├── content/             # 笔记源码(Quartz 渲染此目录)
 │   ├── index.md           # 站点首页(不写篇数,手写计数必漂移)
 │   ├── 知识点索引.md      # 五大索引:知识点/算法题/英语学习/AI提效(均脚本生成)+高频题目(手写)
@@ -138,4 +137,5 @@ Quartz 的 `CrawlLinks` 配置为 `markdownLinkResolution: "shortest"`(Obsidian 
 
 ## 部署
 
-见 [DEPLOY.md](./DEPLOY.md)。push `main` 后 GitHub Actions 自动构建发布(Pages Source = GitHub Actions)。
+见 [DEPLOY.md](./DEPLOY.md)。push `main` 后 Cloudflare Pages 自动构建发布;
+改完在本地跑 `python3 scripts/check_index.py` 做索引/死链校验(见上)。

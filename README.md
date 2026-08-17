@@ -18,4 +18,4 @@ npx quartz build --serve   # http://localhost:8080
 
 ## 部署
 
-push `main` 后 GitHub Actions 自动构建发布(Pages Source = GitHub Actions)。详见 [DEPLOY.md](DEPLOY.md)。
+push `main` 后 Cloudflare Pages 自动构建发布。详见 [DEPLOY.md](DEPLOY.md)。
