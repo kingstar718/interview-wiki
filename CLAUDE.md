@@ -14,16 +14,18 @@ interview-wiki/
 │                        #   覆盖必须走 componentRegistry,不能 import .quartz/plugins,原因见文件内注释)
 ├── content/             # 笔记源码(Quartz 渲染此目录)
 │   ├── index.md           # 站点首页(不写篇数,手写计数必漂移)
-│   ├── 知识点索引.md      # 五大索引:知识点/算法题/英语学习/AI提效(均脚本生成)+高频题目(手写)
+│   ├── 知识点索引.md      # 六大索引:知识点/算法题/英语学习/AI提效/软考系统架构师(均脚本生成)+高频题目(手写)
 │   ├── 算法题索引.md
 │   ├── 高频题目索引.md
 │   ├── 英语学习索引.md
 │   ├── AI提效索引.md
+│   ├── 软考系统架构师索引.md
 │   ├── interview/         # 面试专题,按分类分目录(Java/框架/数据库/中间件/
 │   │                      #   计算机基础/分布式与架构/工程实践/面试)
 │   ├── algorithms/        # 算法题,14 个套路节点 + problems/ 扁平题目池
 │   ├── 英语学习/          # 学习方案/资源 + 词汇 + 技术读写听说 + 职场沟通/面试英语
-│   └── AI提效/            # 第四域:用 AI 进开发流程 + 后端把 LLM 接进业务系统
+│   ├── AI提效/            # 第四域:用 AI 进开发流程 + 后端把 LLM 接进业务系统
+│   └── 软考系统架构师/    # 第五个域:软考高级备考(考试信息/重点分布/知识域/案例/论文)
 ├── CLAUDE.md            # 本文件(Claude 项目指引)
 ├── CONTRIBUTING.md      # 内容规范(小节模板/整合规范/同步清单)
 ├── TODO.md              # 内容待办(领任务/登记缺口/完成归档)
@@ -48,9 +50,10 @@ python3 scripts/gen_index.py      # 改完 interview 篇目 H3 后跑(知识点�
 python3 scripts/gen_topics.py     # 改完题解 topics/techniques/元数据行后跑(套路页+算法题索引)
 python3 scripts/gen_english.py    # 改完英语篇元数据行后跑(英语学习索引)
 python3 scripts/gen_ai.py         # 改完 AI 篇元数据行后跑(AI提效索引)
+python3 scripts/gen_rk.py         # 改完软考篇元数据行后跑(软考系统架构师索引)
 
 # 校验(CI 也会跑,本地先过一遍)
-python3 scripts/check_index.py    # 17 项校验;Windows GBK 终端需加环境变量 PYTHONIOENCODING=utf-8
+python3 scripts/check_index.py    # 18 项校验;Windows GBK 终端需加环境变量 PYTHONIOENCODING=utf-8
 ```
 
 **改什么跑什么**（改完立即跑，不等收尾）：
@@ -62,6 +65,7 @@ python3 scripts/check_index.py    # 17 项校验;Windows GBK 终端需加环境�
 | 题解的元数据行 | `gen_topics.py` + 手工同步 `高频题目索引.md` |
 | 英语篇的元数据行(等级/场景) | `gen_english.py` |
 | AI 篇的元数据行(等级/场景) | `gen_ai.py` |
+| 软考篇的元数据行(科目/考频/场景) | `gen_rk.py` |
 | 文件分类归属 | 移动文件 → 同步索引底部专题清单 |
 | 任何改动 | `check_index.py`（最后一道关）
 
@@ -108,6 +112,7 @@ python3 scripts/check_index.py    # 17 项校验;Windows GBK 终端需加环境�
 - 元数据行(可选,标题下一行):`频次 ★★★★ · 难度 🟡 · 高频:字节/美团`,出现即校验格式(校验 I)
 - **小节标题 = 稳定语义 ID**:问法式、禁止数字编号开头、发布后不轻改;追问地图不带章号且固定置顶(校验 G/H,细则见 CONTRIBUTING.md)
 - **AI提效域**:`content/AI提效/` 是第四个域,结构与英语域同构(元数据行 `等级 L2 · 每天 … · 场景:…` → `gen_ai.py` → 双视图索引;首个 H2 是 `## 学习地图`;校验 C/G/H/U 覆盖,D/E 不覆盖)。定位是**用 AI 提效 + 后端把 LLM 接进系统**,不是八股也不是算法,**不进知识点索引**。
+- **软考系统架构师域**:`content/软考系统架构师/` 是第五个域,结构与英语/AI 域同构(元数据行 `科目 … · 考频 ★… · 场景:…` → `gen_rk.py` → 双视图索引;首个 H2 是 `## 学习地图`;校验 C/G/H/V 覆盖,D/E 不覆盖)。定位是**软考高级系统架构设计师备考**(考试信息/重点分布/知识域/案例分析/论文),不是大厂面试八股,**不进知识点索引**。
 - **英语学习域**:`content/英语学习/` 是独立于 interview/algorithms 的第三个域。首个 H2 是 `## 学习地图`(不是「面试追问地图」——它不是面试专题),其余同 interview 体例(中文数字章 + 常见追问 + 相关)。校验 C/G/H 覆盖它;D/E 不覆盖(那两项绑 `知识点索引.md` 的专题文件清单,八股专属,**英语篇目不进知识点索引**)
 - 详解模板:
   - 算法题(固定小节,顺序不变):题目 → 思路 → 代码 → 复杂度 → 边界条件 → 变式 → 易错点 → 面试追问 → 关联题;H1 为`题号. 中文题名(English Title)`,元数据行必填且为难度/频次/公司的权威源(细则见 CONTRIBUTING.md)

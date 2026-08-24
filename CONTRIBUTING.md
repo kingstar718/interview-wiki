@@ -86,6 +86,7 @@
 | `content/知识点索引.md` | **整篇生成**（不含标记块，全文都是产物）| `gen_index.py` | —（`--check` 检漂移）|
 | `content/算法题索引.md` | **整篇生成**（套路 → 题目双链，技术词为行内标签）| `gen_topics.py` | —（`--check` 检漂移）|
 | `content/英语学习索引.md` | **整篇生成**（按等级学 + 按场景查双视图）| `gen_english.py` | —（校验 T 检漂移）|
+| `content/软考系统架构师索引.md` | **整篇生成**（按科目学 + 按场景查双视图）| `gen_rk.py` | —（校验 V 检漂移）|
 
 `content/高频题目索引.md` 是唯一**手写**的索引——热度排名带主观判断，生成不出来，所以保留校验 N 逐行比对它与题解元数据行。
 
@@ -97,10 +98,11 @@
 python3 scripts/gen_index.py      # 刷新知识点索引（读 interview/ 的 H3）
 python3 scripts/gen_topics.py     # 刷新算法题索引（按套路→技术词分组，读题解 topics/techniques/元数据行）
 python3 scripts/gen_english.py    # 刷新英语学习索引（读英语篇元数据行的等级/场景）
-python3 scripts/check_index.py    # 16 项校验，退出码非 0 即有问题
+python3 scripts/gen_rk.py         # 刷新软考系统架构师索引（读软考篇元数据行的科目/考频/场景）
+python3 scripts/check_index.py    # 18 项校验，退出码非 0 即有问题
 ```
 
-三个 `gen_*.py` 都支持 `--check`：只检测漂移不改文件。英语索引的漂移已被校验 T 兜住，
+四个 `gen_*.py` 都支持 `--check`：只检测漂移不改文件。英语索引的漂移已被校验 T 兜住，
 所以 CI 只跑 `check_index.py` 也能拦住「改了元数据行忘记刷新索引」。
 
 ---
