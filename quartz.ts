@@ -137,6 +137,7 @@ componentRegistry.setOptionOverrides("explorer", {
       "真题与刷题进度",
       "真题样题与解析",
       "考前速记卡",
+      "专业英语术语表",
       // algorithms/(套路节点在前,原始题目池在后;新增套路在此登记,否则会被
       // 排到 problems/ 之后 —— 默认排序是"目录在前、文件在后",problems/
       // 是这里唯一的子目录,不登记就会排到 13 个套路文件前面,顺序反了)
