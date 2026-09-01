@@ -11,7 +11,6 @@ configuration:
     - private
     - templates
     - .obsidian
-    - 个人记录
   theme:
     # 不请求 Google Fonts(国内访问不通),正文/标题走系统字体栈
     fontOrigin: local
