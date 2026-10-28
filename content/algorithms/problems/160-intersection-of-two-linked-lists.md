@@ -59,6 +59,7 @@ public ListNode getIntersectionNode(ListNode headA, ListNode headB) {
 ## 易错点
 
 - 判断相交要用 `pA == pB`（节点引用相等），不能用 `pA.val == pB.val`（值相同但可能是不同节点）。
+- **换轨那一步不能再走 `next`**：写成 `if (pA == null) pA = headB;` 后又无条件 `pA = pA.next;`，会跳过对方链表的头节点，路径错位。必须用 `else` 分支或三元表达式：`pA = (pA == null) ? headB : pA.next;`。两条链长度接近时这个 bug 会"碰巧"通过，长度不对称（如 B 是 A 的后缀）才暴露。
 - 不相交时两指针最终都会变成 `null` 并退出循环，不需要额外判断"永远走不到一起"的死循环风险。
 
 ## 面试追问
