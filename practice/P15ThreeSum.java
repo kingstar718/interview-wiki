@@ -1,4 +1,5 @@
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -8,103 +9,101 @@ import java.util.Set;
  * https://leetcode.cn/problems/3sum/
  *
  * <p>【难度】Medium
- * <p>【标签】数组(Array) · 双指针(Two Pointers) · 排序(Sorting)
+ * <p>【标签】数组(Array) · 双指针(Two Pointers) · 排序(Sorting) · 去重
  * <p>【题型】排序后「固定一端 + 双指针夹逼」求和；三元组在生成时即去重，而非事后用 Set 去重
- * <p>【考点】能否把三数之和化归成「固定一个数后求两数之和」，以及去重的正确写法（排序 + 跳过相邻重复值）
- * <p>【关联】{@link P1TwoSum} —— 同构前置：固定 nums[i] 后，剩下两数之和 = -nums[i]，即 P1 的「补数」思想
+ * <p>【考点】把三数之和化归成「固定一个数后求两数之和」；三处去重的正确写法与时机
+ * <p>【关联】P1TwoSum（内层就是有序版两数之和）；P18FourSum（再套一层）
  *
- * <p>给定整数数组 nums，找出所有满足 i≠j、i≠k、j≠k 且和为 0 的三元组 [nums[i], nums[j], nums[k]]，
- * 返回**不重复**的三元组列表（三元组之间、组内顺序均不计）。
+ * <p>给你一个整数数组 nums，判断是否存在三元组 [nums[i], nums[j], nums[k]] 满足
+ * i != j、i != k 且 j != k，同时还满足 nums[i] + nums[j] + nums[k] == 0。
+ * 请你返回所有和为 0 且不重复的三元组。答案中不可以包含重复的三元组。
  *
- * <p>── 思路引导 ──
- * <p>1. 朴素想法：三重循环枚举所有三元组，O(n³)；且去重麻烦——
- *    要先把每个三元组排序、再丢进 Set 去重，既慢又丑。
+ * <p>约束：3 &lt;= nums.length &lt;= 3000；-10^5 &lt;= nums[i] &lt;= 10^5。
  *
- * <p>2. 关键观察：和为 0 = 固定一个数 a 后，找另两数 b+c = -a。
- *    而「有序数组上找两数之和等于某值」正是双指针的强项（同 {@link P1TwoSum} 的补数思想）：
- *    排序后，left 指向小端、right 指向大端，按和的大小收窄即可，O(n)。
- *    于是先排序，把三数之和降成「外层固定一个 + 内层双指针」。
+ * <p>── 思路要点（自己先想，卡住再看）──
+ * <p>1. 固定一个数 a 后，问题变成「在剩余部分找两数之和 = -a」——有序数组上这是双指针的活。
+ * <p>2. 排序是核心预处理：既让双指针有单调性，又让重复值必然相邻（去重才好写）。
+ * <p>3. 去重有三处：外层 i、命中后 l、命中后 r。想想每一处该和「前一个」还是「后一个」比。
+ * <p>4. 剪枝：排序后 nums[i] &gt; 0 就可以停了（三个正数凑不出 0）。
  *
- * <p>3. 核心技巧 —— 排序 + 双指针 + 生成时去重：
- *    ① 先 Arrays.sort(nums)；
- *    ② 外层固定 nums[i]（i 从 0 到 n-3），内层 left=i+1、right=n-1 夹逼找 b+c = -nums[i]；
- *    ③ 去重（关键，否则结果含重复三元组）：
- *       - 外层：若 nums[i] == nums[i-1] 则 continue，同一固定值只处理一次；
- *       - 内层：命中一组后，left 右移到「与当前不同值」、right 左移到「与当前不同值」，再继续夹逼。
- *    ④ 剪枝（可选）：若 nums[i] > 0 则直接 break，三个正数不可能和为 0。
- *
- * <p>⚠️ 易错点：去重不是「事后用 Set 去重」，而是「生成时就跳过相邻重复值」——
- *    因为已排序，重复值必相邻，比较 nums[i] 与 nums[i-1] 即可。
- *    注意外层去重比的是 i-1（已处理过的），不是 i+1（未处理），
- *    否则会漏解（例如 [-2,-2,0,2]，第二个 -2 若被跳过会漏掉 [-2,0,2]）。
- *
- * <p>4. 复杂度：时间 O(n²)（排序 O(n log n) + 双指针 O(n²)），空间 O(1)（不计输出与排序栈）。
- *    边界：长度 < 3 返回空；全 0 输入应只返回一个 [0,0,0]，而非多个。
+ * <p>⚠️ 常见错误：命中后只移动一侧指针（会死循环/重复解）；外层去重写反方向（会漏解）；
+ *    剪枝写成 nums[i] &gt;= 0（漏掉 [0,0,0]）。
  */
 public class P15ThreeSum {
 
     public List<List<Integer>> threeSum(int[] nums) {
-        // 实现时请按 CLAUDE.md 约定，补上与「思路引导」编号对应的 // Step N 注释
-        throw new UnsupportedOperationException("TODO: 待实现");
+        // 先排序
+        Arrays.sort(nums);
+        List<List<Integer>> result = new ArrayList<>();
+        for (int i = 0; i < nums.length - 2; i++) {
+            if (nums[i] > 0) {
+                break;
+            }
+            if (i > 0 && nums[i] == nums[i-1]) {
+                continue;
+            }
+            int l = i + 1, r = nums.length - 1;
+            int target = -nums[i];
+            while (l < r) {
+                int sum = nums[l] + nums[r];
+                if (sum < target) {
+                    l++;
+                } else if (sum > target) {
+                    r--;
+                } else {
+                    result.add(Arrays.asList(nums[i], nums[l], nums[r]));
+                    while (l < r && nums[l] == nums[l+1]) {
+                        l++;
+                    }
+                    while (l < r && nums[r] == nums[r-1]) {
+                        r--;
+                    }
+                    l++;
+                    r--;
+                }
+            }
+        }
+        return result;
     }
 
     public static void main(String[] args) {
         P15ThreeSum p15 = new P15ThreeSum();
 
-        // 示例 1
-        assertTripletsEqual(new int[][]{{-1, -1, 2}, {-1, 0, 1}},
-            p15.threeSum(new int[]{-1, 0, 1, 2, -1, -4}), "Example 1");
-
-        // 示例 2：无解
-        assertTripletsEqual(new int[][]{},
-            p15.threeSum(new int[]{0, 1, 1}), "Example 2 (no triple)");
-
-        // 示例 3：全零
-        assertTripletsEqual(new int[][]{{0, 0, 0}},
-            p15.threeSum(new int[]{0, 0, 0}), "Example 3 (all zeros)");
-
-        // 多个零只产生一个三元组（验证去重）
-        assertTripletsEqual(new int[][]{{0, 0, 0}},
-            p15.threeSum(new int[]{0, 0, 0, 0}), "Multiple zeros dedup");
-
-        // 重复值去重：[-2,0,2] 只出现一次
-        assertTripletsEqual(new int[][]{{-2, 0, 2}},
-            p15.threeSum(new int[]{-2, 0, 0, 2, 2}), "Dedup pairs");
-
-        // 长度恰好 3 且成立
-        assertTripletsEqual(new int[][]{{-1, 0, 1}},
-            p15.threeSum(new int[]{-1, 0, 1}), "Length 3 valid");
-
-        // 长度不足 3
-        assertTripletsEqual(new int[][]{},
-            p15.threeSum(new int[]{1, 2}), "Length < 3");
-
-        // 全正：不可能和为 0
-        assertTripletsEqual(new int[][]{},
-            p15.threeSum(new int[]{1, 2, 3, 4}), "All positive");
-
-        // 含负含零含正
-        assertTripletsEqual(new int[][]{{-2, 0, 2}},
-            p15.threeSum(new int[]{-2, 0, 2}), "Neg-zero-pos");
-
-        System.out.println("All tests passed!");
+        run(p15, new int[]{-1, 0, 1, 2, -1, -4}, new int[][]{{-1, -1, 2}, {-1, 0, 1}}, "示例1");
+        run(p15, new int[]{0, 1, 1}, new int[][]{}, "示例2：无解");
+        run(p15, new int[]{0, 0, 0}, new int[][]{{0, 0, 0}}, "示例3：全零");
+        run(p15, new int[]{0, 0, 0, 0}, new int[][]{{0, 0, 0}}, "多个零只输出一个三元组");
+        run(p15, new int[]{-2, 0, 0, 2, 2}, new int[][]{{-2, 0, 2}}, "重复值去重");
+        run(p15, new int[]{-1, 0, 1}, new int[][]{{-1, 0, 1}}, "长度恰好 3");
+        run(p15, new int[]{1, 2}, new int[][]{}, "长度不足 3");
+        run(p15, new int[]{1, 2, 3, 4}, new int[][]{}, "全正：不可能和为 0");
+        run(p15, new int[]{-2, 0, 2}, new int[][]{{-2, 0, 2}}, "含负含零含正");
     }
 
-    /** 比较三元组集合（顺序无关）：把双方都规范化为「升序三元组组成的集合」再比。 */
-    private static void assertTripletsEqual(int[][] expected, List<List<Integer>> actual, String testName) {
-        Set<List<Integer>> expectedSet = new HashSet<>();
-        for (int[] t : expected) {
-            List<Integer> list = new ArrayList<>();
-            for (int x : t) {
-                list.add(x);
+    private static void run(P15ThreeSum solver, int[] nums, int[][] expected, String name) {
+        String label = name + " nums=" + java.util.Arrays.toString(nums);
+        try {
+            List<List<Integer>> got = solver.threeSum(nums);
+            Set<List<Integer>> expSet = new HashSet<>();
+            for (int[] t : expected) {
+                List<Integer> list = new ArrayList<>();
+                for (int x : t) list.add(x);
+                expSet.add(list);
             }
-            expectedSet.add(list);
+            // 校验结果：每组和必须为 0，且集合与期望一致（顺序无关）
+            boolean sumOk = true;
+            for (List<Integer> t : got) {
+                int sum = 0;
+                for (int x : t) sum += x;
+                if (sum != 0 || t.size() != 3) sumOk = false;
+            }
+            Set<List<Integer>> gotSet = new HashSet<>(got);
+            boolean pass = sumOk && expSet.equals(gotSet);
+            System.out.println((pass ? "[PASS] " : "[FAIL] ") + label + " | got=" + got + " expected=" + expSet);
+        } catch (UnsupportedOperationException e) {
+            System.out.println("[FAIL] " + label + " | UnsupportedOperationException: TODO 未实现");
+        } catch (Exception e) {
+            System.out.println("[FAIL] " + label + " | 抛异常: " + e);
         }
-        Set<List<Integer>> actualSet = new HashSet<>(actual);
-        if (!expectedSet.equals(actualSet)) {
-            throw new AssertionError(String.format("[FAIL] %s: expected %s, but got %s",
-                testName, expectedSet, actualSet));
-        }
-        System.out.println("[PASS] " + testName);
     }
 }
