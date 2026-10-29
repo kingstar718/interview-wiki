@@ -86,6 +86,7 @@ public String removeDuplicates(String s) {
 - `StringBuilder` 删除最后一个字符用 `deleteCharAt(len - 1)`，不是 `deleteCharAt(len)`——索引从 0 开始
 - Deque 版最后拼字符串时，栈顶存的是最后入栈的字符，需要从栈底取（`pollLast()` 或逆序）才能保持原顺序
 - 注意 `sb.length()` 在 `deleteCharAt` 后减小，不要用旧的 `len` 变量
+- **优先用 `StringBuilder` 当栈**：它的最后一个字符就是栈顶（`append` = push，`deleteCharAt(len-1)` = pop），结束时天然就是正序结果。用 `Deque` 反而要导出到 StringBuilder 再 `reverse()` 一次，多绕一圈；且用 `Deque` 时若以 `chars[0]` 起步就得为空串特判，用 foreach 从头遍历可省掉特判
 
 ## 面试追问
 
