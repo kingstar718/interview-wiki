@@ -37,6 +37,31 @@ techniques:
 
 推荐快慢指针法，空间更优，且体现与"环形链表"的解题思路迁移。
 
+**两种循环模板别搞混（用户实际踩过的坑）**：
+
+- **141/142 的写法是「先移动、后比较」**，比较在循环体里，所以初始 `slow = fast = head` 没问题：
+
+```java
+while (fast != null && fast.next != null) {
+    slow = slow.next;
+    fast = fast.next.next;
+    if (slow == fast) return true;
+}
+```
+
+- **202 的快慢指针写法是「先比较、后移动」**，比较在循环条件里，所以两个指针**必须先错开**：
+
+```java
+int slow = n;
+int fast = getNext(n);              // 先走一步错开
+while (fast != 1 && slow != fast) {  // 先比较
+    slow = getNext(slow);            // 后移动
+    fast = getNext(getNext(fast));
+}
+```
+
+如果 202 里 `fast` 也从 `n` 开始：`slow != fast` 初始就是 false，**循环一次都不执行**，直接返回 `fast == 1` → 19、7 这类快乐数会被误判为 false。
+
 ## 代码
 
 ```java
@@ -92,9 +117,10 @@ public boolean isHappy(int n) {
 
 ## 易错点
 
-- 快慢指针法中，`fast` 初始值要调用一次 `getNext(n)`，不能和 `slow` 一样初始为 `n`——否则 `while` 条件 `slow != fast` 一开始就不成立
-- `getNext` 中注意取每一位数字：`n % 10` 取最低位，`n /= 10` 去掉最低位，循环直到 `n == 0`
-- 不要忘记判断 `fast == 1` 的情况——快指针可能提前到达 1
+- 快慢指针法中，`fast` 初始值要调用一次 `getNext(n)`，不能和 `slow` 一样初始为 `n`——否则 `while` 条件 `slow != fast` 一开始就不成立，**循环一次不执行**，19、7 会被误判为 `false`
+- `getNext` 取各位数字用取余 + 整除（`n % 10` / `n /= 10`），不要转 String：取余纯算术、O(1) 空间，转 String 多一次字符串分配和解析，常数更大（只在数字超出 int/long 范围时才考虑）
+- `fast != 1` 是**提前退出优化，不是正确性必需**：去掉后，快乐数的 `slow`、`fast` 最终都停在 1，`slow == fast` 也会打破循环，`return fast == 1` 仍然正确，只是多走几步才相遇
+- `while` 条件里 `fast != 1` 建议写在前面：快指针一旦踩到 1 就确定是快乐数，不用等 slow 追上来
 
 ## 面试追问
 
