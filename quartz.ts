@@ -66,6 +66,7 @@ componentRegistry.setOptionOverrides("explorer", {
       // 框架/
       "Spring",
       "SpringBoot",
+      "SpringSecurity",
       "SpringCloud微服务",
       "MyBatis",
       "Netty与RPC",
@@ -88,11 +89,14 @@ componentRegistry.setOptionOverrides("explorer", {
       "配置中心",
       "系统设计",
       "安全认证",
+      "分布式任务调度",
       "生产排障",
       // 工程实践/
       "Linux与工程化",
+      "Kubernetes",
       "Web容器与Nginx",
       "构建与依赖管理",
+      "日志体系",
       "测试与代码质量",
       "API设计与接口治理",
       // 面试/

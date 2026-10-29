@@ -142,6 +142,8 @@ traceroute example.com
 
 ## 四、Kubernetes
 
+本节保留入门速答；控制面、工作负载、调度、网络、存储、弹性和排障见[Kubernetes](Kubernetes.md)。
+
 ### Pod、Deployment、Service 分别是什么？
 
 - **Pod**：Kubernetes 最小调度单元，包含一个或多个容器。

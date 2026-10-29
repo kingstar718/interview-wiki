@@ -198,7 +198,7 @@ Hystrix 熔断默认配置：10 秒内请求 >= 20 次且错误率 > 50% 时触�
 - **MQ**：没有"请求头"就塞消息属性（Kafka headers、RocketMQ userProperty），消费端取出接上——**载体换了，"上下文随调用走"的模式不变**
 - **异步/线程池**：上下文存在 ThreadLocal 里，跨线程会丢，要装饰 Runnable 在提交时捕获、执行时回放（与 TransmittableThreadLocal 是同一问题，见[并发编程](并发编程.md)ThreadLocal 一节）
 
-**与 MDC 日志串联**：MDC（Mapped Diagnostic Context）是 logback/log4j2 提供的 ThreadLocal Map。进站时把 traceId 放进 MDC，日志 pattern 写 `%X{traceId}`，所有业务日志自动携带——ELK 里按 traceId 一搜，整条链路的日志聚齐。这是"追踪系统看耗时瀑布"和"日志系统看业务细节"的连接点：
+**与 MDC 日志串联**：MDC（Mapped Diagnostic Context）是 Logback/Log4j2 提供的 ThreadLocal Map。进站时把 traceId 放进 MDC，日志 pattern 写 `%X{traceId}`，所有业务日志自动携带——ELK 里按 traceId 一搜，整条链路的日志聚齐。这是“追踪系统看耗时瀑布”和“日志系统看业务细节”的连接点；传播、清理和结构化字段见[日志体系](日志体系.md)：
 
 ```java
 // 进站 Filter:有上下文就接续,没有就新开;写入 MDC 供日志输出
