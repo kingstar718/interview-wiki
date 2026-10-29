@@ -12,6 +12,7 @@
 | [Sentinel/Cluster](#cluster-为什么是-16384-个槽槽迁移时请求怎么路由) | 故障检测、选主、分片 | gossip、16384 槽、槽迁移与 MOVED/ASK |
 | [过期与淘汰](#过期删除策略) | 惰性删除、定期删除、淘汰策略 | 集中过期、volatile/allkeys 选择 |
 | [缓存一致性](#缓存与-mysql-数据一致性) | Cache Aside、删除缓存 | 延迟双删局限、订阅 binlog |
+| [本地/多级缓存](#caffeine-为什么比普通-lru-更适合本地缓存) | W-TinyLFU、过期/刷新、single-flight | 容量边界、跨节点一致性 |
 | [穿透/击穿/雪崩](#缓存穿透击穿雪崩如何解决) | 空值/布隆、互斥、随机过期 | 热点失效和数据库保护、冷启动预热 |
 | [缓存预热](#缓存预热冷启动时怎么避免打挂数据库) | 冷启动 = 全量雪崩、提前加载热点 | 定时任务/双缓存/灰度放量、预热刷满内存 |
 | [Redis Stream](#redis-stream-适合什么场景) | 消费者组、PEL、ACK | 超时重投、幂等、死信处理 |
@@ -890,4 +891,37 @@ Redis Stream 不会自动把失败消息转入死信队列，需要应用定义�
 | **Redis 官方 Stack** | 统一的模块发行版：RedisJSON、RedisSearch、RedisTimeSeries、RedisBloom 等打包一键部署 |
 
 **版本选型建议**：生产至少用 6.0（多线程 IO + SSL + ACL），能用 7.0 用 7.0（Function + listpack 全面替换 + sharded-pubsub）。5.0 之前的版本不再建议使用。
+
+---
+
+## 十二、本地缓存与多级缓存
+
+### Caffeine 为什么比普通 LRU 更适合本地缓存？
+
+LRU 只看最近访问，顺序扫描大量一次性 key 会把真正热点逐出。Caffeine 的 Window TinyLFU 用小窗口接纳新数据，再按频率草图比较候选项和受害项，同时兼顾突发的新热点与长期高频数据；维护操作经过缓冲批量处理，减少每次读都争用同一条访问链表。
+
+容量必须用 `maximumSize` 或 `maximumWeight` 明确限制，不能把 GC 当淘汰策略。值大小差异明显时使用 weight，但权重在写入时计算，不会自动跟随对象内部变化。
+
+### 过期和刷新有什么区别？
+
+- `expireAfterWrite/access` 到期后条目失效，下一次读取可能阻塞加载。
+- `refreshAfterWrite` 只让条目具备刷新资格；被访问时异步刷新，刷新完成前仍返回旧值。
+
+刷新适合允许短暂陈旧、但不希望热点 key 周期性阻塞的场景。刷新失败默认保留旧值，必须监控失败和数据年龄；执行器默认可能使用公共 `ForkJoinPool`，生产应评估是否需要独立线程池。过期、刷新和数据源 TTL 的业务语义要统一。
+
+### 如何避免缓存未命中打爆数据源？
+
+同一进程内用原子 `get(key, loader)` 或 LoadingCache 合并同 key 的并发加载，即 single-flight；不同实例仍会各自加载，需要 Redis 锁、逻辑过期或下游限流兜底。空结果也可短期缓存，但要防止攻击者制造海量不同空 key 占满本地缓存。
+
+### 本地缓存加 Redis 后如何处理一致性？
+
+多级缓存读取更快，但每个进程都有副本。常见做法是数据库提交后删除 Redis，并通过消息/CDC 通知各实例失效本地 key；通知可能重复、延迟或丢失，因此本地缓存还要设置有界 TTL 和版本校验兜底。
+
+不能要求本地缓存强一致：实例失联期间必然可能读旧值。余额、权限撤销等强敏感数据应缩短缓存链路或在权威存储复核。监控命中率、加载耗时、淘汰原因、当前权重和数据年龄，命中率高也可能只是命中了陈旧数据。
+
+## 参考资料
+
+- [Caffeine Design](https://github.com/ben-manes/caffeine/wiki/Design)
+- [Caffeine Eviction](https://github.com/ben-manes/caffeine/wiki/Eviction)
+- [Caffeine Refresh](https://github.com/ben-manes/caffeine/wiki/Refresh)
 

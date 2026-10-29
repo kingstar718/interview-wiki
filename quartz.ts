@@ -91,6 +91,8 @@ componentRegistry.setOptionOverrides("explorer", {
       "配置中心",
       "系统设计",
       "安全认证",
+      "弹性工程",
+      "数据变更捕获与事件一致性",
       "分布式任务调度",
       "生产排障",
       // 工程实践/
@@ -101,6 +103,7 @@ componentRegistry.setOptionOverrides("explorer", {
       "Java工具库",
       "日志体系",
       "可观测性",
+      "性能工程",
       "测试与代码质量",
       "API设计与接口治理",
       // 面试/

@@ -28,6 +28,7 @@
 | [悲观锁/乐观锁](#悲观锁和乐观锁的区别) | 先锁后操作 vs 先操作后验证 | 版本号、ABA 问题、适用场景 |
 | [数据库对象](#数据库的视图和存储过程是什么有什么区别) | 视图、存储过程、触发器 | 为什么互联网公司不推荐 |
 | [备份恢复](#数据库的备份和恢复策略有哪些) | 逻辑/物理/快照备份、PITR | 备份验证、延迟从库 |
+| [优化器诊断](#为什么优化器会选错执行计划) | 基数、直方图、实际行数 | optimizer_trace、计划漂移 |
 
 数据库题必须结合具体 SQL、索引和隔离级别回答；脱离查询条件谈“会不会加锁”通常没有意义。
 
@@ -805,3 +806,29 @@ public T borrow(long timeout, final TimeUnit timeUnit) {
 **关键参数**：`mysqldump --single-transaction`（InnoDB 一致性备份，不开锁表）、`--master-data=2`（记录 binlog 位置供恢复用）。
 
 ---
+
+## 十二、优化器诊断
+
+### 为什么优化器会选错执行计划？
+
+优化器根据表行数、索引基数、列分布和成本模型估算候选计划。统计信息过期、数据倾斜、相关列被当成独立分布、参数值差异和复杂 Join 都会让估算偏离真实行数，继而选错索引或 Join 顺序。
+
+`EXPLAIN` 的 `rows × filtered` 是估算；MySQL 8.0.18+ 的 `EXPLAIN ANALYZE` 会真正执行并显示实际行数、循环次数和耗时。估算与实际相差数量级时，应先修统计或 SQL，而不是立即强制索引。
+
+### 直方图什么时候有用？
+
+没有合适索引、但过滤列分布严重倾斜时，普通基数不足以估算选择率。`ANALYZE TABLE ... UPDATE HISTOGRAM` 记录值分布，帮助优化器估算过滤比例。直方图会过期，也占用分析成本；数据分布变化后要更新，并通过执行计划验证效果。
+
+### `optimizer_trace` 解决什么问题？
+
+`optimizer_trace` 展示优化器考虑过哪些访问路径、成本估算和拒绝原因，适合解释“为什么没选某索引”。它可能产生大量信息，只在诊断会话中短时开启并限制内存。排查链条是：慢日志定位 SQL → `EXPLAIN ANALYZE` 找估算偏差和耗时节点 → 检查统计/直方图 → 必要时用 trace 查看决策原因 → 修改后在真实数据分布上回归。
+
+### 怎样治理执行计划漂移？
+
+上线、数据增长、统计刷新或版本升级都可能改变计划。应保留高价值 SQL 的基线指标和计划摘要，监控扫描行数、P99 与 rows examined 突变。Hint/强制索引是最后手段，会把当下判断固化；采用前需明确撤销条件并随数据增长复查。
+
+## 参考资料
+
+- [MySQL EXPLAIN ANALYZE](https://dev.mysql.com/doc/refman/8.4/en/explain.html#explain-analyze)
+- [MySQL Optimizer Statistics](https://dev.mysql.com/doc/refman/8.4/en/optimizer-statistics.html)
+- [MySQL Optimizer Trace](https://dev.mysql.com/doc/refman/8.4/en/optimizer-tracing.html)

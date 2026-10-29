@@ -14,6 +14,7 @@
 | [参数校验](#如何做参数校验) | Bean Validation、分组、自定义约束 | Controller 外的方法校验 |
 | [Actuator](#spring-boot-actuator-有什么作用) | 健康、指标、管理端点 | 暴露风险、自定义 HealthIndicator |
 | [优雅停机](#spring-boot-如何实现优雅停机) | 摘流量、等待请求、释放资源 | MQ 消费、线程池、K8s terminationGracePeriod |
+| [AOT/Native Image](#spring-aot-做了什么) | 构建期分析、运行时提示、封闭世界 | 启动/RSS 收益、吞吐和构建成本 |
 
 回答 Spring Boot 题要区分版本，特别是 2.7、3.x 的自动配置注册方式和 Jakarta 包迁移。
 
@@ -296,4 +297,27 @@ Actuator 提供健康检查、指标、环境和线程等管理端点，可与�
 - 检查端口占用、配置绑定、Bean 冲突和循环依赖。
 - 检查数据库、缓存和配置中心等启动依赖。
 - 开启条件评估报告，确认自动配置为何生效或未生效。
+
+---
+
+## 七、AOT 与 Native Image
+
+### Spring AOT 做了什么？
+
+AOT 在构建期分析 `ApplicationContext`，生成 Bean 注册、代理和运行时提示等代码，把部分启动期工作前移。它既可在 JVM 上运行以改善启动，也是在 GraalVM Native Image 中运行 Spring 应用的前提。
+
+AOT 假设 classpath 和 Bean 图在构建时基本固定。依赖运行时扫描、动态注册 Bean、按属性改变 Bean 是否存在的设计可能受限，必须在目标配置下构建和测试。
+
+### Native Image 为什么需要运行时提示？
+
+Native Image 采用封闭世界假设，只编译构建期可达的代码。反射、动态代理、资源文件、序列化和 JNI 的目标无法总被静态分析发现，需要框架或应用提供 reachability metadata/runtime hints。遗漏提示常表现为 JVM 模式正常、native 模式类或资源缺失。
+
+### Native Image 一定比 JVM 更好吗？
+
+不一定。Native Image 通常启动更快、基础内存更小，适合短生命周期、弹性扩缩和密度敏感场景；代价是构建慢、产物与操作系统架构绑定、动态能力受限，峰值吞吐和长期 JIT 优化也可能不如 HotSpot。应以启动时间、RSS、稳态吞吐、P99 和构建成本共同选型。
+
+## 参考资料
+
+- [Spring Boot Ahead-of-Time Processing](https://docs.spring.io/spring-boot/reference/packaging/aot.html)
+- [Spring Boot Native Images](https://docs.spring.io/spring-boot/reference/packaging/native-image/)
 
