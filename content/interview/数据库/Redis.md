@@ -14,13 +14,14 @@
 | [缓存一致性](#缓存与-mysql-数据一致性) | Cache Aside、删除缓存 | 延迟双删局限、订阅 binlog |
 | [穿透/击穿/雪崩](#缓存穿透击穿雪崩如何解决) | 空值/布隆、互斥、随机过期 | 热点失效和数据库保护、冷启动预热 |
 | [缓存预热](#缓存预热冷启动时怎么避免打挂数据库) | 冷启动 = 全量雪崩、提前加载热点 | 定时任务/双缓存/灰度放量、预热刷满内存 |
+| [Redis Stream](#redis-stream-适合什么场景) | 消费者组、PEL、ACK | 超时重投、幂等、死信处理 |
 | [批量操作](#批量操作怎么选pipeline-vs-mget-vs-lua) | pipeline/mget/Lua、省 RTT | 原子性差异、Cluster 跨槽、pipeline 过长 |
 | [大 Key/热 Key](#大-key-问题) | 网络、阻塞、单分片压力 | 如何发现、拆分和迁移 |
 | [分布式锁](#redis-分布式锁怎么实现) | SET NX PX、唯一值、Lua | 续期、主从切换、fencing token |
 | [秒杀场景](#秒杀场景设计) | 库存扣减、分段锁、原子操作 | 与 DB 一致性、缓存预热衔接 |
 | [事务与原子性](#如何保证-redis-原子性) | Lua 脚本、MULTI/EXEC | 回滚缺失、watch 乐观锁 |
 | [布隆过滤器](#布隆过滤器) | 位图+哈希、误判率 | 不可删除、计数布隆 |
-| [版本演进](#十版本演进) | 5/6/7 核心特性 | 多线程 IO、ACL、Function、listpack、sharded-pubsub |
+| [版本演进](#十一版本演进) | 5/6/7 核心特性 | 多线程 IO、ACL、Function、listpack、sharded-pubsub |
 
 Redis 题要区分“命令原子”与“业务操作原子”，也要说明高可用不等于强一致。
 
@@ -822,7 +823,40 @@ public User getUser(int id) {
 
 ---
 
-## 十、版本演进
+## 十、Redis Stream
+
+### Redis Stream 适合什么场景？
+
+Stream 是追加式消息结构，每条消息有递增 ID，支持范围读取、阻塞读取和消费者组。它适合已经使用 Redis、需要轻量消息流或事件缓冲的场景；若要求长期海量保留、跨机房复制、复杂消费生态和更强吞吐隔离，通常应评估 [消息队列](消息队列.md) 中的 Kafka、RocketMQ 等专用系统。
+
+`XADD` 写入，`XREAD` 按 ID 读取；消费者组通过 `XGROUP CREATE` 建立，组内消费者用 `XREADGROUP` 分摊消息。一个组维护自己的消费进度，不同组可独立消费同一条消息。
+
+### PEL、ACK 和消息重投是什么关系？
+
+消费者组读取消息后，消息先进入该组的 **PEL（Pending Entries List）**，记录消费者、投递次数和空闲时间。业务成功后必须调用 `XACK`，才会从 PEL 移除；未 ACK 并不等于消息丢失，而是处于待确认状态。
+
+消费者宕机时，其他消费者可用 `XAUTOCLAIM` 按最小空闲时间接管超时消息。这个模型通常是**至少一次**：消费者可能完成业务后、ACK 前宕机，消息会再次投递。因此业务处理必须幂等，可用业务唯一键、状态机条件更新或幂等记录防止重复副作用。
+
+### Redis Stream 如何处理重试和死信？
+
+Redis Stream 不会自动把失败消息转入死信队列，需要应用定义策略：
+
+1. 定期扫描/认领超过可见超时的 PEL 消息。
+2. 根据投递次数做指数退避，避免故障时立即重试打满下游。
+3. 超过最大次数后 `XADD` 到独立死信 Stream，记录原消息 ID、异常、次数和时间，再 ACK 原消息。
+4. 对死信提供告警、查询、修复和人工重放；重放仍须保持幂等。
+
+`XDEL` 或 `XTRIM` 处理的是 Stream 中的消息存储，不等价于 ACK。裁剪前要确认慢消费者和 PEL 的恢复需求；监控积压长度、PEL 数、最老 pending 时长、投递次数和死信增长率。
+
+## 参考资料
+
+- [Redis XREADGROUP](https://redis.io/docs/latest/commands/xreadgroup/)
+- [Redis XACK](https://redis.io/docs/latest/commands/xack/)
+- [Redis XAUTOCLAIM](https://redis.io/docs/latest/commands/xautoclaim/)
+
+---
+
+## 十一、版本演进
 
 ### Redis 5.0（2018）
 

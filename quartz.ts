@@ -69,10 +69,12 @@ componentRegistry.setOptionOverrides("explorer", {
       "SpringSecurity",
       "SpringCloud微服务",
       "MyBatis",
+      "JPA与Hibernate",
       "Netty与RPC",
       "Dubbo",
       // 数据库/
       "MySQL",
+      "分库分表与ShardingSphere",
       "Redis",
       // 中间件/
       "消息队列",
@@ -96,7 +98,9 @@ componentRegistry.setOptionOverrides("explorer", {
       "Kubernetes",
       "Web容器与Nginx",
       "构建与依赖管理",
+      "Java工具库",
       "日志体系",
+      "可观测性",
       "测试与代码质量",
       "API设计与接口治理",
       // 面试/
