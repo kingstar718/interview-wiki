@@ -15,30 +15,19 @@
  *
  * <p>约束：1 <= s.length <= 10^5；s 仅由小写英文字母组成。
  */
-import java.util.ArrayDeque;
-import java.util.Deque;
-
 public class P1047RemoveAllAdjacentDuplicatesInString {
 
     public String removeDuplicates(String s) {
-        Deque<Character> stack = new ArrayDeque<>();
-        char[] chars = s.toCharArray();
-        if (chars.length <= 1) {
-            return s;
-        }
-        stack.push(chars[0]);
-        for (int i = 1; i < chars.length; i++) {
-            if (!stack.isEmpty() && stack.peek() == chars[i]) {
-                stack.pop();
+        StringBuilder sb = new StringBuilder();
+        for (Character c : s.toCharArray()) {
+            int len = sb.length();
+            if (len > 0 && c == sb.charAt(len - 1)) {
+                sb.deleteCharAt(len - 1);
             } else {
-                stack.push(chars[i]);
+                sb.append(c);
             }
         }
-        StringBuilder sb = new StringBuilder();
-        while (!stack.isEmpty()) {
-            sb.append(stack.pop());
-        }
-        return sb.reverse().toString();
+        return sb.toString();
     }
 
     public static void main(String[] args) {
