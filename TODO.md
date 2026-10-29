@@ -38,6 +38,20 @@
 
 ## 已完成
 
+### pdai 面试题纲查漏补缺：P2(2026-10-29)
+
+- [x] 弹性工程与级联故障 — deadline/超时预算、重试放大与 jitter、舱壁、并发限制和保护策略组合(bcf9679)
+- [x] Web 安全进阶 — SSRF、XXE、不安全反序列化、文件上传、压缩包炸弹与纵深防御(bcf9679)
+- [x] CDC 与事务发件箱 — binlog/Debezium、快照衔接增量、Outbox、顺序幂等与数据校验(bcf9679)
+- [x] 消息契约治理 — Avro/Protobuf/JSON 演进、兼容规则、消费者灰度、毒消息与死信重放(bcf9679)
+- [x] 性能工程方法论 — JMH、压测模型与协调遗漏、吞吐/P99、JFR/async-profiler 和基线对比(bcf9679)
+- [x] Spring Boot AOT 与 Native Image — 构建期分析、运行时提示、封闭世界限制和选型权衡(bcf9679)
+- [x] MySQL 优化器诊断 — 基数估算、直方图、`EXPLAIN ANALYZE`、`optimizer_trace` 与计划漂移(bcf9679)
+- [x] 本地缓存与多级缓存 — Caffeine Window TinyLFU、容量/过期/刷新、single-flight 与一致性边界(bcf9679)
+- [x] 收尾 — 新增篇目登记 Quartz Explorer，补齐跨篇互链并重建知识点索引；`scripts/check_index.py` 18 项通过(bcf9679)
+
+审计后暂不纳入：正则表达式 API、Guava/Apache Commons 工具方法、Ant/Gradle 命令、Zuul/Hystrix/Ribbon 等旧栈，以及偏产品、团队管理和 IDE 操作的目录项。
+
 ### pdai 面试题纲查漏补缺：P1(2026-10-29)
 
 - [x] Redis Stream — 消费者组、PEL、ACK、超时认领、幂等重投与死信处理(6049cbc)
