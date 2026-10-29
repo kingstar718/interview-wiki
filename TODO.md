@@ -5,22 +5,6 @@
 
 ## 待办
 
-### pdai 面试题纲查漏补缺(2026-10-29 登记，开发中)
-
-范围：以 pdai「Java 全栈知识点问题汇总」上下篇为对照，只补当前社招 Java 后端仍有面试价值、且本库未覆盖或明显偏薄的内容。Zuul、Hystrix、Ribbon、Heapster、LILO 等过时或低收益考点不按目录机械回填。
-
-验收：新增小节应同步追问地图和知识点索引；新增篇目应登记 `quartz.ts`；每批完成后运行全部索引生成脚本及 `scripts/check_index.py`。
-
-#### P1：专项缺口
-
-- [ ] Redis Stream — 消费者组、PEL、ACK、消息重投、死信处理
-- [ ] 常用 Java 工具库 — Jackson/Fastjson2、Lombok、MapStruct 的原理、选型与风险
-- [ ] JPA/Hibernate — ORM 生命周期、一级缓存、懒加载、N+1、脏检查
-- [ ] 分库分表中间件 — ShardingSphere 路由、绑定表、广播表、结果归并、扩容迁移
-- [ ] 海量数据题 — 分治、Bitmap、Bloom Filter、外部排序、Top-K 的选型题
-- [ ] 密码学基础 — 摘要、MAC、对称/非对称加密、数字签名、国密算法
-- [ ] 可观测性深度 — Prometheus 指标类型、告警、SLO、错误预算与 APM
-
 ### 软考系统架构师域(2026-08-24 登记,距 10/24 考试约 8 周)
 
 - [x] 阶段0 骨架 — `content/软考系统架构师/` 目录 + `scripts/gen_rk.py` 双视图索引生成器(按科目学/按场景查)+ `check_index.py` 校验 V(元数据行/场景小节/索引漂移)+ C/G/H 接入 + `quartz.ts` 侧栏登记 + 首页/CLAUDE/CONTRIBUTING/README/TODO 同步(862ab8c)
@@ -53,6 +37,17 @@
 发现新缺口先登记到这里再做。
 
 ## 已完成
+
+### pdai 面试题纲查漏补缺：P1(2026-10-29)
+
+- [x] Redis Stream — 消费者组、PEL、ACK、超时认领、幂等重投与死信处理(6049cbc)
+- [x] 常用 Java 工具库 — Jackson/Fastjson2、Lombok、MapStruct 的原理、选型与风险(6049cbc)
+- [x] JPA/Hibernate — ORM 生命周期、一级缓存、懒加载、N+1、脏检查(6049cbc)
+- [x] 分库分表中间件 — ShardingSphere 路由、绑定表、广播表、结果归并、扩容迁移(6049cbc)
+- [x] 海量数据题 — 分治、Bitmap、Bloom Filter、外部排序、Top-K 的选型(6049cbc)
+- [x] 密码学基础 — 摘要、MAC、对称/非对称加密、数字签名、国密算法(6049cbc)
+- [x] 可观测性深度 — Prometheus 指标类型、告警、SLO、错误预算与 APM(6049cbc)
+- [x] 收尾 — 新增篇目登记 Quartz Explorer，重建知识点索引；`scripts/check_index.py` 18 项通过(6049cbc)
 
 ### pdai 面试题纲查漏补缺：P0(2026-10-29)
 
