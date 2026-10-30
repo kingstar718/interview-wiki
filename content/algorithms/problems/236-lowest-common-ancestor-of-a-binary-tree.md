@@ -62,6 +62,8 @@ public TreeNode lowestCommonAncestor(TreeNode root, TreeNode p, TreeNode q) {
 - **不能简单判断 `root.val` 是否在 p 和 q 之间**——这是 BST 的解法；普通二叉树的值没有顺序，只能用引用判断
 - 递归结束条件：包含 `root == p || root == q`，因为一旦找到其中一个就不用往下走了（如果另一个在它的子树里，它本身就是 LCA）
 - 函数返回的是 TreeNode 而不是 boolean：左右同时非 null 才确认 LCA
+- **代码里有两处 `return root`，语义完全不同**：① `if (root == p || root == q) return root;` 是"**举手报名**"——报上去的是"我发现了目标节点"，上层可能继续合并；② `if (left != null && right != null) return root;` 是"**宣布答案**"——p、q 在两侧分家，当前节点就是 LCA。同一个 `root` 变量扮演"被找到的目标"和"答案"两种角色，这正是返回值三义（null / 找到的 p 或 q / LCA）的设计
+- **`root == p` 提前返回同时正确又省事**：q 在 p 子树里时 p 就是 LCA；q 在别处时 p 作为"发现报告"往上传，上层会合并。所以不必继续查 p 的子树
 
 ## 面试追问
 
