@@ -81,6 +81,8 @@ public int minDepth(TreeNode root) {
 
 - **不能直接 `1 + Math.min(minDepth(left), minDepth(right))`**：当一侧子树为空时，空子树返回 0，min 会取 0，导致深度为 1——但空子树没有叶子，不能算深度
 - DFS 版本的判断顺序：先判空子树，再正常取 min。如果在 `if (left == null)` 之前就取 min，会出错
+- **`minDepth(null) = 0` 的语义是"这棵子树不存在、里面没有叶子"，不是"距离 0 处有叶子"**。`min(0, x)` 等于把"断路"误当成"0 步可达的叶子"，所以单侧为空时 `min` 不能参与比较。用"墙/断路"比喻记：一边是墙就没有路可走，只能走另一边
+- 叶子节点（左右都 null）会走**第一个** `if (root.left == null)` 分支，返回 `1 + minDepth(null) = 1`，不需要额外判叶子
 
 ## 面试追问
 

@@ -73,6 +73,23 @@ public class P111MinimumDepthOfBinaryTree {
         return count;
     }
 
+    /**
+     * DFS 递归版（TODO：由你自己实现，与 BFS 版对照）。
+     * 提示：单侧空子树必须特判，否则 1 + min(...) 会拿到 0。
+     */
+    public int minDepthDfs(TreeNode root) {
+        if (root == null) {
+            return 0;
+        }
+        if (root.left == null) {
+            return 1 + minDepthDfs(root.right);
+        }
+        if (root.right == null) {
+            return 1 + minDepthDfs(root.left);
+        }
+        return 1 + Math.min(minDepthDfs(root.left), minDepthDfs(root.right));
+    }
+
     public static void main(String[] args) {
         P111MinimumDepthOfBinaryTree solver = new P111MinimumDepthOfBinaryTree();
 
@@ -111,12 +128,17 @@ public class P111MinimumDepthOfBinaryTree {
 
     private static void run(P111MinimumDepthOfBinaryTree solver, Integer[] tree, int expected, String name) {
         String label = name + " tree=" + java.util.Arrays.toString(tree);
+        runOne(label + " [BFS]", expected, () -> solver.minDepth(build(tree)));
+        runOne(label + " [DFS]", expected, () -> solver.minDepthDfs(build(tree)));
+    }
+
+    private static void runOne(String label, int expected, java.util.function.IntSupplier call) {
         try {
-            int got = solver.minDepth(build(tree));
+            int got = call.getAsInt();
             System.out.println((got == expected ? "[PASS] " : "[FAIL] ") + label
                     + " | got=" + got + " exp=" + expected);
         } catch (UnsupportedOperationException e) {
-            System.out.println("[FAIL] " + label + " | UnsupportedOperationException: TODO 未实现");
+            System.out.println("[FAIL] " + label + " | UnsupportedOperationException: 未实现");
         } catch (Exception e) {
             System.out.println("[FAIL] " + label + " | 抛异常: " + e);
         }
