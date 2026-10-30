@@ -31,6 +31,29 @@ import java.util.Queue;
  */
 public class P226InvertBinaryTree {
 
+    /**
+     * 本地测试用的树节点（静态内部类，避免多文件同名冲突）。
+     * ⚠️ 提交 LeetCode 时删除本类（LeetCode 已预定义 TreeNode）。
+     */
+    static class TreeNode {
+        int val;
+        TreeNode left;
+        TreeNode right;
+
+        TreeNode() {
+        }
+
+        TreeNode(int val) {
+            this.val = val;
+        }
+
+        TreeNode(int val, TreeNode left, TreeNode right) {
+            this.val = val;
+            this.left = left;
+            this.right = right;
+        }
+    }
+
     public TreeNode invertTree(TreeNode root) {
         if (root == null) {
             return null;
@@ -111,28 +134,5 @@ public class P226InvertBinaryTree {
         } catch (Exception e) {
             System.out.println("[FAIL] " + label + " | 抛异常: " + e);
         }
-    }
-}
-
-/**
- * 本地测试用的树节点。
- * ⚠️ 提交 LeetCode 时删除本类（LeetCode 已预定义 TreeNode）。
- */
-class TreeNode {
-    int val;
-    TreeNode left;
-    TreeNode right;
-
-    TreeNode() {
-    }
-
-    TreeNode(int val) {
-        this.val = val;
-    }
-
-    TreeNode(int val, TreeNode left, TreeNode right) {
-        this.val = val;
-        this.left = left;
-        this.right = right;
     }
 }

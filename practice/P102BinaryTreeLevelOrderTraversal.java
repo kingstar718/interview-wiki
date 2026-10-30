@@ -34,6 +34,29 @@ import java.util.Queue;
  */
 public class P102BinaryTreeLevelOrderTraversal {
 
+    /**
+     * 本地测试用的树节点（静态内部类，避免多文件同名冲突）。
+     * ⚠️ 提交 LeetCode 时删除本类（LeetCode 已预定义 TreeNode）。
+     */
+    static class TreeNode {
+        int val;
+        TreeNode left;
+        TreeNode right;
+
+        TreeNode() {
+        }
+
+        TreeNode(int val) {
+            this.val = val;
+        }
+
+        TreeNode(int val, TreeNode left, TreeNode right) {
+            this.val = val;
+            this.left = left;
+            this.right = right;
+        }
+    }
+
     public List<List<Integer>> levelOrder(TreeNode root) {
         List<List<Integer>> res = new ArrayList<>();
         if (root == null) {

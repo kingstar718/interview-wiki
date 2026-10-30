@@ -13,6 +13,31 @@ java P1TwoSum.java
 - 未实现 → 抛 `UnsupportedOperationException: TODO: 待实现`
 - 实现正确 → 打印全部 `[PASS]` 与 `All tests passed!`
 
+### 结构类（TreeNode / ListNode）写法约定
+
+**必须写成静态内部类**，不要放在文件末尾当包级类：
+
+```java
+public class P102BinaryTreeLevelOrderTraversal {
+
+    static class TreeNode {          // ✅ 静态内部类，随外层类隔离
+        int val;
+        TreeNode left, right;
+        TreeNode(int val) { this.val = val; }
+    }
+    ...
+}
+```
+
+```java
+class TreeNode { ... }               // ❌ 包级类：同目录多个文件各自定义时，
+                                     //    `javac *.java` 会报 duplicate class
+```
+
+理由：`practice/` 下所有文件默认在**同一个包（无名包）**里，多个包级 `class TreeNode` 会重复定义；静态内部类（`P102.TreeNode`、`P226.TreeNode`）互不干扰，同一目录的多个文件可以一起编译。
+
+**提交 LeetCode 前永远删掉这个内部类**——LeetCode 已预定义 `TreeNode`/`ListNode`，重复定义会编译失败。
+
 ---
 
 ## 题目索引
