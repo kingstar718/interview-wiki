@@ -75,6 +75,8 @@ private boolean isMirror(TreeNode left, TreeNode right) {
 
 - 不能只比较 `root.left.val == root.right.val` 就递归——必须比较"左的左 vs 右的右"和"左的右 vs 右的左"交叉匹配
 - 空节点处理：`left == null && right == null` 返回 true 要先判断，否则后续 `left.val` 会 NPE
+- **不要为"值相等"写 `if (left.val == right.val) return true;`**——值相等只是**必要条件**，还要继续查子树结构。写成"相等就返回 true"会误判：`[1,2,2,3,4,5,6]`（根的两个孩子值都是 2，但各自子树 3,4 与 5,6 完全不镜像）会错误返回 true
+- 正确的结构是**排除法**：先判"都空 = 成功"，再判两种失败（一空一不空、值不等），**剩下的自然继续递归**——只有 `==` 成立时才"什么都不做"往下走，这正是"相等不是答案，只是通行证"
 
 ## 面试追问
 
