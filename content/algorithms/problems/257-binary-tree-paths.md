@@ -75,6 +75,8 @@ private void dfs(TreeNode node, StringBuilder sb, List<String> res) {
 - StringBuilder 回溯时**必须恢复长度**，否则后续其他路径会带上之前路径的残留内容
 - 叶子节点拼接 `sb.append(node.val)` 后不要加 `"->"`——箭头只在非叶子节点后添加
 - 不要用 `sb.append("->").append(node.val)` 后再 `sb.delete(...)` 删除——应该用 `setLength(len)` 恢复，最干净
+- **`if (node.left != null) dfs(...)` 是「判空防 NPE」，不是「剪枝」**：剪枝指"已确定没用就不算"（如 110 的 `if (h == -1) return -1`），这里是"这条边不存在就不出发"——因为 `dfs` 第一行就要 `sb.append(node.val)`，传 `null` 会直接崩
+- 两种等价写法：**A. 调用方判空**（本文代码，少一次无用调用）／**B. 函数入口加 `if (node == null) return;`**（调用方更干净）。B 版 `return` 在任何 `sb` 操作之前，所以不需要撤销
 
 ## 面试追问
 
