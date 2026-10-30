@@ -63,7 +63,8 @@ public boolean hasPathSum(TreeNode root, int targetSum) {
 
 - 必须在**叶子节点**判断 `targetSum == 0`，不能在中间节点就判断——中间节点不算路径终点
 - 空树返回 false 而非 `targetSum == 0`——空树没有路径，即使 targetSum 为 0 也不应返回 true
-- 减法的 targetSum 是值传递，不需要回溯恢复
+- 减法的 targetSum 是值传递，不需要回溯恢复（int 基本类型每次递归拿副本，父层不受影响）——这是和 257 需要 `sb.setLength` 撤销的本质区别
+- **别用"树的总和"判断**：`targetSum` 只与某条【根到叶路径】有关。总和远大于 target 也可能命中（如 `[1,2,3,4,5]`、target=4 时 `1→3` 就命中）；总和等于 target 也可能一条路径都不匹配（路径必须从根到叶，不能挑中间一段）
 
 ## 面试追问
 
