@@ -91,4 +91,4 @@ public int minDepth(TreeNode root) {
 
 - 同套路：[104. 二叉树的最大深度](104-maximum-depth-of-binary-tree.md) —— 逻辑几乎相同，但最大深度不用特殊处理空子树
 - 进阶：[102. 二叉树的层序遍历](102-binary-tree-level-order-traversal.md) —— BFS 层序遍历模板
-- 知识点：BFS vs DFS 的选择权衡见[二叉树](二叉树.md)
+- 知识点：BFS vs DFS 的选择权衡见[二叉树](../二叉树.md)

@@ -69,5 +69,5 @@ private void union(int[] parent, int a, int b) {
 
 - 同套路：[547. 省份数量](547-number-of-provinces.md) —— 基础并查集
 - 进阶：[990. 等式方程的可满足性](990-satisfiability-of-equality-equations.md) —— 带约束的并查集
-- 知识点：并查集检测环见[并查集](图论.md)
+- 知识点：并查集检测环见[并查集](../图论.md)
 

@@ -81,4 +81,4 @@ public int findLength(int[] A, int[] B) {
 
 - 同套路：[1143. 最长公共子序列](1143-longest-common-subsequence.md) —— 不连续版
 - 进阶：[674. 最长连续递增序列](674-longest-continuous-increasing-subsequence.md) —— 单数组连续递增
-- 知识点：子数组(连续) vs 子序列(不连续) DP 转移见[动态规划](动态规划与贪心.md)
+- 知识点：子数组(连续) vs 子序列(不连续) DP 转移见[动态规划](../动态规划与贪心.md)

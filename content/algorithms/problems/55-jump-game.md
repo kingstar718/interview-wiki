@@ -67,5 +67,5 @@ public boolean canJump(int[] nums) {
 
 - 同套路：[45. 跳跃游戏 II](45-jump-game-ii.md) —— 最少步数版
 - 进阶：[134. 加油站](134-gas-station.md) —— 贪心另一类"能否跑完一圈"问题
-- 知识点：贪心 vs DP 的适用边界见[贪心](动态规划与贪心.md)
+- 知识点：贪心 vs DP 的适用边界见[贪心](../动态规划与贪心.md)
 

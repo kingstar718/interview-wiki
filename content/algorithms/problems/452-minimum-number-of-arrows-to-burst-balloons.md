@@ -77,4 +77,4 @@ public int findMinArrowShots(int[][] points) {
 
 - 同套路：[435. 无重叠区间](435-non-overlapping-intervals.md) —— 相同贪心策略
 - 进阶：[56. 合并区间](https://leetcode.cn/problems/merge-intervals/) —— 按左边界排序
-- 知识点：区间贪心模板见[贪心](动态规划与贪心.md)
+- 知识点：区间贪心模板见[贪心](../动态规划与贪心.md)

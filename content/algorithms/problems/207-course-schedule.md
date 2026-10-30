@@ -92,5 +92,5 @@ public boolean canFinish(int numCourses, int[][] prerequisites) {
 
 - 同套路：[210. 课程表 II](210-course-schedule-ii.md) —— 输出拓扑序
 - 进阶：[787. K 站中转内最便宜的航班](787-cheapest-flights-within-k-stops.md) —— 带权图的最短路径
-- 知识点：拓扑排序（Kahn / DFS 两色法）见[图](图论.md)
+- 知识点：拓扑排序（Kahn / DFS 两色法）见[图](../图论.md)
 

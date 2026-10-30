@@ -86,5 +86,5 @@ private void union(int[] parent, int a, int b) {
 
 - 同套路：[200. 岛屿数量](200-number-of-islands.md) —— 网格并查集
 - 进阶：[684. 冗余连接](684-redundant-connection.md) —— 并查集检测环
-- 知识点：并查集模板 + 路径压缩见[并查集](图论.md)
+- 知识点：并查集模板 + 路径压缩见[并查集](../图论.md)
 

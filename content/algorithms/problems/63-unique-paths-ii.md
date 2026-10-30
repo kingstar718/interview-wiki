@@ -71,5 +71,5 @@ public int uniquePathsWithObstacles(int[][] obstacleGrid) {
 
 - 同套路：[62. 不同路径](62-unique-paths.md) —— 无障版
 - 进阶：[64. 最小路径和](64-minimum-path-sum.md) —— 加权路径
-- 知识点：障碍物 DP 的初始化技巧见[动态规划](动态规划与贪心.md)
+- 知识点：障碍物 DP 的初始化技巧见[动态规划](../动态规划与贪心.md)
 

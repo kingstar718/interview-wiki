@@ -27,7 +27,7 @@ import re
 import sys
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-from slug import slugify  # 与 Quartz 同源的 github-slugger 规则
+from slug import slugify
 from outline import parse_headings  # 跳过围栏代码块提取标题
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -121,8 +121,8 @@ def parse_notes(strict=True):
 
 def link(note, section=None):
     if section is None:
-        return f"[{note['title']}]({note['name']})"
-    return f"[{note['title']} · {section}]({note['name']}#{slugify(section)})"
+        return f"[{note['title']}](AI提效/{note['name']})"
+    return f"[{note['title']} · {section}](AI提效/{note['name']}#{slugify(section)})"
 
 
 def levels_of(note):
@@ -142,7 +142,7 @@ def render(notes):
         "> 两个视图:**按等级学**给成长路径(我在哪一级、接下来练什么),**按场景查**给任务速查",
         "> (我现在要让 AI 写测试 / 排线上问题 / 控 token 成本,该看哪几处)。同一篇会在多处出现——它们指向同一份内容。",
         ">",
-        "> 等级定义与投入预期见 [AI提效方案](AI提效方案.md)。",
+        "> 等级定义与投入预期见 [AI提效方案](AI提效/AI提效方案.md)。",
         ">",
         "> 这是独立于八股与算法的第四个域:讲**怎么用 AI 把开发这件事干得更快**,以及后端把 LLM 接进系统时要懂的工程问题。",
         "",

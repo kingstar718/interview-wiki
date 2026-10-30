@@ -80,5 +80,5 @@ public int[] topologicalSort(int n, int[][] edges) {
 
 - 同套路：[207. 课程表](207-course-schedule.md) —— 只判断能否完成，即只做环检测
 - 同套路：[210. 课程表 II](210-course-schedule-ii.md) —— 输出具体拓扑序，本模板的直接应用
-- 知识点：Kahn 与 DFS 两种实现的取舍见[图论](图论.md)
+- 知识点：Kahn 与 DFS 两种实现的取舍见[图论](../图论.md)
 

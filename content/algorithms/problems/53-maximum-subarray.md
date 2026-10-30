@@ -76,5 +76,5 @@ public int maxSubArray(int[] nums) {
 - 同套路：[152. 乘积最大子数组](152-maximum-product-subarray.md) —— Kadane 的乘法变体
 - 进阶：[121. 买卖股票的最佳时机](121-best-time-to-buy-and-sell-stock.md) —— 对差价数组跑 Kadane 就是本题；918. 环形子数组的最大和
 - 易混：[560. 和为 K 的子数组](560-subarray-sum-equals-k.md) —— 求计数不求最值，套前缀和哈希
-- 知识点：动态规划专题见[动态规划](动态规划与贪心.md)
+- 知识点：动态规划专题见[动态规划](../动态规划与贪心.md)
 

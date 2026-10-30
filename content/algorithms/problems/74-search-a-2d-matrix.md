@@ -75,5 +75,5 @@ public boolean searchMatrix(int[][] matrix, int target) {
 
 - 同套路：[4. 寻找两个正序数组的中位数](4-median-of-two-sorted-arrays.md) —— 二分在不同数据结构上的映射
 - 进阶：[240. 搜索二维矩阵 II](240-search-a-2d-matrix-ii.md) —— 条件放宽后的 Z 字形解法
-- 知识点：[二分查找](二分查找.md)的"映射"思维
+- 知识点：[二分查找](../二分查找.md)的"映射"思维
 

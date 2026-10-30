@@ -65,5 +65,5 @@ public int maxDepth(TreeNode root) {
 
 - 同套路：[110. 平衡二叉树](110-balanced-binary-tree.md) —— 扩展自本题的递归判平衡
 - 进阶：[543. 二叉树的直径](543-diameter-of-binary-tree.md) —— 深度求和而非取最大
-- 知识点：树递归的"分治"模式（左 + 右 + 合并）见[二叉树](二叉树.md)
+- 知识点：树递归的"分治"模式（左 + 右 + 合并）见[二叉树](../二叉树.md)
 

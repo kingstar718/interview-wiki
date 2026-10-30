@@ -70,5 +70,5 @@ public Node cloneGraph(Node node) {
 
 - 同套路：[138. 复制带随机指针的链表](138-copy-list-with-random-pointer.md) —— Map + 递归/迭代的深拷贝模式
 - 进阶：[200. 岛屿数量](200-number-of-islands.md) —— 图的另一类遍历（网格图）
-- 知识点：图的 DFS 遍历 + 哈希映射技巧见[图](图论.md)
+- 知识点：图的 DFS 遍历 + 哈希映射技巧见[图](../图论.md)
 

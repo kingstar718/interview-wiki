@@ -80,5 +80,5 @@ private int depth(TreeNode node) {
 
 - 同套路：[104. 二叉树的最大深度](104-maximum-depth-of-binary-tree.md) —— 本题的深度计算是子过程
 - 进阶：[124. 二叉树中的最大路径和](124-binary-tree-maximum-path-sum.md) —— 从边数求和升级到权值求和，需要考虑负数截断
-- 知识点：树形 DP 的"后序遍历 + 全局变量"模式见[二叉树](二叉树.md)
+- 知识点：树形 DP 的"后序遍历 + 全局变量"模式见[二叉树](../二叉树.md)
 

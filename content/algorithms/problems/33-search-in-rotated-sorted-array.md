@@ -86,5 +86,5 @@ public int search(int[] nums, int target) {
 
 - 同套路：[153. 寻找旋转排序数组中的最小值](153-find-minimum-in-rotated-sorted-array.md) —— 同样"至少一半有序"的二分思路
 - 进阶：[81. 搜索旋转排序数组 II](https://leetcode.cn/problems/search-in-rotated-sorted-array-ii/) —— 含重复值的退化版
-- 知识点：二分查找模板见[二分查找](二分查找.md)
+- 知识点：二分查找模板见[二分查找](../二分查找.md)
 

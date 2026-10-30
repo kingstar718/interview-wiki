@@ -74,4 +74,4 @@ public int numTrees(int n) {
 
 - 同套路：[95. 不同的二叉搜索树 II](https://leetcode.cn/problems/unique-binary-search-trees-ii/) —— 构造所有树
 - 进阶：[343. 整数拆分](343-integer-break.md) —— 同类 DP 枚举分割点
-- 知识点：卡特兰数 DP + 二叉树计数见[动态规划](动态规划与贪心.md)
+- 知识点：卡特兰数 DP + 二叉树计数见[动态规划](../动态规划与贪心.md)

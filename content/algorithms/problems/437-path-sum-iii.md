@@ -109,4 +109,4 @@ private void dfs(TreeNode node, long cur, int target, Map<Long, Integer> prefix)
 - 同套路：[560. 和为 K 的子数组](560-subarray-sum-equals-k.md) —— 前缀和 + 哈希计数的一维原型
 - 同套路：[113. 路径总和 II](113-path-sum-ii.md) —— 起点固定的简化版
 - 进阶：[124. 二叉树中的最大路径和](124-binary-tree-maximum-path-sum.md) —— 路径可拐弯时的后序返回值设计
-- 知识点：树上 DFS 与回溯撤销见[二叉树](二叉树.md)；前缀和配哈希的通用套路见[哈希表](哈希表.md)
+- 知识点：树上 DFS 与回溯撤销见[二叉树](../二叉树.md)；前缀和配哈希的通用套路见[哈希表](../哈希表.md)

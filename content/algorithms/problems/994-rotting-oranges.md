@@ -96,5 +96,5 @@ public int orangesRotting(int[][] grid) {
 
 - 同套路：[200. 岛屿数量](200-number-of-islands.md) —— 网格图遍历，DFS 版本
 - 进阶：[207. 课程表](207-course-schedule.md) —— 从网格图换到邻接表的图遍历
-- 知识点：多源 BFS 模板见[图](图论.md)
+- 知识点：多源 BFS 模板见[图](../图论.md)
 

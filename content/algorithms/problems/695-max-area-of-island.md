@@ -90,4 +90,4 @@ private int dfs(int[][] grid, int i, int j) {
 
 - 同套路：[200. 岛屿数量](200-number-of-islands.md) —— 计数版
 - 进阶：[827. 最大人工岛](827-making-a-large-island.md) —— 填海造岛
-- 知识点：网格 DFS 模板（面积版）见[图](图论.md)
+- 知识点：网格 DFS 模板（面积版）见[图](../图论.md)

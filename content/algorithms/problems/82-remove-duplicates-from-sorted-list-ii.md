@@ -92,4 +92,4 @@ public ListNode deleteDuplicates(ListNode head) {
 - 基础：[83. 删除排序链表中的重复元素](83-remove-duplicates-from-sorted-list.md) —— 保留一个版本，同模板但不需要虚拟头节点
 - 同套路：[26. 删除有序数组中的重复项](26-remove-duplicates.md) —— 数组版去重，保留一个的版本
 - 易混：[203. 移除链表元素](https://leetcode.cn/problems/remove-linked-list-elements/) —— 按给定值删除，不是去重，但同样可用虚拟头节点
-- 知识点：虚拟头节点统一链表删除逻辑，见[链表](链表.md)
+- 知识点：虚拟头节点统一链表删除逻辑，见[链表](../链表.md)

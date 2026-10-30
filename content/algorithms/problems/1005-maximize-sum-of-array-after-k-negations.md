@@ -92,4 +92,4 @@ public int largestSumAfterKNegations(int[] nums, int k) {
 
 - 同套路：[455. 分发饼干](455-assign-cookies.md) —— 排序 + 贪心
 - 进阶：[45. 跳跃游戏 II](45-jump-game-ii.md) —— 更复杂的贪心
-- 知识点：贪心之"排序+最优处理"模板见[贪心](动态规划与贪心.md)
+- 知识点：贪心之"排序+最优处理"模板见[贪心](../动态规划与贪心.md)

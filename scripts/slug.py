@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 """github-slugger v2 规则的纯标准库复刻,供 gen_index.py / check_index.py 共用。
 
-Quartz 用 github-slugger 给 H1-H6 生成 id(锚点)。生成索引时写出的 `文件.md#锚点`
-必须与 Quartz 渲染出的 id 同规则,否则点击死链;check 校验锚点时也用同规则归一化。
+生成索引时写出的 `文件.md#锚点` 必须与渲染器生成的 id 同规则，否则点击死链；
+check 校验锚点时也用同规则归一化。
 
 算法(lowercase → 删非字母数字非空白非连字符 → 空白转 - → 合并连字符 → 去首尾 -):
     "HashMap 的底层实现和扩容机制？" → "hashmap-的底层实现和扩容机制"
@@ -19,13 +19,14 @@ _WS = re.compile(r"\s+")
 _DASH = re.compile(r"-{2,}")
 
 
-def slugify(text):
+def slugify(text, separator="-"):
     """单个标题 → slug,与 github-slugger v2 一致。"""
     s = text.lower()
     s = _STRIP.sub("", s)
-    s = _WS.sub("-", s)
-    s = _DASH.sub("-", s)
-    return s.strip("-")
+    s = _WS.sub(separator, s)
+    if separator == "-":
+        s = _DASH.sub("-", s)
+    return s.strip(separator)
 
 
 def slugify_headings(texts):

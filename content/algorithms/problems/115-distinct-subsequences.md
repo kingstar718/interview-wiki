@@ -81,4 +81,4 @@ public int numDistinct(String s, String t) {
 
 - 同套路：[392. 判断子序列](392-is-subsequence.md) —— 判断版
 - 进阶：[1143. 最长公共子序列](1143-longest-common-subsequence.md) —— 二维 DP 同款
-- 知识点：计数型二维 DP 见[动态规划](动态规划与贪心.md)
+- 知识点：计数型二维 DP 见[动态规划](../动态规划与贪心.md)

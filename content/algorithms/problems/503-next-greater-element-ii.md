@@ -70,5 +70,5 @@ public int[] nextGreaterElements(int[] nums) {
 
 - 同套路：[496. 下一个更大元素 I](496-next-greater-element-i.md) —— 非循环版
 - 进阶：[84. 柱状图中最大矩形](84-largest-rectangle-in-histogram.md) —— 单调栈扩展应用
-- 知识点：循环数组单调栈模板见[单调栈与单调队列](栈与队列.md)
+- 知识点：循环数组单调栈模板见[单调栈与单调队列](../栈与队列.md)
 

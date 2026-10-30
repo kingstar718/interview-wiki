@@ -75,5 +75,5 @@ public int coinChange(int[] coins, int amount) {
 
 - 同套路：[518. 零钱兑换 II](518-coin-change-ii.md) —— 计数版
 - 进阶：[300. 最长递增子序列](300-longest-increasing-subsequence.md) —— 一维 DP 另一模式
-- 知识点：完全背包问题（求最值 vs 计数）见[动态规划](动态规划与贪心.md)
+- 知识点：完全背包问题（求最值 vs 计数）见[动态规划](../动态规划与贪心.md)
 

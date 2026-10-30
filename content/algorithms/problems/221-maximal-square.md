@@ -91,4 +91,4 @@ public int maximalSquare(char[][] matrix) {
 - 基础：[70. 爬楼梯](70-climbing-stairs.md) —— 一维 DP 热身
 - 进阶：[85. 最大矩形](https://leetcode.cn/problems/maximal-rectangle/) —— 转化为柱状图最大面积
 - 同套路：[64. 最小路径和](64-minimum-path-sum.md) —— 二维 DP 的另一种转移模式（求和而非取 min 扩展）
-- 知识点：二维 DP 的空间压缩技巧「滚动数组」见[动态规划](动态规划与贪心.md)
+- 知识点：二维 DP 的空间压缩技巧「滚动数组」见[动态规划](../动态规划与贪心.md)

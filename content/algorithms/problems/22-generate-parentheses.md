@@ -85,5 +85,5 @@ private void backtrack(int n, int left, int right, StringBuilder sb, List<String
 
 - 同套路：[17. 电话号码的字母组合](17-letter-combinations-of-a-phone-number.md) —— 回溯分支选择
 - 进阶：[46. 全排列](46-permutations.md) —— 另一方向的回溯模板（排列 vs 组合 vs 构造）
-- 知识点：卡特兰数、回溯合法性剪枝见[回溯](回溯.md)
+- 知识点：卡特兰数、回溯合法性剪枝见[回溯](../回溯.md)
 

@@ -94,4 +94,4 @@ private TreeNode findMin(TreeNode node) {
 
 - 同套路：[701. 二叉搜索树中的插入操作](701-insert-into-a-binary-search-tree.md) —— 插入比删除简单（总是插入到叶子位置）
 - 进阶：[669. 修剪二叉搜索树](669-trim-a-binary-search-tree.md) —— 批量删除区间外的节点
-- 知识点：BST 的增删改查操作体系见[二叉树](二叉树.md)
+- 知识点：BST 的增删改查操作体系见[二叉树](../二叉树.md)

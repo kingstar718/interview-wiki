@@ -73,5 +73,5 @@ private void backtrack(int[] nums, int start, List<Integer> path, List<List<Inte
 
 - 同套路：[78. 子集](78-subsets.md) —— 无重复版
 - 进阶：[47. 全排列 II](47-permutations-ii.md) —— 排列版去重对比
-- 知识点：回溯去重模板见[回溯](回溯.md)
+- 知识点：回溯去重模板见[回溯](../回溯.md)
 

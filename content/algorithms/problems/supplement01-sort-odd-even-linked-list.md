@@ -115,4 +115,4 @@ private ListNode merge(ListNode l1, ListNode l2) {
 - 同套路：[21. 合并两个有序链表](21-merge-two-sorted-lists.md) —— 归并基础
 - 同套路：[206. 反转链表](206-reverse-linked-list.md) —— 反转基础
 - 进阶：[148. 排序链表](148-sort-list.md) —— 归并排序
-- 知识点：链表分离与合并技巧见[链表](链表.md)
+- 知识点：链表分离与合并技巧见[链表](../链表.md)

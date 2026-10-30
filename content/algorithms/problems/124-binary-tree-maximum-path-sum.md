@@ -87,5 +87,5 @@ private int maxGain(TreeNode node) {
 
 - 同套路：[543. 二叉树的直径](543-diameter-of-binary-tree.md) —— 同结构（后序 + 全局变量），路径长度改路径和
 - 进阶：[105. 从前序与中序遍历构造二叉树](105-construct-binary-tree-from-preorder-and-inorder-traversal.md) —— 需要另一维度的树形分治
-- 知识点：树形 DP 框架见[二叉树](二叉树.md)
+- 知识点：树形 DP 框架见[二叉树](../二叉树.md)
 

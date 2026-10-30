@@ -86,4 +86,4 @@ public int minDistance(String word1, String word2) {
 
 - 同套路：[1143. 最长公共子序列](1143-longest-common-subsequence.md) —— LCS 核心
 - 进阶：[72. 编辑距离](72-edit-distance.md) —— 允许插入/删除/替换
-- 知识点：LCS 变式 + 删除操作 DP 见[动态规划](动态规划与贪心.md)
+- 知识点：LCS 变式 + 删除操作 DP 见[动态规划](../动态规划与贪心.md)

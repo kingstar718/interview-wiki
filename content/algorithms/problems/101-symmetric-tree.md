@@ -85,4 +85,4 @@ private boolean isMirror(TreeNode left, TreeNode right) {
 
 - 同套路：[226. 翻转二叉树](226-invert-binary-tree.md) —— 翻转后自比等价于对称判定
 - 进阶：[100. 相同的树](https://leetcode.cn/problems/same-tree/) —— 判断两棵树是否完全相同，递归逻辑更简单（直接比较而非交叉）
-- 知识点：二叉树递归模板见[二叉树](二叉树.md)
+- 知识点：二叉树递归模板见[二叉树](../二叉树.md)

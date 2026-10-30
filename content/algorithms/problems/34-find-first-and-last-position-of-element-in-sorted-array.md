@@ -95,5 +95,5 @@ private int findRight(int[] nums, int target) {
 
 - 同套路：[35. 搜索插入位置](https://leetcode.cn/problems/search-insert-position/) —— 只找左边界
 - 进阶：[33. 搜索旋转排序数组](33-search-in-rotated-sorted-array.md) —— 有序条件破坏时如何二分
-- 知识点：二分查找边界模板汇总见[二分查找](二分查找.md)
+- 知识点：二分查找边界模板汇总见[二分查找](../二分查找.md)
 

@@ -98,5 +98,5 @@ private void swap(int[] nums, int i, int j) {
 
 - 同套路：[347. 前 K 个高频元素](347-top-k-frequent-elements.md) —— 堆 + 哈希
 - 进阶：[295. 数据流的中位数](295-find-median-from-data-stream.md) —— 双堆
-- 知识点：堆的 Top K 模式见[堆与优先队列](排序与堆.md)
+- 知识点：堆的 Top K 模式见[堆与优先队列](../排序与堆.md)
 

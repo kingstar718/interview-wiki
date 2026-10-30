@@ -6,7 +6,7 @@
     python3 scripts/gen_topics.py --check    # 只检查是否需要刷新(CI 用,退出码 1 = 有漂移)
 
 产物:
-    content/算法题索引.md                   —— 整篇生成(套路 → 技术词 → 题目双链)
+    content/算法题索引.md                   —— 整篇生成(套路 → 技术词 → 题目链接)
 
 为什么需要本脚本:
     `algorithms/problems/` 是扁平题目池,题目归属哪个套路不再由目录体现,
@@ -180,7 +180,7 @@ ONE_LINER_RE = re.compile(r"^>\s*\*\*一句话\*\*[：:]\s*(.+?)\s*$", re.M)
 
 # 套路的教学顺序(由易到难、由具体到抽象),索引与速查表都按它排。
 # 文件名字典序(二分查找会排到最前)对读者毫无意义,所以顺序必须显式表达。
-# 新增套路页要在这里登记,否则 render_index 会报错 —— 与 quartz.ts 的 ORDER 同理。
+# 新增套路页要在这里登记,否则 render_index 会报错。
 PATTERN_ORDER = [
     "数组与字符串", "链表", "栈与队列", "哈希表",
     "双指针与滑动窗口", "二分查找", "二叉树", "图论",
@@ -219,8 +219,8 @@ def render_index(groups, wl):
         "> 难度/频次/公司以**题解元数据行**为权威源,本页是它的视图。公司标注为大致倾向,以实际面试为准。",
         ">",
         "> 相关:[高频题目索引](高频题目索引.md)(按热度排序,跨套路)。",
-        "> 总览:[算法总览](算法总览.md)(框架思维 + 方法论)。",
-        "> 路线:[刷题方案](刷题方案.md)(两阶段打法:随想录筑基 → Hot100 验收,每章标了刷哪些跳哪些)。",
+        "> 总览:[算法总览](algorithms/算法总览.md)(框架思维 + 方法论)。",
+        "> 路线:[刷题方案](algorithms/刷题方案.md)(两阶段打法:随想录筑基 → Hot100 验收,每章标了刷哪些跳哪些)。",
         "",
         "## 怎么用这份索引",
         "",
@@ -228,7 +228,7 @@ def render_index(groups, wl):
         "2. **技术词以标签形式标注**在题目行尾(如 `#对撞指针`),同一个套路下的技术词彼此不可替代,搞混了就会硬套模板。",
         "3. **高频题(★★★★★)优先**,见 [高频算法题 Top 40](高频题目索引.md#a-高频算法题-top-40)。",
         "4. 每题留 Java 解 + 复杂度 + 一句变式;难题写关联题互链,`## 关联题` 是知识图谱的边。",
-        "5. **不知道从哪开始就别自己排顺序**,照 [刷题方案](刷题方案.md) 走:一阶段按随想录顺序筑基 94 题(每章标了必刷/跳过),二阶段用 Hot100 验收。本页是「按套路查题」的视图,那页是「按什么顺序刷完」的执行手册。",
+        "5. **不知道从哪开始就别自己排顺序**,照 [刷题方案](algorithms/刷题方案.md) 走:一阶段按随想录顺序筑基 94 题(每章标了必刷/跳过),二阶段用 Hot100 验收。本页是「按套路查题」的视图,那页是「按什么顺序刷完」的执行手册。",
         "",
         "## 套路速查",
         "",
@@ -242,7 +242,7 @@ def render_index(groups, wl):
     for name in order:
         g = groups[name]
         cnt = len({e[1] for items in g.values() for e in items})
-        out.append(f"| [{name}]({name}.md) | {cnt} |")
+        out.append(f"| [{name}](algorithms/{name}.md) | {cnt} |")
     out.append("")
     out.append("---")
 
@@ -251,7 +251,7 @@ def render_index(groups, wl):
         out += ["", f"## {name}", ""]
         one = pattern_one_liner(os.path.join(ALGORITHMS, name + ".md"))
         if one:
-            out += [f"> {one}", "", f"详解见 [{name}]({name}.md)。", ""]
+            out += [f"> {one}", "", f"详解见 [{name}](algorithms/{name}.md)。", ""]
         for t in wl[name]:
             items = g.get(t)
             if not items:
@@ -264,7 +264,7 @@ def render_index(groups, wl):
                     stars, diff, comps = meta
                     parts = [x for x in (diff, stars, "/".join(comps)) if x]
                     tail = " · " + " · ".join(parts)
-                out.append(f"- [[{stem}|{title}]]{tail}  `#{t}`")
+                out.append(f"- [{title}](algorithms/problems/{base}){tail}  `#{t}`")
             out.append("")
     return "\n".join(out).rstrip() + "\n"
 

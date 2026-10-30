@@ -102,4 +102,4 @@ public boolean canVisitAllRooms(List<List<Integer>> rooms) {
 
 - 同套路：[200. 岛屿数量](200-number-of-islands.md) —— 网格图连通性
 - 进阶：[207. 课程表](207-course-schedule.md) —— 有向图拓扑排序
-- 知识点：有向图连通性 DFS/BFS 见[图](图论.md)
+- 知识点：有向图连通性 DFS/BFS 见[图](../图论.md)

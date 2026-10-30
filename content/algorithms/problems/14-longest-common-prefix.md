@@ -77,4 +77,4 @@ public String longestCommonPrefix(String[] strs) {
 
 - 同套路：分治法 LCP 是归并思想在字符串上的应用
 - 进阶：[208. 实现 Trie](208-implement-trie.md) —— 前缀匹配的经典数据结构
-- 基础：字符串匹配基本功见[数组与字符串](数组与字符串.md)
+- 基础：字符串匹配基本功见[数组与字符串](../数组与字符串.md)

@@ -81,5 +81,5 @@ public int missingNumber(int[] nums) {
 
 - 同套路：[34. 在排序数组中查找元素的第一个和最后一个位置](34-find-first-and-last-position-of-element-in-sorted-array.md) —— "找第一个满足/不满足条件的位置"的边界二分
 - 进阶：剑指 Offer 53 - I. 在排序数组中查找数字 I —— 统计次数，用两次二分找边界
-- 知识点：[二分查找](二分查找.md)左边界/右边界/缺失值模板对比
+- 知识点：[二分查找](../二分查找.md)左边界/右边界/缺失值模板对比
 

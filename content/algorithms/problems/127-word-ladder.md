@@ -94,4 +94,4 @@ public int ladderLength(String beginWord, String endWord, List<String> wordList)
 
 - 同套路：[126. 单词接龙 II](https://leetcode.cn/problems/word-ladder-ii/) —— 求所有最短路径
 - 进阶：[433. 最小基因变化](https://leetcode.cn/problems/minimum-genetic-mutation/) —— 同款 BFS
-- 知识点：BFS 最短路径 + 图建模见[图](图论.md)
+- 知识点：BFS 最短路径 + 图建模见[图](../图论.md)

@@ -82,5 +82,5 @@ public int longestValidParentheses(String s) {
 
 - 同套路：[22. 括号生成](22-generate-parentheses.md) —— 生成 vs 匹配
 - 进阶：[312. 戳气球](312-burst-balloons.md) —— 区间 DP 另一题
-- 知识点：括号匹配的栈/DP 双解法见[动态规划](动态规划与贪心.md)
+- 知识点：括号匹配的栈/DP 双解法见[动态规划](../动态规划与贪心.md)
 

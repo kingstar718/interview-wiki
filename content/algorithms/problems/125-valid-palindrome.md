@@ -79,4 +79,4 @@ public boolean isPalindrome(String s) {
 - 同套路：[9. 回文数](9-palindrome-number.md)（整数版，反转一半比较）
 - 进阶：[5. 最长回文子串](5-longest-palindromic-substring.md)（中心扩展法）
 - 易混：[234. 回文链表](234-palindrome-linked-list.md)（链表版，快慢指针 + 反转）
-- 知识点：双指针模板见[双指针与滑动窗口](双指针与滑动窗口.md)
+- 知识点：双指针模板见[双指针与滑动窗口](../双指针与滑动窗口.md)

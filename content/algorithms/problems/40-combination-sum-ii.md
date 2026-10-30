@@ -83,5 +83,5 @@ private void backtrack(int[] c, int remain, int start, List<Integer> path, List<
 
 - 同套路：[39. 组合总和](39-combination-sum.md) —— 可重复版对照
 - 进阶：[47. 全排列 II](47-permutations-ii.md) —— 排列版去重对比
-- 知识点：组合类回溯的"同层去重"模板见[回溯](回溯.md)
+- 知识点：组合类回溯的"同层去重"模板见[回溯](../回溯.md)
 

@@ -70,5 +70,5 @@ public int minPathSum(int[][] grid) {
 
 - 同套路：[62. 不同路径](62-unique-paths.md) —— 同模板但求和
 - 进阶：[72. 编辑距离](72-edit-distance.md) —— 二维 DP 的三方向转移
-- 知识点：网格 DP 模板见[动态规划](动态规划与贪心.md)
+- 知识点：网格 DP 模板见[动态规划](../动态规划与贪心.md)
 

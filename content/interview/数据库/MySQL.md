@@ -367,7 +367,7 @@ SELECT * FROM users WHERE zip LIKE '10%' AND last_name = '王';
 
 **使用**：InnoDB（5.6+）和 MyISAM 都支持。`CREATE FULLTEXT INDEX idx_content ON articles(title, body)`；查询用 `SELECT * FROM articles WHERE MATCH(title, body) AGAINST('MySQL 索引' IN NATURAL LANGUAGE MODE)`。
 
-**与 Elasticsearch 的区别**：全文索引是 MySQL 内建功能，适合简单文本搜索（几百 MB 级别）；大规模、多维度、高并发的全文搜索场景（TB 级日志、商品搜索）用 Elasticsearch（见[Elasticsearch](Elasticsearch.md)），MySQL 全文索引的中文分词、相关性排序、扩展性都不如 ES。
+**与 Elasticsearch 的区别**：全文索引是 MySQL 内建功能，适合简单文本搜索（几百 MB 级别）；大规模、多维度、高并发的全文搜索场景（TB 级日志、商品搜索）用 Elasticsearch（见[Elasticsearch](../中间件/Elasticsearch.md)），MySQL 全文索引的中文分词、相关性排序、扩展性都不如 ES。
 
 ### JOIN 底层用什么算法？为什么要小表驱动大表？
 
@@ -674,7 +674,7 @@ EXPLAIN SELECT name, age FROM users WHERE phone = '13800138000';
 - 分片键怎么选？→ 选查询频率最高、分布最均匀的列（如 user_id、order_id）；避免用时间戳直接做 hash 分片键（有写热点）。如果查询条件不包含分片键，所有分片都要扫描（广播查询），所以**选对分片键是分库分表的第一步，也是最重要的一步**。
 - 分库后跨库查询怎么做？→ 应用层聚合（多次查询在内存合并），或用中间件（ShardingSphere、MyCAT）透明路由。IN 查询可拆分到各分片并行查询再合并。
 - 分布式事务如何处理？→ 用 Seata AT/TCC 或本地消息表+最终一致性。严格一致性场景尽量避免跨库事务，通过数据冗余或业务拆分消除。
-- 全局 ID 怎么生成？→ 雪花算法（时间戳+机器号+序列）、号段模式（Leaf）、Redis INCR。各方案时钟回拨处理见[分布式系统](分布式系统.md)。
+- 全局 ID 怎么生成？→ 雪花算法（时间戳+机器号+序列）、号段模式（Leaf）、Redis INCR。各方案时钟回拨处理见[分布式系统](../分布式与架构/分布式系统.md)。
 - 扩容怎么做？→ Hash 分片最棘手，常见方案：**双写迁移**（写两个库 + 分阶段切流量）、**rehash 迁移**（利用 binlog+Kafka 同步 + 双倍虚拟节点逐步切换）；Range 分片只加新 range 即可。停服迁移不可取。
 - 中间件 ShardingSphere 怎么工作？→ 核心流程：SQL 解析 → 分片路由 → SQL 改写（修正表名/库名）→ 多数据源并行执行 → 结果归并（排序/聚合/分页）。ShardingSphere-Proxy 以独立服务运行兼容任何语言，ShardingSphere-JDBC 嵌入应用性能最高但多语言不通用。
 
@@ -694,7 +694,7 @@ EXPLAIN SELECT name, age FROM users WHERE phone = '13800138000';
 4. 数据追平后原子 rename 切换
 ```
 
-**答题要点**：先问版本和操作类型（8.0 加列 → INSTANT 直接做）；再说 MDL 排队风险（操作前查 `information_schema.innodb_trx` 杀长事务、设 `lock_wait_timeout`）；超大表或需限速灰度 → gh-ost。灰度期间新旧结构兼容策略见[Linux与工程化](Linux与工程化.md)的"数据库灰度兼容"。
+**答题要点**：先问版本和操作类型（8.0 加列 → INSTANT 直接做）；再说 MDL 排队风险（操作前查 `information_schema.innodb_trx` 杀长事务、设 `lock_wait_timeout`）；超大表或需限速灰度 → gh-ost。灰度期间新旧结构兼容策略见[Linux与工程化](../工程实践/Linux与工程化.md)的"数据库灰度兼容"。
 
 ### 数据库连接池（HikariCP）为什么这么快？
 
@@ -743,7 +743,7 @@ public T borrow(long timeout, final TimeUnit timeUnit) {
 **为什么连接数不是越大越好**：数据库处理请求本质是 CPU 密集（执行计划、锁、IO 调度都要 CPU 和磁盘资源），连接数超过 `CPU核数×2+磁盘数` 后，新增连接只是让更多请求在数据库内部排队等资源，上下文切换开销反而上升——这与线程池"线程数不是越多越好"是同一个道理：**池子大小应该匹配下游资源的实际并行能力，而不是应用侧的并发量**。
 
 **常见追问**
-- `maxLifetime` 为什么要略小于数据库的 `wait_timeout`？→ 如果连接池不主动断开，数据库端先于连接池超时悄悄关闭了这条连接，池子还以为它活着，下次借出去业务一用就报 "connection already closed"——生产上"偶发连接失效"的常见根因。连接池排障的完整定位路径（活跃/空闲连接数、连接泄漏、慢 SQL 占用连接过久）见[生产排障](生产排障.md)。
+- `maxLifetime` 为什么要略小于数据库的 `wait_timeout`？→ 如果连接池不主动断开，数据库端先于连接池超时悄悄关闭了这条连接，池子还以为它活着，下次借出去业务一用就报 "connection already closed"——生产上"偶发连接失效"的常见根因。连接池排障的完整定位路径（活跃/空闲连接数、连接泄漏、慢 SQL 占用连接过久）见[生产排障](../分布式与架构/生产排障.md)。
 - 连接池能不能跨多实例共享？→ 不能，连接池是进程内对象；多实例部署时**总连接数 = 单实例连接数 × 实例数**，扩容时必须核算数据库 `max_connections` 上限，这是微服务扩容时容易漏算的一步。
 
 ---

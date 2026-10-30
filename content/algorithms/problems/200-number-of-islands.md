@@ -91,5 +91,5 @@ private void dfs(char[][] grid, int i, int j) {
 
 - 同套路：[994. 腐烂的橘子](994-rotting-oranges.md) —— 多源 BFS 版"感染"问题
 - 进阶：[207. 课程表](207-course-schedule.md) —— 图的遍历从网格换到邻接表
-- 知识点：网格图的 DFS 遍历模板见[图](图论.md)
+- 知识点：网格图的 DFS 遍历模板见[图](../图论.md)
 

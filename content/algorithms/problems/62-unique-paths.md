@@ -80,5 +80,5 @@ public int uniquePaths(int m, int n) {
 
 - 同套路：[63. 不同路径 II](63-unique-paths-ii.md) —— 含障碍物
 - 进阶：[64. 最小路径和](64-minimum-path-sum.md) —— 加权版
-- 知识点：组合数学 vs DP 的适用场景见[动态规划](动态规划与贪心.md)
+- 知识点：组合数学 vs DP 的适用场景见[动态规划](../动态规划与贪心.md)
 

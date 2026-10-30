@@ -71,5 +71,5 @@ public int[] getLeastNumbers(int[] arr, int k) {
 
 - 同套路：[215. 数组中的第 K 大](215-kth-largest-element-in-an-array.md) —— 相反方向
 - 进阶：[347. 前 K 个高频元素](347-top-k-frequent-elements.md) —— 按频率维度
-- 知识点：Top K 的"最大堆/最小堆"选择见[堆与优先队列](排序与堆.md)
+- 知识点：Top K 的"最大堆/最小堆"选择见[堆与优先队列](../排序与堆.md)
 

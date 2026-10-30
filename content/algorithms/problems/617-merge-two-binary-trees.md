@@ -84,4 +84,4 @@ public TreeNode mergeTrees(TreeNode root1, TreeNode root2) {
 
 - 同套路：[226. 翻转二叉树](226-invert-binary-tree.md) —— 同样是对树的结构变换操作，递归模板一致
 - 进阶：[101. 对称二叉树](101-symmetric-tree.md) —— 同时遍历两棵树的递归模式，但比较逻辑不同
-- 知识点：同时遍历两棵树的递归模板见[二叉树](二叉树.md)
+- 知识点：同时遍历两棵树的递归模板见[二叉树](../二叉树.md)

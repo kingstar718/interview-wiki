@@ -72,5 +72,5 @@ private int find(int[] parent, int x) {
 
 - 同套路：[547. 省份数量](547-number-of-provinces.md) —— 并查集计数
 - 进阶：[684. 冗余连接](684-redundant-connection.md) —— 环检测
-- 知识点：并查集统计连通分量见[并查集](图论.md)
+- 知识点：并查集统计连通分量见[并查集](../图论.md)
 

@@ -86,4 +86,4 @@ public ListNode rotateRight(ListNode head, int k) {
 
 - 同套路：[189. 旋转数组](189-rotate-array.md) —— 同是"右移 k 步"，数组用三次反转
 - 进阶：[143. 重排链表](143-reorder-list.md) —— 找中点 + 反转 + 穿插合并，更复杂的链表重组
-- 基础：链表长度与指针移动基本功见[链表](链表.md)
+- 基础：链表长度与指针移动基本功见[链表](../链表.md)

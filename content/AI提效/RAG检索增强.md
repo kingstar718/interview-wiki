@@ -185,5 +185,5 @@ RAG 的天花板是你的资料质量。**资料本身过期、矛盾、缺失�
 - [大模型基础概念](大模型基础概念.md#三幻觉为什么它会一本正经地编) —— RAG 要解决的核心问题
 - [Agent与MCP](Agent与MCP.md) —— 让模型自己决定检索什么、检索几次
 - [AI工程化与风险](AI工程化与风险.md) —— 权限过滤、数据边界、评测体系
-- [Elasticsearch](Elasticsearch.md) —— 八股侧：倒排索引与 BM25 的底层原理
-- [AI提效索引](AI提效索引.md) —— 按等级学 + 按场景查
+- [Elasticsearch](../interview/中间件/Elasticsearch.md) —— 八股侧：倒排索引与 BM25 的底层原理
+- [AI提效索引](../AI提效索引.md) —— 按等级学 + 按场景查

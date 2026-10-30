@@ -93,4 +93,4 @@ public boolean isCompleteTree(TreeNode root) {
 - 基础：[102. 二叉树的层序遍历](102-binary-tree-level-order-traversal.md) —— BFS 层序模板
 - 进阶：[919. 完全二叉树插入器](919-complete-binary-tree-inserter.md) —— 利用完全二叉树性质的插入操作
 - 同套路：[199. 二叉树的右视图](199-binary-tree-right-side-view.md) —— 层序变种
-- 知识点：完全二叉树在堆排序和数组表示中的广泛应用见[二叉树](二叉树.md)
+- 知识点：完全二叉树在堆排序和数组表示中的广泛应用见[二叉树](../二叉树.md)

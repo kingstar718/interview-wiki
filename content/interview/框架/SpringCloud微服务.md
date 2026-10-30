@@ -57,7 +57,7 @@
 
 - **轮询**：按顺序分发（简单/加权）
 - **随机**：随机选择（简单/加权）
-- **一致性哈希**：同 IP/同参数路由到同一服务器，扩缩容只影响相邻区段；哈希环与虚拟节点原理见[分布式系统](分布式系统.md)
+- **一致性哈希**：同 IP/同参数路由到同一服务器，扩缩容只影响相邻区段；哈希环与虚拟节点原理见[分布式系统](../分布式与架构/分布式系统.md)
 - **最小活跃数**：分发到当前请求最少的服务器
 
 ### 服务熔断 vs 服务降级
@@ -71,7 +71,7 @@
 
 Hystrix 熔断默认配置：10 秒内请求 >= 20 次且错误率 > 50% 时触发。**Hystrix 自 2018 年起已进入维护模式、不再新增特性**，新项目应选 Sentinel 或 resilience4j；这里列出是因为存量系统和面试历史考点仍常涉及。
 
-熔断三状态（Closed/Open/Half-Open）流转与限流算法原理见[系统设计](系统设计.md)。
+熔断三状态（Closed/Open/Half-Open）流转与限流算法原理见[系统设计](../分布式与架构/系统设计.md)。
 
 ---
 
@@ -193,12 +193,12 @@ Hystrix 熔断默认配置：10 秒内请求 >= 20 次且错误率 > 50% 时触�
 
 **生成与跨进程传播**：
 
-- **生成**：入口服务发现请求头没有 trace 上下文就生成一个 128 位随机 traceId——只要求唯一不要求有序，随机数即可，**不需要**像分布式 ID 那样全局协调（见[分布式系统](分布式系统.md)分布式 ID 一节的对比）
+- **生成**：入口服务发现请求头没有 trace 上下文就生成一个 128 位随机 traceId——只要求唯一不要求有序，随机数即可，**不需要**像分布式 ID 那样全局协调（见[分布式系统](../分布式与架构/分布式系统.md)分布式 ID 一节的对比）
 - **HTTP/RPC**：出站拦截器（Feign/RestTemplate interceptor、RPC attachment）把上下文注入协议头；进站过滤器解出并放入线程上下文，同时派生新 spanId、当前 span 变 parent
 - **MQ**：没有"请求头"就塞消息属性（Kafka headers、RocketMQ userProperty），消费端取出接上——**载体换了，"上下文随调用走"的模式不变**
-- **异步/线程池**：上下文存在 ThreadLocal 里，跨线程会丢，要装饰 Runnable 在提交时捕获、执行时回放（与 TransmittableThreadLocal 是同一问题，见[并发编程](并发编程.md)ThreadLocal 一节）
+- **异步/线程池**：上下文存在 ThreadLocal 里，跨线程会丢，要装饰 Runnable 在提交时捕获、执行时回放（与 TransmittableThreadLocal 是同一问题，见[并发编程](../Java/并发编程.md)ThreadLocal 一节）
 
-**与 MDC 日志串联**：MDC（Mapped Diagnostic Context）是 Logback/Log4j2 提供的 ThreadLocal Map。进站时把 traceId 放进 MDC，日志 pattern 写 `%X{traceId}`，所有业务日志自动携带——ELK 里按 traceId 一搜，整条链路的日志聚齐。这是“追踪系统看耗时瀑布”和“日志系统看业务细节”的连接点；传播、清理和结构化字段见[日志体系](日志体系.md)：
+**与 MDC 日志串联**：MDC（Mapped Diagnostic Context）是 Logback/Log4j2 提供的 ThreadLocal Map。进站时把 traceId 放进 MDC，日志 pattern 写 `%X{traceId}`，所有业务日志自动携带——ELK 里按 traceId 一搜，整条链路的日志聚齐。这是“追踪系统看耗时瀑布”和“日志系统看业务细节”的连接点；传播、清理和结构化字段见[日志体系](../工程实践/日志体系.md)：
 
 ```java
 // 进站 Filter:有上下文就接续,没有就新开;写入 MDC 供日志输出

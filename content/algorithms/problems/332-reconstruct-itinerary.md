@@ -119,4 +119,4 @@ private void dfs(String from, Map<String, PriorityQueue<String>> graph, List<Str
 
 - 同套路：[207. 课程表](207-course-schedule.md) —— 图论基础（拓扑排序）
 - 进阶：[753. 破解保险箱](https://leetcode.cn/problems/cracking-the-safe/) —— 欧拉回路
-- 知识点：欧拉路径模板见[回溯](回溯.md)
+- 知识点：欧拉路径模板见[回溯](../回溯.md)

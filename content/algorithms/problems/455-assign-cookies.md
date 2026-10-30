@@ -74,4 +74,4 @@ public int findContentChildren(int[] g, int[] s) {
 
 - 同套路：[135. 分发糖果](135-candy.md) —— 相邻约束的贪心
 - 进阶：[881. 救生艇](https://leetcode.cn/problems/boats-to-save-people/) —— 双指针贪心
-- 知识点：贪心入门模板见[贪心](动态规划与贪心.md)
+- 知识点：贪心入门模板见[贪心](../动态规划与贪心.md)

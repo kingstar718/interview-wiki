@@ -76,4 +76,4 @@ private int height(TreeNode node) {
 
 - 同套路：[104. 二叉树的最大深度](104-maximum-depth-of-binary-tree.md) —— 高度计算是本题的基础操作
 - 进阶：[543. 二叉树的直径](543-diameter-of-binary-tree.md) —— 同样是后序遍历求高度，但合并逻辑从"比较差"变为"求和"
-- 知识点：后序遍历自底向上模式见[二叉树](二叉树.md)
+- 知识点：后序遍历自底向上模式见[二叉树](../二叉树.md)

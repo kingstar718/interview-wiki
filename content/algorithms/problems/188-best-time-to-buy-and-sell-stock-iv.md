@@ -73,5 +73,5 @@ public int maxProfit(int k, int[] prices) {
 
 - 同套路：[122. 买卖股票 II](122-best-time-to-buy-and-sell-stock-ii.md) —— 不限次数
 - 进阶：[309. 冷冻期](309-best-time-to-buy-and-sell-stock-with-cooldown.md) —— 状态机加一维
-- 知识点：股票 DP 状态机模板见[动态规划](动态规划与贪心.md)
+- 知识点：股票 DP 状态机模板见[动态规划](../动态规划与贪心.md)
 

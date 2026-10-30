@@ -121,4 +121,4 @@ class UnionFind {
 
 - 同套路：[684. 冗余连接](https://leetcode.cn/problems/redundant-connection/) —— 无向图版
 - 进阶：[207. 课程表](207-course-schedule.md) —— 有向图环检测
-- 知识点：有向图环检测 + 并查集见[图](图论.md)
+- 知识点：有向图环检测 + 并查集见[图](../图论.md)

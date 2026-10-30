@@ -77,5 +77,5 @@ public int longestCommonSubsequence(String text1, String text2) {
 
 - 同套路：[72. 编辑距离](72-edit-distance.md) —— 同是二维 DP，多一个替换的选择
 - 进阶：[300. 最长递增子序列](300-longest-increasing-subsequence.md) —— 一维 DP 可转为 LIS
-- 知识点：二维 DP + 滚动数组优化见[动态规划](动态规划与贪心.md)
+- 知识点：二维 DP + 滚动数组优化见[动态规划](../动态规划与贪心.md)
 

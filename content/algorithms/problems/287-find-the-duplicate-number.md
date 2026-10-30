@@ -80,4 +80,4 @@ public int findDuplicate(int[] nums) {
 
 - 基础：[141. 环形链表 I](141-linked-list-cycle.md)、[142. 环形链表 II](142-linked-list-cycle-ii.md) —— Floyd 判圈的链表版本，完全相同的思路，只是把 next 指针替换成了 nums[i]
 - 同套路：[41. 缺失的第一个正数](41-first-missing-positive.md) —— 相同「下标即哈希」思想，但那题是改数组做原地置换
-- 知识点：Floyd 判圈法本质是将「重复值」转化为「环入口」，见[数组与字符串](数组与字符串.md)、[链表](链表.md)
+- 知识点：Floyd 判圈法本质是将「重复值」转化为「环入口」，见[数组与字符串](../数组与字符串.md)、[链表](../链表.md)

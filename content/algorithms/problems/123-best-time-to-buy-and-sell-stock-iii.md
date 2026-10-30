@@ -83,4 +83,4 @@ public int maxProfit(int[] prices) {
 
 - 同套路：[188. 买卖股票 IV](188-best-time-to-buy-and-sell-stock-iv.md) —— 通用 k 次交易
 - 基础：[121. 买卖股票 I](121-best-time-to-buy-and-sell-stock.md) —— 只交易 1 次
-- 知识点：股票系列状态机 DP 见[动态规划](动态规划与贪心.md)
+- 知识点：股票系列状态机 DP 见[动态规划](../动态规划与贪心.md)

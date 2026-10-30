@@ -86,5 +86,5 @@ private void backtrack(int[] nums, List<Integer> path, boolean[] used, List<List
 
 - 同套路：[46. 全排列](46-permutations.md) —— 无重复版
 - 进阶：[40. 组合总和 II](40-combination-sum-ii.md) —— 组合版去重，剪枝条件变为 `i > start`
-- 知识点：回溯去重的"树层去重 vs 树枝去重"见[回溯](回溯.md)
+- 知识点：回溯去重的"树层去重 vs 树枝去重"见[回溯](../回溯.md)
 

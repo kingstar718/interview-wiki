@@ -87,5 +87,5 @@ private boolean backtrack(char[][] board, int i, int j,
 
 - 同套路：[51. N 皇后](51-n-queens.md) —— 棋盘约束回溯
 - 进阶：[36. 有效的数独](https://leetcode.cn/problems/valid-sudoku/) —— 前置合法性判断
-- 知识点：回溯 + 约束传播、宫格索引公式见[回溯](回溯.md)
+- 知识点：回溯 + 约束传播、宫格索引公式见[回溯](../回溯.md)
 

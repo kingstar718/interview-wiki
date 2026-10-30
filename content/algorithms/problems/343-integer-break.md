@@ -86,4 +86,4 @@ public int integerBreak(int n) {
 
 - 同套路：[279. 完全平方数](279-perfect-squares.md) —— 完全背包求最值
 - 进阶：[322. 零钱兑换](322-coin-change.md) —— 贪心不总是最优，DP 保底
-- 知识点：DP vs 数学贪心见[动态规划](动态规划与贪心.md)
+- 知识点：DP vs 数学贪心见[动态规划](../动态规划与贪心.md)

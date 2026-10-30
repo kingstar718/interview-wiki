@@ -79,4 +79,4 @@ public int change(int amount, int[] coins) {
 - 同套路：[416. 分割等和子集](416-partition-equal-subset-sum.md) —— 0-1 背包（每个物品最多用一次）
 - 基础：[322. 零钱兑换](322-coin-change.md) —— 最少硬币数
 - 进阶：[39. 组合总和](39-combination-sum.md) —— 回溯求出所有具体组合
-- 知识点：完全背包（组合 vs 排列）见[动态规划](动态规划与贪心.md)
+- 知识点：完全背包（组合 vs 排列）见[动态规划](../动态规划与贪心.md)

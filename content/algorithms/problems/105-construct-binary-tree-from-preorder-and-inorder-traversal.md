@@ -86,5 +86,5 @@ private TreeNode build(int[] pre, int preL, int preR, int inL) {
 
 - 同套路：[106. 从中序与后序构造二叉树](https://leetcode.cn/problems/construct-binary-tree-from-inorder-and-postorder-traversal/) —— 遍历顺序不同
 - 进阶：[124. 二叉树中的最大路径和](124-binary-tree-maximum-path-sum.md) —— 建树后的另一类树形问题
-- 知识点：二叉树遍历的性质（前序定根、中序定左右）见[二叉树](二叉树.md)
+- 知识点：二叉树遍历的性质（前序定根、中序定左右）见[二叉树](../二叉树.md)
 

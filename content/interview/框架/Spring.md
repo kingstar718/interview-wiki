@@ -16,7 +16,7 @@
 | [扩展点](#七spring-扩展点) | BPP、BFPP、ImportSelector | starter 和自动配置如何使用 |
 | [事件机制](#spring-事件机制如何工作) | 事件发布、@EventListener、广播器 | 同步 vs 异步、@TransactionalEventListener |
 | [设计模式](#spring-中用到的设计模式) | 工厂、单例、代理、模板 | Spring 核心组件对应模式、设计原则落地 |
-| [SpringMVC](#springmvc-处理流程doDispatch-源码级) | DispatcherServlet 调度链、doDispatch | 参数解析、返回值处理、异常处理 |
+| [SpringMVC](#springmvc-处理流程dodispatch-源码级) | DispatcherServlet 调度链、doDispatch | 参数解析、返回值处理、异常处理 |
 
 Spring 问题通常会沿“容器启动 → Bean 创建 → 代理生成 → 方法调用”连续追问，应保持时间顺序清晰。
 
@@ -140,7 +140,7 @@ public void refresh() throws BeansException {
 - 为什么 AOP 代理创建器要在第 6 步就注册？→ 它必须在任何业务 Bean 创建之前就位，否则先创建的 Bean 会错过代理时机
 - refresh() 失败会怎样？→ catch 中 `destroyBeans()` 销毁已创建单例并取消刷新，这就是启动报错时看到"应用上下文关闭"日志的原因
 
-**通用概念**：refresh() 是**模板方法模式**的教科书实现——父类定死骨架顺序，`postProcessBeanFactory`/`onRefresh` 留空给子类扩展。同一模式：Servlet 容器的生命周期回调、[JVM](JVM.md) 类加载器的 loadClass 骨架（双亲委派也是模板方法）。
+**通用概念**：refresh() 是**模板方法模式**的教科书实现——父类定死骨架顺序，`postProcessBeanFactory`/`onRefresh` 留空给子类扩展。同一模式：Servlet 容器的生命周期回调、[JVM](../Java/JVM.md) 类加载器的 loadClass 骨架（双亲委派也是模板方法）。
 
 ### @Autowired 是怎么完成注入的？
 
@@ -188,7 +188,7 @@ public PropertyValues postProcessProperties(PropertyValues pvs, Object bean, Str
 - byType 找到多个候选又没有 @Primary 会怎样？→ 尝试按字段名匹配 beanName，仍无法唯一则抛 `NoUniqueBeanDefinitionException`
 - static 字段能注入吗？→ 不能，`buildAutowiringMetadata` 里显式跳过 static 成员（类级状态不该绑定到单个实例）
 
-**通用概念**：注入的本质是**依赖解析 + 反射赋值**，"先收集元数据并缓存、再统一执行"的两段式也是通用优化模式——对照 [MyBatis](MyBatis.md) 启动时解析 XML 缓存 MappedStatement、[JVM](JVM.md) JIT 先 profile 再编译。
+**通用概念**：注入的本质是**依赖解析 + 反射赋值**，"先收集元数据并缓存、再统一执行"的两段式也是通用优化模式——对照 [MyBatis](MyBatis.md) 启动时解析 XML 缓存 MappedStatement、[JVM](../Java/JVM.md) JIT 先 profile 再编译。
 
 ---
 
@@ -542,7 +542,7 @@ listener.onApplicationEvent(event)
 
 ## 十、SpringMVC
 
-Servlet、Tomcat、Nginx 和完整 Web 请求链见 [Web容器与Nginx](Web容器与Nginx.md)。
+Servlet、Tomcat、Nginx 和完整 Web 请求链见 [Web容器与Nginx](../工程实践/Web容器与Nginx.md)。
 
 ### SpringMVC 处理流程？（doDispatch 源码级）
 

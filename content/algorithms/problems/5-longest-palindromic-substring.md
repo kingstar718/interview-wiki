@@ -79,5 +79,5 @@ private void expand(String s, int l, int r) {
 
 - 同套路：[647. 回文子串](https://leetcode.cn/problems/palindromic-substrings/) —— 计数版
 - 进阶：[1143. 最长公共子序列](1143-longest-common-subsequence.md) —— 子序列类 DP
-- 知识点：中心扩展法 vs DP 见[动态规划](动态规划与贪心.md)
+- 知识点：中心扩展法 vs DP 见[动态规划](../动态规划与贪心.md)
 

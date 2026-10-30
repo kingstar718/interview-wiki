@@ -75,4 +75,4 @@ public int combinationSum4(int[] nums, int target) {
 
 - 同套路：[518. 零钱兑换 II](518-coin-change-ii.md) —— 组合数（内外层交换）
 - 进阶：[322. 零钱兑换](322-coin-change.md) —— 最少硬币数
-- 知识点：完全背包排列 vs 组合见[动态规划](动态规划与贪心.md)
+- 知识点：完全背包排列 vs 组合见[动态规划](../动态规划与贪心.md)

@@ -70,5 +70,5 @@ public int eraseOverlapIntervals(int[][] intervals) {
 
 - 同套路：[56. 合并区间](https://leetcode.cn/problems/merge-intervals/) —— 区间排序类
 - 进阶：[763. 划分字母区间](763-partition-labels.md) —— 同为区间贪心
-- 知识点：区间贪心的"最早结束优先"模板见[贪心](动态规划与贪心.md)
+- 知识点：区间贪心的"最早结束优先"模板见[贪心](../动态规划与贪心.md)
 

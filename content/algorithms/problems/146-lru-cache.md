@@ -93,12 +93,12 @@ class LRUCache {
 ## 面试追问
 
 - **为什么是哈希表+双向链表，单向链表行不行？** 摘除任意结点需要前驱，单向链表找前驱 O(n)；双向链表让"摘除"自身 O(1)
-- **JDK 里有现成的吗？** `LinkedHashMap` 开 accessOrder 就是 LRU 链，`removeEldestEntry` 钩子控制淘汰，见[集合框架](集合框架.md)
-- **Redis 的 LRU 是这么实现的吗？** 不是，Redis 用**近似 LRU**（随机采样淘汰最旧），全量链表内存开销太大，见[Redis](Redis.md)内存淘汰策略
+- **JDK 里有现成的吗？** `LinkedHashMap` 开 accessOrder 就是 LRU 链，`removeEldestEntry` 钩子控制淘汰，见[集合框架](../../interview/Java/集合框架.md)
+- **Redis 的 LRU 是这么实现的吗？** 不是，Redis 用**近似 LRU**（随机采样淘汰最旧），全量链表内存开销太大，见[Redis](../../interview/数据库/Redis.md)内存淘汰策略
 
 ## 关联题
 
 - 进阶：[460. LFU 缓存](460-lfu-cache.md) —— 按频率淘汰，双哈希 + 频率桶链表
 - 同套路：[380. O(1) 时间插入删除和获取随机元素](380-insert-delete-getrandom-o1.md) —— 同为"组合基础结构凑出全 O(1)"
-- 知识点：[Redis](Redis.md)内存淘汰(allkeys-lru 近似采样)、[集合框架](集合框架.md) LinkedHashMap
+- 知识点：[Redis](../../interview/数据库/Redis.md)内存淘汰(allkeys-lru 近似采样)、[集合框架](../../interview/Java/集合框架.md) LinkedHashMap
 

@@ -87,4 +87,4 @@ private void backtrack(int[] nums, int start, List<Integer> path, List<List<Inte
 
 - 同套路：[90. 子集 II](90-subsets-ii.md) —— 排序去重法（对比学习）
 - 进阶：[47. 全排列 II](47-permutations-ii.md) —— 排列去重（`used[]` 数组法）
-- 知识点：回溯去重三种方法见[回溯](回溯.md)
+- 知识点：回溯去重三种方法见[回溯](../回溯.md)

@@ -26,7 +26,7 @@ import re
 import sys
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-from slug import slugify  # 与 Quartz 同源的 github-slugger 规则
+from slug import slugify
 from outline import parse_headings  # 跳过围栏代码块提取标题
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -116,8 +116,8 @@ def parse_notes(strict=True):
 
 def link(note, section=None):
     if section is None:
-        return f"[{note['title']}]({note['name']})"
-    return f"[{note['title']} · {section}]({note['name']}#{slugify(section)})"
+        return f"[{note['title']}](软考系统架构师/{note['name']})"
+    return f"[{note['title']} · {section}](软考系统架构师/{note['name']}#{slugify(section)})"
 
 
 def render(notes):

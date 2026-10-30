@@ -110,7 +110,7 @@ chooser = new DefaultChooser  ← 选择策略，新 Channel 绑定到哪个 Eve
 
 1. **线程与 EventLoop 一对一**：每个 `NioEventLoop` 构造函数里创建一个 `FastThreadLocalThread`，启动后不断执行 `run()` 循环：`select()` → `processSelectedKeys()` → `runAllTasks()`。线程一旦绑定 EventLoop 就不分裂，直到 EventLoopGroup 关闭。
 
-2. **Channel 绑定一次**：`bossGroup.register(channel)` 将一个 Channel 注册到某个 EventLoop 后，该 Channel 的**所有 IO 事件都由这一个 EventLoop 的线程串行处理**——这是 Netty 减少锁竞争的核心手段（见 [并发编程](并发编程.md) 中线程封闭原则）。
+2. **Channel 绑定一次**：`bossGroup.register(channel)` 将一个 Channel 注册到某个 EventLoop 后，该 Channel 的**所有 IO 事件都由这一个 EventLoop 的线程串行处理**——这是 Netty 减少锁竞争的核心手段（见 [并发编程](../Java/并发编程.md) 中线程封闭原则）。
 
 3. **chooser 选择策略**：默认 `DefaultChooser` 用 `++idx` 取模轮询；`PowerOfTwoChooser`（可选）在 EventLoop 数量为 2 的幂时用 `idx & (n-1)` 代替取模。实测性能差异很小，Netty 4.x 默认已统一为 `GenericChooser`。
 
@@ -169,7 +169,7 @@ chooser = new DefaultChooser  ← 选择策略，新 Channel 绑定到哪个 Eve
 
 **为什么每线程绑定一个 Arena（还要顺带内存对齐/规格化到 2 的幂次）**：多线程如果共用同一个 Arena 分配内存，Chunk 上的满二叉树是共享数据结构，并发分配需要加锁；每线程绑定各自的 Arena 后，**大部分分配都发生在线程私有的 Arena 上，无需跨线程同步**，只有 Arena 数量少于线程数时才会出现竞争（此时靠 `PoolThreadCache` 做一层线程本地小对象缓存进一步减少 Arena 层面的争抢）。
 
-**通用概念**：这套"大块内存预先申请、内部再分级切分复用"的思路，和 [JVM Buffer Pool](JVM.md) 的 16KB 页缓存、[MySQL 的 Buffer Pool](MySQL.md) 是**同一模式**——都是用户态/应用层维护一份池子来摊薄操作系统级资源（内存页、系统调用）的申请开销；线程私有 Arena 减少竞争的思路也和线程池 `ConcurrentBag` 优先复用本线程连接（见[MySQL 连接池](MySQL.md)）同源：**把共享资源尽量拆分到线程本地，只在拆分不掉时才同步**。
+**通用概念**：这套"大块内存预先申请、内部再分级切分复用"的思路，和 [JVM Buffer Pool](../Java/JVM.md) 的 16KB 页缓存、[MySQL 的 Buffer Pool](../数据库/MySQL.md) 是**同一模式**——都是用户态/应用层维护一份池子来摊薄操作系统级资源（内存页、系统调用）的申请开销；线程私有 Arena 减少竞争的思路也和线程池 `ConcurrentBag` 优先复用本线程连接（见[MySQL 连接池](../数据库/MySQL.md)）同源：**把共享资源尽量拆分到线程本地，只在拆分不掉时才同步**。
 
 **常见追问**
 - 池化 ByteBuf 用完不 release 会怎样？→ 引用计数归零前不会归还给 Arena，直接内存持续增长直至 `Direct buffer memory` OOM——这是本节第 2 点内存泄漏的具体后果，池化不解决"忘记 release"的问题，反而因为直接内存不受 GC 管理，问题更隐蔽。
@@ -198,7 +198,7 @@ chooser = new DefaultChooser  ← 选择策略，新 Channel 绑定到哪个 Eve
 
 面试官问"零拷贝"首先要分 OS 层和 Netty 层两层面答，不能混为一谈。OS 层答 `sendfile` 减少内核态→用户态复制，Netty 层答上面四种机制。追问"Netty 传文件怎么做"→ `FileRegion` + `DefaultFileRegion`；追问"零拷贝一定更快吗"→ 小文件场景 `wrappedBuffer` 零拷贝优势不明显，因为用户态 Copy 本身开销小于系统调用。
 
-**通用概念**：零拷贝的核心思维是**消除不必要的内存副本**，同样的思路出现在 Kafka 的 `transferTo` 消费日志、[RocketMQ](消息队列.md) 的 mmap 写 CommitLog、以及 [MySQL](MySQL.md) 的 Doublewrite Buffer 选择直接写而非先缓存再刷——都是在"数据路径上加副本 vs 不加副本的风险"之间做权衡。
+**通用概念**：零拷贝的核心思维是**消除不必要的内存副本**，同样的思路出现在 Kafka 的 `transferTo` 消费日志、[RocketMQ](../中间件/消息队列.md) 的 mmap 写 CommitLog、以及 [MySQL](../数据库/MySQL.md) 的 Doublewrite Buffer 选择直接写而非先缓存再刷——都是在"数据路径上加副本 vs 不加副本的风险"之间做权衡。
 
 ---
 

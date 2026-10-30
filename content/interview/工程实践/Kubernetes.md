@@ -16,7 +16,7 @@
 | [发布](#如何做到-kubernetes-应用无损发布) | readiness、preStop、优雅停机、PDB | 滚动参数、数据库兼容 |
 | [排障](#pod-异常时如何建立排障顺序) | Events、状态、日志、资源、网络 | Pending、OOMKilled、流量不通 |
 
-容器镜像、JVM 容器内存和 CI/CD 入门见[Linux与工程化](Linux与工程化.md)；服务网格见[系统设计](系统设计.md)。
+容器镜像、JVM 容器内存和 CI/CD 入门见[Linux与工程化](Linux与工程化.md)；服务网格见[系统设计](../分布式与架构/系统设计.md)。
 
 ---
 
@@ -93,7 +93,7 @@ Pod 是可替换对象，不应把本地文件系统当作可靠持久化。容�
 - `Burstable`：至少配置了某项 request/limit，但不满足 Guaranteed。
 - `BestEffort`：未配置 request/limit，最先被驱逐。
 
-JVM 的 `-Xmx` 不能等于容器 memory limit，还要给 Metaspace、线程栈、直接内存和 native 库留空间。退出码 137 和 OOMKilled 的排查见[操作系统](操作系统.md)。
+JVM 的 `-Xmx` 不能等于容器 memory limit，还要给 Metaspace、线程栈、直接内存和 native 库留空间。退出码 137 和 OOMKilled 的排查见[操作系统](../计算机基础/操作系统.md)。
 
 ### CPU limit 为什么会让延迟抖动？
 

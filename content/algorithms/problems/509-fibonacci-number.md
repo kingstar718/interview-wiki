@@ -71,4 +71,4 @@ public int fib(int n) {
 
 - 同套路：[70. 爬楼梯](70-climbing-stairs.md) —— 同款递推，初始值不同
 - 进阶：[746. 使用最小花费爬楼梯](746-min-cost-climbing-stairs.md) —— 带 cost 的变式
-- 知识点：DP 入门 + 滚动变量优化见[动态规划](动态规划与贪心.md)
+- 知识点：DP 入门 + 滚动变量优化见[动态规划](../动态规划与贪心.md)

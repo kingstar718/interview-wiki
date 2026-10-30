@@ -107,5 +107,5 @@ public double findMedianSortedArrays(int[] nums1, int[] nums2) {
 
 - 同套路：[33. 搜索旋转排序数组](33-search-in-rotated-sorted-array.md) —— 二分在复杂有序场景的泛化
 - 进阶：[295. 数据流的中位数](295-find-median-from-data-stream.md) —— 动态数据的中位数，堆解法
-- 知识点：[二分查找](二分查找.md)边界模板；算法笔记：第 k 小元素通用解法
+- 知识点：[二分查找](../二分查找.md)边界模板；算法笔记：第 k 小元素通用解法
 

@@ -708,10 +708,10 @@ private class LazyIterator implements Iterator<S> {
 
 **常见追问**：
 - JDBC 4.0 之后为什么不用写 `Class.forName` 了？→ DriverManager 静态初始化时用 ServiceLoader 自动发现驱动；之前的 Class.forName 是靠驱动类静态块里 `registerDriver` 完成注册
-- Spring Boot 自动配置和 SPI 是什么关系？→ 思想同源："配置文件登记 + 反射加载"，只是文件换成 `spring.factories`（2.7+ 为 `AutoConfiguration.imports`），加载器换成 SpringFactoriesLoader，还叠加了条件注解按需生效，见[SpringBoot](SpringBoot.md)自动配置原理
+- Spring Boot 自动配置和 SPI 是什么关系？→ 思想同源："配置文件登记 + 反射加载"，只是文件换成 `spring.factories`（2.7+ 为 `AutoConfiguration.imports`），加载器换成 SpringFactoriesLoader，还叠加了条件注解按需生效，见[SpringBoot](../框架/SpringBoot.md)自动配置原理
 - ServiceLoader 线程安全吗？→ 不安全（Javadoc 明确标注），providers 缓存无同步，多线程共享要外部加锁
 
-**通用概念**：SPI 是**控制反转在"发现实现"环节的形态**——使用方不 new 具体实现，由约定/容器反向提供。同一模式：Spring IoC（见[Spring](Spring.md)）、SLF4J 日志门面找绑定、K8s 的 CNI/CSI 插件机制。
+**通用概念**：SPI 是**控制反转在"发现实现"环节的形态**——使用方不 new 具体实现，由约定/容器反向提供。同一模式：Spring IoC（见[Spring](../框架/Spring.md)）、SLF4J 日志门面找绑定、K8s 的 CNI/CSI 插件机制。
 
 ---
 
@@ -933,7 +933,7 @@ cf1.thenCombine(cf2, (r1, r2) -> r1 + r2)
 **常见追问**
 - NIO 的"非阻塞"到底哪里非阻塞？→ read 不再等数据：没数据立即返回 0；"等就绪"这件事由 Selector 统一阻塞在 `select()` 上完成。所以 NIO 是"读写非阻塞 + 等待集中化"，不是没有阻塞。
 - 为什么 Java AIO 没流行？→ Linux 上的实现用 epoll 模拟、并非内核真异步（io_uring 才是），相比 Netty 式 NIO 没有实际收益；Windows 的 IOCP 是真异步但服务器不跑 Windows。
-- select/poll/epoll 的区别？→ 属于操作系统考点，见[操作系统](操作系统.md)"select/poll/epoll 区别"。
+- select/poll/epoll 的区别？→ 属于操作系统考点，见[操作系统](../计算机基础/操作系统.md)"select/poll/epoll 区别"。
 
 ---
 
@@ -952,7 +952,7 @@ Channel 注册到 Selector → Selector 轮询就绪事件 → 处理就绪的 C
 
 **实际应用：** Netty 底层基于 NIO Selector + epoll 实现高并发网络通信
 
-相关深挖：零拷贝（`FileChannel.transferTo` / sendfile）见[操作系统](操作系统.md)"零拷贝"；半包粘包与拆包器见[Netty与RPC](Netty与RPC.md)"TCP 粘包/拆包如何解决？"。
+相关深挖：零拷贝（`FileChannel.transferTo` / sendfile）见[操作系统](../计算机基础/操作系统.md)"零拷贝"；半包粘包与拆包器见[Netty与RPC](../框架/Netty与RPC.md)"TCP 粘包/拆包如何解决？"。
 
 **常见追问**
 - Buffer 的 flip() 做了什么？→ 写模式切换到读模式：`limit = position`（标记数据截止位置），`position = 0`（从头读），`mark = -1`。配套的 `clear()` 是读切回写（position=0，limit=capacity），`compact()` 是把未读数据移到开头继续写

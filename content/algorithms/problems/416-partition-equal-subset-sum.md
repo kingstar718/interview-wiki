@@ -75,5 +75,5 @@ public boolean canPartition(int[] nums) {
 
 - 同套路：[494. 目标和](https://leetcode.cn/problems/target-sum/) —— 0-1 背包计数
 - 进阶：[322. 零钱兑换](322-coin-change.md) —— 完全背包最值
-- 知识点：0-1 背包模板见[动态规划](动态规划与贪心.md)
+- 知识点：0-1 背包模板见[动态规划](../动态规划与贪心.md)
 

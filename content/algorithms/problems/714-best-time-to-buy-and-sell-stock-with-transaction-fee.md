@@ -60,5 +60,5 @@ public int maxProfit(int[] prices, int fee) {
 
 - 同套路：[122. 买卖股票 II](122-best-time-to-buy-and-sell-stock-ii.md) —— 无手续费
 - 进阶：[188. 买卖股票 IV](188-best-time-to-buy-and-sell-stock-iv.md) —— 限次数
-- 知识点：状态机 DP 模板见[动态规划](动态规划与贪心.md)
+- 知识点：状态机 DP 模板见[动态规划](../动态规划与贪心.md)
 

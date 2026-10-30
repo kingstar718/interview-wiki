@@ -86,5 +86,5 @@ public boolean isMatch(String s, String p) {
 
 - 同套路：[44. 通配符匹配](https://leetcode.cn/problems/wildcard-matching/) —— 更简单的匹配规则
 - 进阶：[72. 编辑距离](72-edit-distance.md) —— 字符串编辑类 DP
-- 知识点：字符串匹配 DP 模式见[动态规划](动态规划与贪心.md)
+- 知识点：字符串匹配 DP 模式见[动态规划](../动态规划与贪心.md)
 

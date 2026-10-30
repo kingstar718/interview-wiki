@@ -82,4 +82,4 @@ public int majorityElement(int[] nums) {
 
 - 同套路：[229. 求众数 II](https://leetcode.cn/problems/majority-element-ii/) —— 超过 n/3 的众数，两个候选加验证
 - 进阶：1157. 子数组中占绝大多数的元素 —— 线段树维护区间众数，摩尔投票可合并
-- 知识点：摩尔投票——配对抵消思想，见[数组与字符串](数组与字符串.md)
+- 知识点：摩尔投票——配对抵消思想，见[数组与字符串](../数组与字符串.md)

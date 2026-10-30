@@ -1,0 +1,42 @@
+site_name: Interview Wiki
+site_description: Java 后端面试、算法、英语、AI 提效与软考学习知识库
+site_url: https://wiki.wujinxing.site
+repo_url: https://github.com/kingstar718/interview-wiki
+repo_name: kingstar718/interview-wiki
+
+docs_dir: content
+site_dir: public
+use_directory_urls: true
+strict: true
+
+theme:
+  name: material
+  language: zh
+  features:
+    - navigation.top
+    - navigation.tracking
+    - search.highlight
+    - search.suggest
+    - content.code.copy
+
+plugins:
+  - search:
+      lang: zh
+
+markdown_extensions:
+  - tables
+  - toc:
+      permalink: true
+      slugify: !!python/name:scripts.slug.slugify
+  - pymdownx.highlight:
+      anchor_linenums: true
+  - pymdownx.inlinehilite
+  - pymdownx.superfences
+  - pymdownx.tasklist:
+      custom_checkbox: true
+
+exclude_docs: |
+  .obsidian/
+  templates/
+  private/
+  practice/

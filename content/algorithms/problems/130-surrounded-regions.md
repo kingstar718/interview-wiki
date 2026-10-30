@@ -100,4 +100,4 @@ private void dfs(char[][] board, int i, int j) {
 
 - 同套路：[200. 岛屿数量](200-number-of-islands.md) —— 沉没岛屿
 - 进阶：[1020. 飞地的数量](1020-number-of-enclaves.md) —— 统计被包围数量
-- 知识点：逆向思维 + 边界出发 DFS 见[图](图论.md)
+- 知识点：逆向思维 + 边界出发 DFS 见[图](../图论.md)

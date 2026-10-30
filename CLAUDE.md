@@ -1,18 +1,15 @@
 # CLAUDE.md — interview-wiki
 
-本项目是「后端工程师面大厂」知识库,使用 [Quartz 5](https://quartz.jzhao.xyz/) 静态生成。
-Markdown 即内容(`content/`),`npx quartz build` 产出 `public/` 静态站点。
+本项目是「后端工程师面大厂」知识库，使用 Zensical 静态生成。
+Markdown 即内容（`content/`），`python -m zensical build` 产出 `public/` 静态站点。
 
 ## 目录结构
 
 ```text
 interview-wiki/
-├── quartz/              # Quartz 框架源码(vendor 自 jackyzha0/quartz v4 分支,勿随意改)
-├── quartz.config.yaml   # 站点配置(插件/主题/baseUrl,中文站点设置在此)
-├── quartz.ts            # Explorer sortFn/mapFn 覆盖(分类排序表在此,新增篇目要登记;
-│                        #   函数会序列化到浏览器执行,排序表必须写在函数体内;
-│                        #   覆盖必须走 componentRegistry,不能 import .quartz/plugins,原因见文件内注释)
-├── content/             # 笔记源码(Quartz 渲染此目录)
+├── mkdocs.yml           # Zensical 兼容配置（主题、Markdown 扩展和输出目录）
+├── requirements.txt    # 固定 Zensical 版本
+├── content/             # 笔记源码（配置中的 docs_dir）
 │   ├── index.md           # 站点首页(不写篇数,手写计数必漂移)
 │   ├── 知识点索引.md      # 六大索引:知识点/算法题/英语学习/AI提效/软考系统架构师(均脚本生成)+高频题目(手写)
 │   ├── 算法题索引.md
@@ -37,8 +34,8 @@ interview-wiki/
 
 ```bash
 # 本地预览(改完 md 自动热重载)
-npm ci                      # 首次装依赖(Node ≥22)
-npx quartz build --serve    # http://localhost:8080
+python -m pip install -r requirements.txt
+python -m zensical serve   # http://127.0.0.1:8000
 
 # 内容定位(改前先跑,不用通读千行文件)
 python3 scripts/outline.py Redis           # 打印专题标题树+行号
@@ -79,7 +76,7 @@ python3 scripts/check_index.py    # 18 项校验;Windows GBK 终端需加环境�
    - `outline.py <文件>` 看标题树+行号，决定插入位置
    - 做查漏补缺前先 Web 搜索多来源高频题单（JavaGuide/小林coding/掘金），确认考点确实高频后再动手
    - 小节结构、写作模板、整合规范见 [CONTRIBUTING.md](./CONTRIBUTING.md)（是什么 → 为什么 → 源码⭕ → 对比⭕ → 常见追问 → 通用概念⭕）
-3. **同步**:正文写完后同步追问地图行、相关篇目互链;`知识点索引.md` 由 `scripts/gen_index.py` 从各篇目 H3 自动生成(真实标题 + github-slugger 锚点),改完跑脚本刷新,勿手编。新增篇目还要在 `quartz.ts` 的 Explorer 排序表(ORDER)登记位置,注意表里登记的是**页面 H1 标题**而非文件名。
+3. **同步**:正文写完后同步追问地图行、相关篇目链接；`知识点索引.md` 由 `scripts/gen_index.py` 从各篇目 H3 自动生成，改完跑脚本刷新，勿手编。新增篇目的学习顺序在 `scripts/gen_index.py` 的 `FILE_ORDER` 登记。
 4. **收尾**:跑 `python3 scripts/gen_index.py` 刷新知识点索引 → `python3 scripts/gen_topics.py` 刷新算法题索引 → `python3 scripts/check_index.py`;完成项移到 TODO.md「已完成」并附 commit 短哈希。
 
 ### 操作技巧
@@ -118,24 +115,18 @@ python3 scripts/check_index.py    # 18 项校验;Windows GBK 终端需加环境�
   - 算法题(固定小节,顺序不变):题目 → 思路 → 代码 → 复杂度 → 边界条件 → 变式 → 易错点 → 面试追问 → 关联题;H1 为`题号. 中文题名(English Title)`,元数据行必填且为难度/频次/公司的权威源(细则见 CONTRIBUTING.md)
   - 知识点:是什么 → 为什么这么设计 → 源码⭕ → 对比同类⭕ → 常见追问 → 通用概念⭕(细则见 CONTRIBUTING.md)
 
-## 链接约定(Quartz shortest 语义)
+## 链接约定（标准 Markdown）
 
-Quartz 的 `CrawlLinks` 配置为 `markdownLinkResolution: "shortest"`(Obsidian 同款),
-链接**按文件名全库唯一匹配**,不按相对路径:
-
-- **首选纯文件名**:`[JVM](JVM.md)`、`[MySQL](MySQL.md#索引)` —— 无论源文件在哪个目录都能解析;带 `#锚点` 跳到具体小节,锚点由 github-slugger 规则生成(小写+删标点+空格转-,见 `scripts/slug.py`),`check_index.py` 校验项 M 拦锚点死链
-- **双链可用**:`[[JVM]]`、`[[MySQL#索引|MySQL 索引]]`(ObsidianFlavoredMarkdown 已启用),与标准链接等价,都计入反链/图谱
-- **文件名不唯一时写 content 根全路径**:目前全库文件名唯一(`index.md` 除外),没有需要写全路径的页面;将来若出现同名文件,链接必须写 `[x](interview/Java/JVM.md)` 这样的 content 根全路径
-- **禁止相对路径多段链接**(`../interview/JVM.md`、`problems/1-two-sum.md`):Quartz 会把多段路径当作从 content 根出发解析,相对写法必死链。`check_index.py` 检查项 A 会拦截
-- 代码块/行内代码里的 `[[...]]` 不会被转换,不算链接
-- **URL 只小写 ASCII,中文原样保留**:`AI提效/LLM应用开发.md` → `/ai提效/llm应用开发`。写 md 链接时不用管大小写(按文件名匹配),但**手写外链/分享链接要用小写形式**;`public/` 下同时存在 `AI提效/` 目录是 Quartz 自动生成的 289 字节跳转桩(`<meta http-equiv="refresh">`),不是重复内容,别手删
-- **侧栏中文目录名 ≠ 真实路径**:`interview`/`algorithms`/`problems` 是真实英文目录名,侧栏显示的「面试专题/算法题/题库」来自 `quartz.ts` 的 Explorer `mapFn` 改名表,只影响显示,链接和 URL 仍用英文名
+- 站内链接一律从当前文件所在目录写相对路径，例如同目录用 `[JVM](JVM.md)`，跨目录用 `[MySQL](../数据库/MySQL.md)`。
+- 带 `#锚点` 可跳到具体小节；`check_index.py` 的 A/M 项分别检查文件和锚点。
+- 不使用 `[[双链]]`、根目录假路径或渲染器专属链接语法。
+- 文件名继续作为稳定语义 ID；标题和路径发布后不要随意修改。
 
 ## 命名与索引约定(AI 快速定位/校验/修改)
 
-- **权威源**:`interview/<分类>/` 目录结构是分类的唯一权威源(Explorer 侧栏直接反映目录树);`知识点索引.md`(由 `scripts/gen_index.py` 从各篇目真实 H3 + github-slugger 锚点自动生成,勿手编)底部「专题文件清单」等是它的「视图」,改分类先移动文件,再同步视图。
- - **文件名 = 稳定语义 ID**:`interview/` 下用语义名(`MySQL.md`、`集合框架.md`),**禁止位置型数字前缀**(`01-`);顺序在 `quartz.ts` 的 Explorer 排序表里表达,不编进文件名。
-- **文件名全库唯一**(README.md/index.md 除外):纯文件名链接方案的前提,新文件重名会被校验 B 拦截。
+- **权威源**:`interview/<分类>/` 目录结构是分类的唯一权威源；`知识点索引.md`（由 `scripts/gen_index.py` 自动生成）底部「专题文件清单」是它的视图。
+- **文件名 = 稳定语义 ID**:`interview/` 下用语义名（`MySQL.md`、`集合框架.md`），禁止位置型数字前缀；学习顺序在 `scripts/gen_index.py` 的 `FILE_ORDER` 表达。
+- **文件名全库唯一**（README.md/index.md 除外），新文件重名会被校验 B 拦截。
 - **例外**:`algorithms/problems/` 下的题号(`1-two-sum.md`)是稳定 ID,允许保留;`algorithms/` 下的套路页(`双指针与滑动窗口.md`)是语义名,同 `interview/` 命名规则,新增套路直接语义命名,不用数字序号。
 - **算法套路节点在 `algorithms/`**:题解用两级 frontmatter 声明归属 —— `topics:`(粗套路,决定归入哪个套路,校验 F)+ `techniques:`(细技术词,决定落到 `算法题索引.md` 里哪个分组,校验 S)。词表权威源是**套路页自己的 frontmatter `techniques:`**,各页并集即全局词表,同一个词可被多页声明。题解按套路→技术词的反向分组视图整篇生成在 `算法题索引.md`(`gen_topics.py`)。细则见 CONTRIBUTING.md。
 - 改完跑 `python3 scripts/check_index.py`,校验死链/文件名唯一/命名/文件集/分类一致/题解归属/关系类型/技术词表。

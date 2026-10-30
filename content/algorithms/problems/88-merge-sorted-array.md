@@ -75,5 +75,5 @@ public void merge(int[] nums1, int m, int[] nums2, int n) {
 
 - 同套路：[21. 合并两个有序链表](21-merge-two-sorted-lists.md) —— 链表版；[23. 合并K个排序链表](23-merge-k-sorted-lists.md) —— K 路版
 - 易混：数组必须**从后往前**写避免覆盖，链表改指针则无此约束——被追问"为什么倒着来"要能答出这层
-- 知识点：本题就是归并排序的 merge 步骤，见[数据结构与算法](数据结构与算法.md)
+- 知识点：本题就是归并排序的 merge 步骤，见[数据结构与算法](../../interview/计算机基础/数据结构与算法.md)
 

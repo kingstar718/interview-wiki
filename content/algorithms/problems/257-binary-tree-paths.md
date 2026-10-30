@@ -85,4 +85,4 @@ private void dfs(TreeNode node, StringBuilder sb, List<String> res) {
 
 - 同套路：[113. 路径总和 II](113-path-sum-ii.md) —— 同样是收集所有根到叶子的路径，但按和过滤
 - 进阶：[112. 路径总和](112-path-sum.md) —— 只判断是否存在，不需要收集路径
-- 知识点：回溯模板（选择 → 递归 → 撤销）见[二叉树](二叉树.md)
+- 知识点：回溯模板（选择 → 递归 → 撤销）见[二叉树](../二叉树.md)

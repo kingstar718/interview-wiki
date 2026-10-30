@@ -95,4 +95,4 @@ public int widthOfBinaryTree(TreeNode root) {
 
 - 同套路：[102. 二叉树的层序遍历](102-binary-tree-level-order-traversal.md) —— BFS 层序模板
 - 进阶：[958. 二叉树的完全性检验](958-check-completeness-of-a-binary-tree.md) —— 同类下标编号的应用
-- 知识点：BFS 层序框架见[二叉树](二叉树.md)
+- 知识点：BFS 层序框架见[二叉树](../二叉树.md)

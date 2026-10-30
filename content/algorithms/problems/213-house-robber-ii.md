@@ -75,5 +75,5 @@ private int robRange(int[] nums, int l, int r) {
 
 - 同套路：[198. 打家劫舍](198-house-robber.md) —— 线性版
 - 进阶：[300. 最长递增子序列](300-longest-increasing-subsequence.md) —— 另一种递推模式
-- 知识点："环形转线性"的通用技巧见[动态规划](动态规划与贪心.md)
+- 知识点："环形转线性"的通用技巧见[动态规划](../动态规划与贪心.md)
 

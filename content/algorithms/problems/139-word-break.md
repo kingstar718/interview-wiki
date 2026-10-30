@@ -75,5 +75,5 @@ public boolean wordBreak(String s, List<String> wordDict) {
 
 - 同套路：[140. 单词拆分 II](https://leetcode.cn/problems/word-break-ii/) —— 输出方案
 - 进阶：[300. 最长递增子序列](300-longest-increasing-subsequence.md) —— 另一类子序列 DP
-- 知识点：一维 DP + 哈希集加速见[动态规划](动态规划与贪心.md)
+- 知识点：一维 DP + 哈希集加速见[动态规划](../动态规划与贪心.md)
 

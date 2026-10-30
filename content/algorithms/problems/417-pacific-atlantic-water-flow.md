@@ -102,5 +102,5 @@ private void dfs(int[][] h, boolean[][] reach, int i, int j) {
 
 - 同套路：[200. 岛屿数量](200-number-of-islands.md) —— 网格 DFS
 - 进阶：[787. K 站中转内最便宜的航班](787-cheapest-flights-within-k-stops.md) —— 从网格图到加权图
-- 知识点：反向思维在算法中的应用见[图](图论.md)
+- 知识点：反向思维在算法中的应用见[图](../图论.md)
 

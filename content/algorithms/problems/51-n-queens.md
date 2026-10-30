@@ -93,5 +93,5 @@ private void backtrack(int n, int row, boolean[] cols, boolean[] d1, boolean[] d
 
 - 同套路：[37. 解数独](37-sudoku-solver.md) —— 更复杂的棋盘约束回溯
 - 进阶：[46. 全排列](46-permutations.md) —— 另一种"每层可选列表"的回溯
-- 知识点：对角线公式、棋盘回溯模板见[回溯](回溯.md)
+- 知识点：对角线公式、棋盘回溯模板见[回溯](../回溯.md)
 

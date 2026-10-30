@@ -89,4 +89,4 @@ public boolean searchMatrix(int[][] matrix, int target) {
 
 - 基础：[74. 搜索二维矩阵](74-search-a-2d-matrix.md) —— 全局有序版本的二分搜索
 - 同套路：[4. 寻找两个正序数组的中位数](4-median-of-two-sorted-arrays.md) —— 分治排除不可能是答案的一半
-- 知识点：利用矩阵行/列有序性的排除法，见[数组与字符串](数组与字符串.md)
+- 知识点：利用矩阵行/列有序性的排除法，见[数组与字符串](../数组与字符串.md)

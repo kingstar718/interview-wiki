@@ -89,4 +89,4 @@ public void flatten(TreeNode root) {
 - 同套路：[226. 翻转二叉树](226-invert-binary-tree.md) —— 也是递归操作左右子树
 - 进阶：[109. 有序链表转换二叉搜索树](https://leetcode.cn/problems/convert-sorted-list-to-binary-search-tree/) —— 展开的逆过程
 - 易混：[199. 二叉树的右视图](199-binary-tree-right-side-view.md) —— 只看每层最右节点，不修改结构
-- 知识点：二叉树的递归遍历框架见[二叉树](二叉树.md)
+- 知识点：二叉树的递归遍历框架见[二叉树](../二叉树.md)

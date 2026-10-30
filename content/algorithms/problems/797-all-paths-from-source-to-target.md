@@ -80,5 +80,5 @@ private void dfs(int[][] graph, int cur, List<Integer> path, List<List<Integer>>
 
 - 同套路：[207. 课程表](207-course-schedule.md) —— DAG 上的拓扑遍历
 - 进阶：[787. K 站中转内最便宜的航班](787-cheapest-flights-within-k-stops.md) —— 带权约束的最短路径
-- 知识点：DFS + 回溯模板见[图](图论.md)
+- 知识点：DFS + 回溯模板见[图](../图论.md)
 

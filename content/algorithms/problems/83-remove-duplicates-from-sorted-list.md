@@ -79,4 +79,4 @@ public ListNode deleteDuplicates(ListNode head) {
 - 进阶：[82. 删除排序链表中的重复元素 II](82-remove-duplicates-from-sorted-list-ii.md) —— 重复项一个不留
 - 同套路：[26. 删除有序数组中的重复项](26-remove-duplicates.md) —— 数组版双指针去重
 - 易混：[203. 移除链表元素](https://leetcode.cn/problems/remove-linked-list-elements/) —— 按给定值删除，不是去重逻辑
-- 知识点：链表遍历与删除的标准模板，见[链表](链表.md)
+- 知识点：链表遍历与删除的标准模板，见[链表](../链表.md)

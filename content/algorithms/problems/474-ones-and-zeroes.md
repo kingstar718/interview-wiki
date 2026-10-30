@@ -81,4 +81,4 @@ public int findMaxForm(String[] strs, int m, int n) {
 
 - 同套路：[416. 分割等和子集](416-partition-equal-subset-sum.md) —— 一维 0-1 背包
 - 进阶：[494. 目标和](494-target-sum.md) —— 0-1 背包计数
-- 知识点：多维 0-1 背包见[动态规划](动态规划与贪心.md)
+- 知识点：多维 0-1 背包见[动态规划](../动态规划与贪心.md)

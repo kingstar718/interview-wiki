@@ -1,35 +1,28 @@
 # 部署指引
 
-站点由 [Quartz 4](https://quartz.jzhao.xyz/) 静态生成:`content/` 是笔记源码,
-`npx quartz build` 产出 `public/`(已 gitignore),把 `public/` 当静态站点托管即可。
+站点由 Zensical 静态生成：`content/` 是内容源，`python -m zensical build` 输出 `public/`。
 
-## Cloudflare Pages(当前方式)
+## Cloudflare Pages
 
-1. 仓库已在 Cloudflare Pages 关联 `main` 分支。
-2. 构建配置:build 命令 `npx quartz build`,输出目录 `public`,Node 22+。
-3. 自定义域名 `wiki.wujinxing.site` 在 Cloudflare 控制台配置。
+仓库关联 `main` 分支后，将构建配置设为：
 
-push `main` 后 CF Pages 自动拉取构建发布,无需本地操作。
-注意:校验脚本 `scripts/check_index.py` 不在 CF 构建中运行,改完在本地跑一遍(见 CLAUDE.md)。
+- 构建命令：`python -m pip install -r requirements.txt && python -m zensical build`
+- 构建输出目录：`public`
+- 根目录：仓库根目录
+- Python：`.python-version` 指定的版本
+
+自定义域名 `wiki.wujinxing.site` 继续在 Cloudflare 控制台管理。原来的 `npm run build` 必须改为上面的 Python 命令；迁移后不再安装 Node、Quartz 插件或 MkDocs Material。
+
+必须通过 `python -m zensical` 启动，而不是直接执行 `zensical`。前者会将仓库根目录加入 Python 模块搜索路径，以便配置加载 `scripts.slug.slugify`，保持既有中文锚点不变。
 
 ## 本地预览
 
 ```bash
-npm ci                      # 首次
-npx quartz build --serve    # http://localhost:8080,改 md 自动热重载
+python -m venv .venv
+.venv\Scripts\python -m pip install -r requirements.txt
+.venv\Scripts\python -m zensical serve
 ```
 
-## Vercel / Netlify
+## 其他静态托管
 
-连 Git 仓库 → build 命令 `npx quartz build` → 输出目录 `public` → Node 22+。
-
-## 自建 nginx
-
-先 `npx quartz build`,再把 `public/` 当静态根:
-
-```nginx
-location / {
-    root /path/to/interview-wiki/public;
-    try_files $uri $uri.html $uri/ =404;
-}
-```
+Vercel、Netlify 或自建 nginx 均执行相同构建命令，并将 `public/` 作为静态根目录。

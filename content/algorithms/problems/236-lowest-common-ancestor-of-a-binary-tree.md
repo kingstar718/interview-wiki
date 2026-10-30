@@ -72,5 +72,5 @@ public TreeNode lowestCommonAncestor(TreeNode root, TreeNode p, TreeNode q) {
 
 - 同套路：[235. BST 的最近公共祖先](https://leetcode.cn/problems/lowest-common-ancestor-of-a-binary-search-tree/) —— 利用顺序性质简化
 - 进阶：[98. 验证二叉搜索树](98-validate-binary-search-tree.md) —— 另一种"递归 + 返回值"的树形判断模式
-- 知识点：二叉树后序遍历的"回溯"模式见[二叉树](二叉树.md)
+- 知识点：二叉树后序遍历的"回溯"模式见[二叉树](../二叉树.md)
 

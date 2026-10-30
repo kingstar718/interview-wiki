@@ -84,4 +84,4 @@ public int monotoneIncreasingDigits(int n) {
 
 - 同套路：[402. 移掉 K 位数字](https://leetcode.cn/problems/remove-k-digits/) —— 贪心 + 单调栈
 - 进阶：[670. 最大交换](https://leetcode.cn/problems/maximum-swap/) —— 交换变体
-- 知识点：数字位贪心模板见[贪心](动态规划与贪心.md)
+- 知识点：数字位贪心模板见[贪心](../动态规划与贪心.md)

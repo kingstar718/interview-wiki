@@ -73,5 +73,5 @@ class KthLargest {
 
 - 同套路：[215. 数组中的第 K 大](215-kth-largest-element-in-an-array.md) —— 静态版
 - 进阶：[295. 数据流的中位数](295-find-median-from-data-stream.md) —— 双堆
-- 知识点：堆的数据流 Top K 模板见[堆与优先队列](排序与堆.md)
+- 知识点：堆的数据流 Top K 模板见[堆与优先队列](../排序与堆.md)
 

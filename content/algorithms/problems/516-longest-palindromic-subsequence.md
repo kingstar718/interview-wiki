@@ -82,4 +82,4 @@ public int longestPalindromeSubseq(String s) {
 
 - 同套路：[5. 最长回文子串](5-longest-palindromic-substring.md) —— 连续版
 - 进阶：[647. 回文子串](647-palindromic-substrings.md) —— 计数版
-- 知识点：子序列 DP + 区间 DP 见[动态规划](动态规划与贪心.md)
+- 知识点：子序列 DP + 区间 DP 见[动态规划](../动态规划与贪心.md)

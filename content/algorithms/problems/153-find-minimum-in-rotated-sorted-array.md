@@ -78,5 +78,5 @@ public int findMin(int[] nums) {
 
 - 同套路：[33. 搜索旋转排序数组](33-search-in-rotated-sorted-array.md) —— 同为"利用旋转数组局部有序"做二分
 - 进阶：[154. 寻找旋转排序数组中的最小值 II](https://leetcode.cn/problems/find-minimum-in-rotated-sorted-array-ii/) —— 含重复值的退化版
-- 知识点：二分查找变体模板见[二分查找](二分查找.md)
+- 知识点：二分查找变体模板见[二分查找](../二分查找.md)
 

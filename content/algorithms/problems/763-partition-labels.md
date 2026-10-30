@@ -74,5 +74,5 @@ public List<Integer> partitionLabels(String s) {
 
 - 同套路：[435. 无重叠区间](435-non-overlapping-intervals.md) —— 区间问题贪心
 - 进阶：[134. 加油站](134-gas-station.md) —— 另一种"遍历+更新边界"的贪心
-- 知识点：字符串区间合并贪心见[贪心](动态规划与贪心.md)
+- 知识点：字符串区间合并贪心见[贪心](../动态规划与贪心.md)
 

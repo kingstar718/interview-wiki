@@ -4,18 +4,16 @@
 用法:
     python3 scripts/check_index.py      # 在任意目录运行均可，脚本自定位仓库根
 
-设计前提: 站点由 Quartz 渲染，`interview/<分类>/<篇目>.md` 的目录结构是分类的
-唯一权威源(Explorer 侧栏直接反映目录树)，`知识点索引.md` 底部的
+设计前提: 站点由 Zensical 渲染，`interview/<分类>/<篇目>.md` 的目录结构是分类的
+唯一权威源，`知识点索引.md` 底部的
 「专题文件清单」是它的「视图」。视图与权威源漂移(分类错位、少收录、死链、
 文件名歧义)人工肉眼难查，故用本脚本一键校验。
 
-链接语义(与 Quartz CrawlLinks 的 markdownLinkResolution: "shortest" 一致):
-    - 纯文件名链接 `[JVM](JVM.md)` / 双链 `[[JVM]]`: 按文件名全库唯一匹配
-    - 多段路径链接 `[x](algorithms/README.md)`: 视为从
-      content/ 根出发的路径(不是相对当前文件!)
+链接语义:所有站内链接都是标准 Markdown 相对路径，从当前文件所在目录解析；
+不支持 Obsidian `[[双链]]`。
 
 检查项:
-    A. 死链      —— 所有 .md 链接与 [[双链]] 都能按上述语义 resolve
+    A. 死链      —— 所有 .md 链接都能按标准相对路径解析，且不存在 [[双链]]
     B. 文件名唯一 —— 纯文件名链接方案的前提: 除 README.md/index.md 外,
                     全库 .md 文件名不得重复(重复会导致链接歧义)
     C. 命名规范  —— interview/ 与 英语学习/ 与 软考系统架构师/ 下禁止位置型数字前缀 (^数字-)
@@ -38,9 +36,8 @@
     L. 题解结构  —— H1 为「# 题号. 中文题名（English Title）」+ 元数据行必填 +
                     固定小节顺序(题目→…→面试追问→关联题,九节必填)
     M. 锚点死链  —— 链接的 #锚点 经 slugify 后须 ∈ 目标文件标题 slug 集合(归一化
-                    匹配,镜像 Quartz 宽松行为,放过大小写笔误,抓真死链);页内锚点
-                    校验当前文件,跨文件/双链校验目标文件。锚点 slug 由 slug.py(与
-                    Quartz 同源的 github-slugger 规则)生成,A 项只校验文件名不校验锚点
+                    匹配,放过大小写笔误,抓真死链);页内锚点校验当前文件，
+                    跨文件校验目标文件。A 项只校验文件名不校验锚点
     N. 高频表一致 —— 高频题目索引 A 表(高频算法题 Top N)同为题解元数据行的视图:
                     已解题必须带链接且指向该题解、逐行比对难度/热度/公司(同 K 项口径,
                     公司只比集合不比顺序 —— 表里按主考公司在前书写)
@@ -66,7 +63,7 @@ import sys
 from collections import defaultdict
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-from slug import slugify, slugify_headings  # 与 Quartz 同源的 github-slugger 规则
+from slug import slugify, slugify_headings
 from outline import parse_headings  # 跳过围栏代码块提取标题
 import gen_topics  # 套路页题目分组的唯一实现,F/R 项复用它,避免两套解析漂移
 import gen_english  # 英语篇元数据行的唯一解析实现,T 项复用它,同上
@@ -84,7 +81,7 @@ RK = os.path.join(CONTENT, "软考系统架构师")
 PROBLEMS = os.path.join(ALGORITHMS, "problems")
 
 LINK_RE = re.compile(r"\[[^\]]*\]\(([^)]+)\)")
-WIKILINK_RE = re.compile(r"(?<!!)\[\[([^\]|#]+)[^\]]*\]\]")
+WIKILINK_RE = re.compile(r"(?<!!)\[\[[^\]\n]+\]\]")
 NUM_PREFIX_RE = re.compile(r"^\d+[-_]")
 # 文件名可重复的「目录级」文件,链接它们必须写全路径
 NON_UNIQUE_OK = {"README.md", "index.md"}
@@ -108,7 +105,7 @@ CODE_SPAN_RE = re.compile(r"`[^`]*`")
 
 def strip_code(text):
     """剥离围栏代码块与行内代码(保留行数,链接扫描不受代码干扰)。
-    Quartz 同样不会转换代码里的链接/双链。"""
+    Zensical 同样不会转换代码里的链接。"""
     out = []
     in_fence = False
     for line in text.splitlines():
@@ -129,39 +126,22 @@ def build_name_map():
     return by_name
 
 
-def check_dead_links(by_name):
-    """A. 链接按 Quartz shortest 语义必须可解析。"""
+def check_dead_links(_by_name):
+    """A. 链接按标准 Markdown 相对路径解析，拒绝 wikilink。"""
     errors = []
     for path in all_md_files():
         rel = os.path.relpath(path, ROOT)
         for lineno, line in enumerate(strip_code(read(path)), 1):
-            targets = []
+            if WIKILINK_RE.search(line):
+                errors.append(f"{rel}:{lineno} -> 不支持 [[双链]]，请改为标准 Markdown 链接")
             for m in LINK_RE.finditer(line):
                 t = m.group(1).split("#")[0].strip()
-                if not t or t.startswith(("http://", "https://", "mailto:")):
+                if not t or t.startswith(("http://", "https://", "mailto:", "tel:", "/")):
                     continue
                 if t.endswith(".md"):
-                    targets.append(t)
-            for m in WIKILINK_RE.finditer(line):
-                targets.append(m.group(1).strip() + ".md")
-            for target in targets:
-                base = os.path.basename(target)
-                if "/" not in target:
-                    hits = by_name.get(base, [])
-                    if len(hits) == 0:
-                        errors.append(f"{rel}:{lineno} -> {target} (目标不存在)")
-                    elif len(hits) > 1:
-                        errors.append(
-                            f"{rel}:{lineno} -> {target} (文件名歧义: {', '.join(hits)}，请写 content 根全路径)"
-                        )
-                else:
-                    # 多段路径 = 从 content/ 根出发(Quartz 语义,非相对当前文件)
-                    resolved = os.path.normpath(os.path.join(CONTENT, target.lstrip("/")))
+                    resolved = os.path.normpath(os.path.join(os.path.dirname(path), t))
                     if not os.path.isfile(resolved):
-                        errors.append(
-                            f"{rel}:{lineno} -> {target} (按 content 根解析不存在;"
-                            f" Quartz 不支持相对当前文件的多段路径)"
-                        )
+                        errors.append(f"{rel}:{lineno} -> {t} (按当前文件目录解析不存在)")
     return errors
 
 
@@ -637,11 +617,8 @@ def check_meta_line():
     return errors
 
 
-WIKILINK_ANCHOR_RE = re.compile(r"(?<!!)\[\[([^\]|#]+)#([^\]|]+)(?:\|[^\]]*)?\]\]")
-
-
 def heading_slugs(path):
-    """该文件所有 H1-H6 标题的 slug 集合(含重复后缀),与 Quartz 同源。"""
+    """该文件所有 H1-H6 标题的 slug 集合(含重复后缀)。"""
     texts = [t for _ln, _lvl, t in parse_headings(path)]
     return {s for _t, s in slugify_headings(texts)}
 
@@ -649,7 +626,7 @@ def heading_slugs(path):
 def check_anchor_links(by_name):
     """M. 锚点死链:#锚点 经 slugify 后须 ∈ 目标文件标题 slug 集合(归一化匹配)。
 
-    归一化(双端 slugify)镜像 Quartz 宽松行为:链接里写 `#18-字典树Trie`(大写 T)
+    归一化(双端 slugify)允许链接里写 `#18-字典树Trie`(大写 T)
     经 slugify → `18-字典树trie`,与目标标题 slug 一致即放过,不误报大小写笔误。
     文件不存在/歧义由 A 项兜底,此处跳过。
     """
@@ -676,27 +653,12 @@ def check_anchor_links(by_name):
                     if slugify(anchor) not in self_slugs and anchor not in self_slugs:
                         errors.append(f"{rel}:{lineno} -> #{anchor} (页内锚点非本文标题 slug)")
                     continue
-                if "/" in file_part:
-                    resolved = os.path.normpath(os.path.join(CONTENT, file_part.lstrip("/")))
-                    if not os.path.isfile(resolved):
-                        continue
-                    tgt_slugs = slugs_of(resolved)
-                else:
-                    hits = by_name.get(os.path.basename(file_part), [])
-                    if len(hits) != 1:
-                        continue
-                    tgt_slugs = slugs_of(os.path.join(CONTENT, hits[0]))
+                resolved = os.path.normpath(os.path.join(os.path.dirname(path), file_part))
+                if not os.path.isfile(resolved):
+                    continue
+                tgt_slugs = slugs_of(resolved)
                 if slugify(anchor) not in tgt_slugs and anchor not in tgt_slugs:
                     errors.append(f"{rel}:{lineno} -> {target} (锚点非目标文件任何标题 slug)")
-            # 双链 [[file#锚点]](带 # 才校验,纯文件名由 A 项兜底)
-            for m in WIKILINK_ANCHOR_RE.finditer(line):
-                file_part, anchor = m.group(1), m.group(2).strip()
-                hits = by_name.get(file_part + ".md", [])
-                if len(hits) != 1:
-                    continue
-                tgt_slugs = slugs_of(os.path.join(CONTENT, hits[0]))
-                if slugify(anchor) not in tgt_slugs and anchor not in tgt_slugs:
-                    errors.append(f"{rel}:{lineno} -> [[{file_part}#{anchor}]] (锚点非目标文件任何标题 slug)")
     return errors
 
 
@@ -705,7 +667,7 @@ def main():
     actual = actual_categories()
     hub = parse_hub_table()
     checks = [
-        ("A. 死链(Quartz shortest 语义)", check_dead_links(by_name)),
+        ("A. 死链(标准 Markdown 相对路径)", check_dead_links(by_name)),
         ("B. 文件名全库唯一", check_unique_names(by_name)),
         ("C. 命名规范(无位置型数字前缀)", check_naming()),
         ("D. 文件集一致(实际==枢纽)", check_file_set(actual, hub)),

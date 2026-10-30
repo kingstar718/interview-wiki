@@ -72,7 +72,7 @@ public int longestConsecutive(int[] nums) {
 ## 关联题
 
 - 同套路：[1. 两数之和](01-two-sum.md) —— 同为"哈希以空间换时间"，把查找从 O(n) 压到 O(1)
-- 进阶：并查集解法（`x` 与 `x+1` 合并），并查集专题见[并查集](图论.md)
+- 进阶：并查集解法（`x` 与 `x+1` 合并），并查集专题见[并查集](../图论.md)
 - 易混：[560. 和为 K 的子数组](560-subarray-sum-equals-k.md) —— 同用哈希但存的是前缀和，本题存的是元素本身
-- 知识点：HashSet 底层就是 HashMap 的 key 集，见[集合框架](集合框架.md)
+- 知识点：HashSet 底层就是 HashMap 的 key 集，见[集合框架](../../interview/Java/集合框架.md)
 

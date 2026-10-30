@@ -91,4 +91,4 @@ public int missingNumber(int[] nums) {
 - 同套路：[136. 只出现一次的数字](136-single-number.md) —— 异或消消乐
 - 进阶：[448. 找到所有数组中消失的数字](448-find-disappeared-numbers.md)（原地哈希找多个缺失）
 - 易混：[287. 寻找重复数](287-find-the-duplicate-number.md)（用值做下标找环）
-- 知识点：位运算异或性质见[位运算](位运算.md)
+- 知识点：位运算异或性质见[位运算](../位运算.md)

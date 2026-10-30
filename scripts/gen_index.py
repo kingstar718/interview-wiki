@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
 """生成 content/知识点索引.md —— 扫描 interview/ 各篇目真实 H3 考点,
-按 quartz.ts 的 Explorer 排序表排列,写出「真实标题 + github-slugger 锚点」的条目。
+按脚本内的稳定学习顺序排列,写出「真实标题 + Markdown 锚点」的条目。
 
 动机:旧索引是手维护的「人工考点关键词 + 人工描述别名」,链接不带锚点(点击只跳
 文件顶),且别名早已与正文真实 H3 标题漂移。本脚本以正文 H3 为唯一源,锚点由
-slug.py(与 Quartz 同源的 github-slugger 规则)生成,改完内容跑一次即可刷新,
+slug.py 生成,改完内容跑一次即可刷新,
 永不漂移。设计前提同 outline.py:任何手工同步的清单最终都会烂掉。
 
 用法:
@@ -18,7 +18,7 @@ slug.py(与 Quartz 同源的 github-slugger 规则)生成,改完内容跑一次�
     - [HashMap 的底层实现和扩容机制？](集合框架.md#hashmap-的底层实现和扩容机制)
 
 注意:头部说明、分类顺序、尾表「专题文件清单」均由本脚本派生,勿手编该 md;
-改说明改本脚本的 HEADER 模板,改篇目顺序改 quartz.ts 的 ORDER。
+改说明改本脚本的 HEADER 模板,改篇目顺序改本脚本的 FILE_ORDER。
 """
 import os
 import re
@@ -32,10 +32,18 @@ ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 CONTENT = os.path.join(ROOT, "content")
 INTERVIEW = os.path.join(CONTENT, "interview")
 INDEX = os.path.join(CONTENT, "知识点索引.md")
-QUARTZ_TS = os.path.join(ROOT, "quartz.ts")
-
-# 分类顺序(与 quartz.ts ORDER 的 interview 分类段一致,稳定,新增分类是大事)
+# 分类与篇目顺序是站点内容规则，不再依赖渲染器配置。
 CAT_ORDER = ["Java", "框架", "数据库", "中间件", "计算机基础", "分布式与架构", "工程实践", "面试"]
+FILE_ORDER = {
+    "Java": ["Java基础", "集合框架", "并发编程", "JVM", "Java现代特性"],
+    "框架": ["Spring", "SpringBoot", "SpringSecurity", "SpringCloud微服务", "MyBatis", "JPA与Hibernate", "Netty与RPC", "Dubbo"],
+    "数据库": ["MySQL", "分库分表与ShardingSphere", "Redis"],
+    "中间件": ["消息队列", "Elasticsearch", "MongoDB", "ZooKeeper与注册中心"],
+    "计算机基础": ["网络", "操作系统", "计算机组成原理", "数据结构与算法"],
+    "分布式与架构": ["分布式系统", "配置中心", "系统设计", "安全认证", "弹性工程", "数据变更捕获与事件一致性", "分布式任务调度", "生产排障"],
+    "工程实践": ["Linux与工程化", "Kubernetes", "Web容器与Nginx", "构建与依赖管理", "Java工具库", "日志体系", "可观测性", "性能工程", "测试与代码质量", "API设计与接口治理"],
+    "面试": ["面试问题深挖指南", "项目经历与场景题", "领域建模与代码设计", "HR面与软技能"],
+}
 
 # 无追问地图的豁免篇目(其 H3 是指南结构而非考点),只在尾表出现,无 ### 块
 EXEMPT = {"面试问题深挖指南.md"}
@@ -46,38 +54,13 @@ HEADER = """# 知识点索引
 
 > Java 后端社招面试突击指南，按专题分类整理。点击专题名进入对应文件，点击小节标题跳转到对应问题位置。
 
-答题深度与追问方法：[面试问题深挖指南](面试问题深挖指南.md)
+答题深度与追问方法：[面试问题深挖指南](interview/面试/面试问题深挖指南.md)
 
 > 相关：[高频题目索引](高频题目索引.md)（按热度）、[算法题索引](算法题索引.md)（按专题）。
 >
 > 分类与 `interview/` 目录结构保持一致：Java / 框架 / 数据库 / 中间件 / 计算机基础 / 分布式与架构 / 工程实践 / 面试。
 
 ---"""
-
-
-def load_order():
-    """解析 quartz.ts 的 ORDER 数组 → {分类: [篇目名]}(按 ORDER 顺序)。
-
-    按 `// <分类>/` 注释行分段;ORDER 顶部的 indexes/分类名等因 cur=None 不收。
-    """
-    with open(QUARTZ_TS, encoding="utf-8") as fh:
-        text = fh.read()
-    m = re.search(r"const ORDER = \[(.*?)\]", text, re.S)
-    if not m:
-        raise RuntimeError("quartz.ts 未找到 ORDER 数组")
-    body = m.group(1)
-    cat_alt = "|".join(CAT_ORDER)
-    seg_re = re.compile(rf"\s*//\s*({cat_alt})/")
-    items = {c: [] for c in CAT_ORDER}
-    cur = None
-    for line in body.splitlines():
-        sm = seg_re.match(line)
-        if sm:
-            cur = sm.group(1)
-            continue
-        if cur:
-            items[cur].extend(re.findall(r'"([^"]+)"', line))
-    return items
 
 
 def sort_files(cat, files, order_items):
@@ -118,7 +101,7 @@ def category_files(cat):
 
 def build():
     """生成知识点索引全文。"""
-    order_items = load_order()
+    order_items = FILE_ORDER
     lines = [HEADER, ""]
 
     for ci, cat in enumerate(CAT_ORDER):
@@ -129,11 +112,12 @@ def build():
             stem = os.path.splitext(f)[0]
             if f in EXEMPT:
                 continue  # 豁免篇目只进尾表
-            lines.append(f"### [{stem}]({f})")
+            target = f"interview/{cat}/{f}"
+            lines.append(f"### [{stem}]({target})")
             h3 = collect_h3(os.path.join(INTERVIEW, cat, f))
             if h3:
                 for text, slug in h3:
-                    lines.append(f"- [{text}]({f}#{slug})")
+                    lines.append(f"- [{text}]({target}#{slug})")
             else:
                 lines.append("- （待补考点）")
             lines.append("")
@@ -147,7 +131,7 @@ def build():
     lines.append("|------|---------|")
     for cat in CAT_ORDER:
         files = sort_files(cat, category_files(cat), order_items)
-        links = "、".join(f"[{os.path.splitext(f)[0]}]({f})" for f in files)
+        links = "、".join(f"[{os.path.splitext(f)[0]}](interview/{cat}/{f})" for f in files)
         lines.append(f"| {cat} | {links} |")
     lines.append("")  # 末尾换行
     return "\n".join(lines)

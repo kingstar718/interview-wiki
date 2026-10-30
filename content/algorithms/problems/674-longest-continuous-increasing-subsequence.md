@@ -75,4 +75,4 @@ public int findLengthOfLCIS(int[] nums) {
 
 - 同套路：[300. 最长递增子序列](300-longest-increasing-subsequence.md) —— 不连续版
 - 进阶：[718. 最长重复子数组](718-maximum-length-of-repeated-subarray.md) —— 两个数组的连续子数组匹配
-- 知识点：连续 vs 不连续子序列的 DP 区别见[动态规划](动态规划与贪心.md)
+- 知识点：连续 vs 不连续子序列的 DP 区别见[动态规划](../动态规划与贪心.md)

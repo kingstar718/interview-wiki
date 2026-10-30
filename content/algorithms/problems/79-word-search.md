@@ -85,5 +85,5 @@ private boolean dfs(char[][] board, String word, int idx, int i, int j) {
 
 - 同套路：[51. N 皇后](51-n-queens.md) —— 网格回溯 + visited
 - 进阶：[212. 单词搜索 II](https://leetcode.cn/problems/word-search-ii/) —— Trie + 回溯
-- 知识点：网格回溯模板见[回溯](回溯.md)
+- 知识点：网格回溯模板见[回溯](../回溯.md)
 

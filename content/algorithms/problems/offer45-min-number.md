@@ -65,5 +65,5 @@ public String minNumber(int[] nums) {
 
 - 同套路：[912. 排序数组](912-sort-an-array.md) —— 自定义排序
 - 进阶：[56. 合并区间](56-merge-intervals.md) —— 区间排序
-- 知识点：自定义比较器的全序性质见[排序](排序与堆.md)
+- 知识点：自定义比较器的全序性质见[排序](../排序与堆.md)
 

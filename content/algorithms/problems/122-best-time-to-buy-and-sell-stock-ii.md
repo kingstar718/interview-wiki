@@ -67,5 +67,5 @@ public int maxProfit(int[] prices) {
 
 - 同套路：[121. 买卖股票 I](121-best-time-to-buy-and-sell-stock.md) —— 限一次
 - 进阶：[309. 含冷冻期](309-best-time-to-buy-and-sell-stock-with-cooldown.md) —— 带冷却
-- 知识点：股票系列 DP 状态机见[动态规划](动态规划与贪心.md)
+- 知识点：股票系列 DP 状态机见[动态规划](../动态规划与贪心.md)
 

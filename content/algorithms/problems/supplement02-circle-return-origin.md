@@ -95,4 +95,4 @@ public int circleReturn(int n, int k) {
 
 - 基础：[70. 爬楼梯](70-climbing-stairs.md) —— 一维线性 DP 计数
 - 同套路：[62. 不同路径](62-unique-paths.md) —— 二维网格 DP 计数
-- 知识点：计数型动态规划见[动态规划](动态规划与贪心.md)
+- 知识点：计数型动态规划见[动态规划](../动态规划与贪心.md)

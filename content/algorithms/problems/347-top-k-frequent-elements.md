@@ -81,5 +81,5 @@ public int[] topKFrequent(int[] nums, int k) {
 
 - 同套路：[215. 数组中的第 K 大](215-kth-largest-element-in-an-array.md) —— Top K 模式
 - 进阶：[295. 数据流的中位数](295-find-median-from-data-stream.md) —— 双堆变体
-- 知识点：哈希 + 堆的"先计后堆"模式见[堆与优先队列](排序与堆.md)
+- 知识点：哈希 + 堆的"先计后堆"模式见[堆与优先队列](../排序与堆.md)
 

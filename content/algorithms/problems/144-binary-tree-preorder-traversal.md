@@ -104,4 +104,4 @@ public List<Integer> preorderTraversal(TreeNode root) {
 
 - 同套路：[94. 二叉树的中序遍历](94-binary-tree-inorder-traversal.md) —— 栈模拟递归的兄弟实现
 - 进阶：[145. 二叉树的后序遍历](https://leetcode.cn/problems/binary-tree-postorder-traversal/) —— 迭代实现的不同入栈顺序
-- 知识点：栈模拟递归的原理见[二叉树](二叉树.md)
+- 知识点：栈模拟递归的原理见[二叉树](../二叉树.md)

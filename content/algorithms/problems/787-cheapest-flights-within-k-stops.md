@@ -79,5 +79,5 @@ public int findCheapestPrice(int n, int[][] flights, int src, int dst, int k) {
 
 - 同套路：[743. 网络延迟时间](https://leetcode.cn/problems/network-delay-time/) —— 标准 Dijkstra
 - 进阶：[207. 课程表](207-course-schedule.md) —— 图的拓扑遍历
-- 知识点：Bellman-Ford DP 模板见[图](图论.md)；INF 判断防溢出见[Java基础](Java基础.md)
+- 知识点：Bellman-Ford DP 模板见[图](../图论.md)；INF 判断防溢出见[Java基础](../../interview/Java/Java基础.md)
 

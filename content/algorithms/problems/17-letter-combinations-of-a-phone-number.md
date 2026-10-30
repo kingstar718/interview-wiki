@@ -83,5 +83,5 @@ private void backtrack(String digits, int idx, StringBuilder sb, List<String> re
 
 - 同套路：[22. 括号生成](22-generate-parentheses.md)、[93. 复原 IP 地址](93-restore-ip-addresses.md) —— 按位选择 + 回溯
 - 进阶：[46. 全排列](46-permutations.md) —— 选择列表随路径动态变化的更复杂回溯
-- 知识点：回溯的"多叉树遍历"视角见[回溯](回溯.md)
+- 知识点：回溯的"多叉树遍历"视角见[回溯](../回溯.md)
 

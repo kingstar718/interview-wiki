@@ -72,4 +72,4 @@ public boolean isSameTree(TreeNode p, TreeNode q) {
 - 同套路：[101. 对称二叉树](101-symmetric-tree.md)、[104. 二叉树的最大深度](104-maximum-depth-of-binary-tree.md)、[110. 平衡二叉树](110-balanced-binary-tree.md) —— 递归判定树的性质
 - 进阶：[226. 翻转二叉树](226-invert-binary-tree.md)（翻转后比较就是对称判断）
 - 易混：[572. 另一棵树的子树](https://leetcode.cn/problems/subtree-of-another-tree/)（在大树中找子树）
-- 知识点：二叉树递归遍历模板见[二叉树](二叉树.md)
+- 知识点：二叉树递归遍历模板见[二叉树](../二叉树.md)

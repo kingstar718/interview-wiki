@@ -80,5 +80,5 @@ public int mySqrt(int x) {
 
 - 同套路：[367. 有效的完全平方数](https://leetcode.cn/problems/valid-perfect-square/) —— 判等而非找边界
 - 进阶：[33. 搜索旋转排序数组](33-search-in-rotated-sorted-array.md) —— 二分在非单调场景的拓展
-- 知识点：二分查找右边界模板见[二分查找](二分查找.md)；整数溢出防护见[Java基础](Java基础.md)
+- 知识点：二分查找右边界模板见[二分查找](../二分查找.md)；整数溢出防护见[Java基础](../../interview/Java/Java基础.md)
 

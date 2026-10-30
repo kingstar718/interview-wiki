@@ -68,5 +68,5 @@ public int leastInterval(char[] tasks, int n) {
 
 - 同套路：[45. 跳跃游戏 II](45-jump-game-ii.md) —— 贪心 + 边界计算
 - 进阶：[406. 根据身高重建队列](406-queue-reconstruction-by-height.md) —— 贪心排序
-- 知识点：贪心 + 数学推导模式见[贪心](动态规划与贪心.md)
+- 知识点：贪心 + 数学推导模式见[贪心](../动态规划与贪心.md)
 

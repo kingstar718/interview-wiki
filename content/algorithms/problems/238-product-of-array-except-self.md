@@ -79,5 +79,5 @@ public int[] productExceptSelf(int[] nums) {
 
 - 同套路：[560. 和为 K 的子数组](560-subarray-sum-equals-k.md) —— 前缀和思想，本题换成前缀积 × 后缀积
 - 易混：[152. 乘积最大子数组](152-maximum-product-subarray.md) —— 连续区间最值是 DP，本题是全体乘积拆两半
-- 知识点：前缀思想专题见[前缀和与差分](数组与字符串.md)
+- 知识点：前缀思想专题见[前缀和与差分](../数组与字符串.md)
 

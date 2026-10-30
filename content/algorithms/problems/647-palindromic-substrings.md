@@ -99,4 +99,4 @@ public int countSubstrings(String s) {
 
 - 同套路：[5. 最长回文子串](5-longest-palindromic-substring.md) —— 找最长回文子串
 - 进阶：[516. 最长回文子序列](516-longest-palindromic-subsequence.md) —— 子序列版
-- 知识点：中心扩展法 + 回文 DP 见[动态规划](动态规划与贪心.md)
+- 知识点：中心扩展法 + 回文 DP 见[动态规划](../动态规划与贪心.md)

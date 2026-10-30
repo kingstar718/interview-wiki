@@ -80,5 +80,5 @@ private void dfs(TreeNode node, int remain, List<Integer> path, List<List<Intege
 
 - 同套路：[112. 路径总和](https://leetcode.cn/problems/path-sum/) —— 只问是否存在，不需要回溯收集
 - 进阶：[437. 路径总和 III](https://leetcode.cn/problems/path-sum-iii/) —— 任意起点终点，前缀和优化
-- 知识点：DFS + 回溯模板见[二叉树](二叉树.md)
+- 知识点：DFS + 回溯模板见[二叉树](../二叉树.md)
 

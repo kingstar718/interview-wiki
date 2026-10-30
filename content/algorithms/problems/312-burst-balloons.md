@@ -78,5 +78,5 @@ public int maxCoins(int[] nums) {
 
 - 同套路：[32. 最长有效括号](32-longest-valid-parentheses.md) —— 同是区间类 DP/栈
 - 进阶：区间 DP 的通用模板
-- 知识点：区间 DP 的"反向思考"技巧见[动态规划](动态规划与贪心.md)
+- 知识点：区间 DP 的"反向思考"技巧见[动态规划](../动态规划与贪心.md)
 

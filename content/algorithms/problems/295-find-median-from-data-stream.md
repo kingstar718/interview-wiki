@@ -79,5 +79,5 @@ class MedianFinder {
 
 - 同套路：[215. 数组中的第 K 大](215-kth-largest-element-in-an-array.md) —— 单堆 Top K
 - 进阶：[347. 前 K 个高频元素](347-top-k-frequent-elements.md) —— 堆 + 哈希
-- 知识点：堆 + 平衡模板见[堆与优先队列](排序与堆.md)
+- 知识点：堆 + 平衡模板见[堆与优先队列](../排序与堆.md)
 

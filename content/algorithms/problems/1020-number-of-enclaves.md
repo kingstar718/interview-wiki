@@ -92,4 +92,4 @@ private void dfs(int[][] grid, int i, int j) {
 
 - 同套路：[130. 被围绕的区域](130-surrounded-regions.md) —— 翻转版
 - 进阶：[695. 岛屿的最大面积](695-max-area-of-island.md) —— 求面积
-- 知识点：逆向思维 + 边界出发见[图](图论.md)
+- 知识点：逆向思维 + 边界出发见[图](../图论.md)

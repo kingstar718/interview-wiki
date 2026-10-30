@@ -85,4 +85,4 @@ private int dfs(TreeNode node, int prev) {
 
 - 同套路：[112. 路径总和](112-path-sum.md) —— 路径和问题的 DFS 框架
 - 进阶：[113. 路径总和 II](113-path-sum-ii.md) —— 记录路径所有节点
-- 知识点：DFS 前序遍历模板见[二叉树](二叉树.md)
+- 知识点：DFS 前序遍历模板见[二叉树](../二叉树.md)

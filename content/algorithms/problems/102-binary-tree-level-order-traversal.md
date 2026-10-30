@@ -79,5 +79,5 @@ public List<List<Integer>> levelOrder(TreeNode root) {
 
 - 同套路：[199. 二叉树的右视图](199-binary-tree-right-side-view.md)、[104. 二叉树的最大深度](104-maximum-depth-of-binary-tree.md)（BFS 版本）
 - 进阶：[297. 二叉树的序列化与反序列化](297-serialize-and-deserialize-binary-tree.md) —— 层序输出作为序列化格式
-- 知识点：BFS 通用模板、队列选型（ArrayDeque vs LinkedList）见[集合框架](集合框架.md)
+- 知识点：BFS 通用模板、队列选型（ArrayDeque vs LinkedList）见[集合框架](../../interview/Java/集合框架.md)
 

@@ -66,12 +66,12 @@ public List<List<String>> groupAnagrams(String[] strs) {
 
 ## 面试追问
 
-- **为什么数组不能当 HashMap 的 key？** 数组没有重写 hashCode/equals，用的是 Object 的身份实现；要么转 String，要么用 `List<Integer>`（重写过）。契约细节见[集合框架](集合框架.md)
+- **为什么数组不能当 HashMap 的 key？** 数组没有重写 hashCode/equals，用的是 Object 的身份实现；要么转 String，要么用 `List<Integer>`（重写过）。契约细节见[集合框架](../../interview/Java/集合框架.md)
 - **排序键和计数键怎么选？** k 小两者无差；k 大且字符集固定选计数键 O(k)；字符集开放选排序键。先说清楚 key 的本质是"异位词等价类的规范型"再谈优化
 
 ## 关联题
 
 - 同套路：[242. 有效的字母异位词](242-valid-anagram.md) —— 单对判断版，本题是它的批量聚合
 - 进阶：[438. 找到字符串中所有字母异位词](438-find-all-anagrams-in-a-string.md) —— 规范化思想 + 滑动窗口
-- 知识点：HashMap 的 hashCode/equals 契约与 O(1) 查找，见[集合框架](集合框架.md)
+- 知识点：HashMap 的 hashCode/equals 契约与 O(1) 查找，见[集合框架](../../interview/Java/集合框架.md)
 

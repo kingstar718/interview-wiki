@@ -77,5 +77,5 @@ public int lengthOfLIS(int[] nums) {
 
 - 同套路：[354. 俄罗斯套娃信封问题](https://leetcode.cn/problems/russian-doll-envelopes/) —— 二维转一维 LIS
 - 进阶：[1143. 最长公共子序列](1143-longest-common-subsequence.md) —— 二维 DP 的 LCS
-- 知识点：DP 最优子结构 + 贪心二分优化见[动态规划](动态规划与贪心.md)
+- 知识点：DP 最优子结构 + 贪心二分优化见[动态规划](../动态规划与贪心.md)
 

@@ -239,5 +239,5 @@ SqlSession（线程安全使用）
 **常见追问**
 - 没有 MyBatis-Spring 能用 Mapper 吗？→ 可以，但每个 Mapper 方法前要手动 `sqlSessionFactory.openSession()` → `session.getMapper()` → 用完 `session.close()`，且没有事务管理
 - `SqlSessionTemplate` 和 `SqlSessionManager` 的区别？→ `SqlSessionTemplate` 是 MyBatis-Spring 提供的，必须配 Spring 事务管理器；`SqlSessionManager` 是 MyBatis 原生提供的，只能在单线程中串行使用
-- 为什么 MyBatis-Spring 是专门一个 jar 包而不是 MyBatis 内置功能？→ 因为 MyBatis 框架本身不假设任何 IoC 容器，集成 Spring 需要的 `FactoryBean`、`BeanDefinitionRegistryPostProcessor` 都是 Spring SPI，**是 MyBatis 适配 Spring，而不是 Spring 适配 MyBatis**——同一思路看 [RocketMQ](消息队列.md) 和 [Redis](Redis.md) 的 Spring Boot Starter
+- 为什么 MyBatis-Spring 是专门一个 jar 包而不是 MyBatis 内置功能？→ 因为 MyBatis 框架本身不假设任何 IoC 容器，集成 Spring 需要的 `FactoryBean`、`BeanDefinitionRegistryPostProcessor` 都是 Spring SPI，**是 MyBatis 适配 Spring，而不是 Spring 适配 MyBatis**——同一思路看 [RocketMQ](../中间件/消息队列.md) 和 [Redis](../数据库/Redis.md) 的 Spring Boot Starter
 

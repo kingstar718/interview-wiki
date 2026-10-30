@@ -73,5 +73,5 @@ public int[] nextGreaterElement(int[] nums1, int[] nums2) {
 
 - 同套路：[503. 下一个更大元素 II](503-next-greater-element-ii.md) —— 循环数组版
 - 进阶：[739. 每日温度](739-daily-temperatures.md) —— 距离版
-- 知识点：单调栈模板见[单调栈与单调队列](栈与队列.md)
+- 知识点：单调栈模板见[单调栈与单调队列](../栈与队列.md)
 

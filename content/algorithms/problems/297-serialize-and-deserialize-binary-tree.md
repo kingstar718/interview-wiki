@@ -97,5 +97,5 @@ private TreeNode deserialize(Queue<String> nodes) {
 
 - 同套路：[102. 二叉树的层序遍历](102-binary-tree-level-order-traversal.md) —— 另一种序列化格式
 - 进阶：[105. 从前序与中序遍历构造二叉树](105-construct-binary-tree-from-preorder-and-inorder-traversal.md) —— 无空标记时的重建
-- 知识点：递归消费列表的"全局指针"模式见[二叉树](二叉树.md)
+- 知识点：递归消费列表的"全局指针"模式见[二叉树](../二叉树.md)
 

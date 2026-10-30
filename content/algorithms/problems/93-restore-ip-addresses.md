@@ -87,5 +87,5 @@ private boolean isValid(String seg) {
 
 - 同套路：[131. 分割回文串](131-palindrome-partitioning.md) —— 分割类回溯
 - 进阶：[17. 电话号码的字母组合](17-letter-combinations-of-a-phone-number.md) —— 另一种字符串组合回溯
-- 知识点：字符串分割 + 合法性剪枝见[回溯](回溯.md)
+- 知识点：字符串分割 + 合法性剪枝见[回溯](../回溯.md)
 

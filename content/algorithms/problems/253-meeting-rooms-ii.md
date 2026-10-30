@@ -64,5 +64,5 @@ public int minMeetingRooms(int[][] intervals) {
 
 - 同套路：[56. 合并区间](56-merge-intervals.md) —— 区间合并
 - 进阶：[435. 无重叠区间](435-non-overlapping-intervals.md) —— 移除最少区间
-- 知识点：扫描线模板见[排序](排序与堆.md)
+- 知识点：扫描线模板见[排序](../排序与堆.md)
 

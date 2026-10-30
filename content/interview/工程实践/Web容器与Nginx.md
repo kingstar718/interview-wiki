@@ -41,7 +41,7 @@ Servlet 通常是单例，多线程共享，因此不要把请求级可变状态
 - 将请求映射到目标 Servlet。
 - 提供 Session、安全、异步请求等规范能力。
 
-Spring MVC 的 `DispatcherServlet` 本质上也是 Servlet，后续流程见 [Spring](Spring.md)。
+Spring MVC 的 `DispatcherServlet` 本质上也是 Servlet，后续流程见 [Spring](../框架/Spring.md)。
 
 ### Filter、Servlet、Interceptor 的执行顺序？
 

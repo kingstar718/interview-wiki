@@ -94,5 +94,5 @@ private void dfs(TreeNode node, int depth, List<Integer> res) {
 
 - 同套路：[102. 二叉树的层序遍历](102-binary-tree-level-order-traversal.md) —— 层序遍历的所有变式都是这个模板
 - 进阶：[236. 二叉树的最近公共祖先](236-lowest-common-ancestor-of-a-binary-tree.md) —— 另一种"不需要处理整层"的递归解法
-- 知识点：DFS 遍历顺序的灵活控制（先右后左）见[二叉树](二叉树.md)
+- 知识点：DFS 遍历顺序的灵活控制（先右后左）见[二叉树](../二叉树.md)
 

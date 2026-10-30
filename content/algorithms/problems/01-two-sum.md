@@ -73,5 +73,5 @@ public int[] twoSum(int[] nums, int target) {
 
 - 同套路：[560. 和为 K 的子数组](560-subarray-sum-equals-k.md) —— "边遍历边查哈希补数"的区间和版本
 - 进阶：[167. 两数之和II-输入有序](167-two-sum-ii.md)（有序 → 首尾双指针）→ [15. 三数之和](15-3sum.md)（排序 + 固定一位 + 双指针）
-- 知识点：HashMap O(1) 查找的原理见[集合框架](集合框架.md)
+- 知识点：HashMap O(1) 查找的原理见[集合框架](../../interview/Java/集合框架.md)
 

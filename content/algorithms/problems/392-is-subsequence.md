@@ -90,4 +90,4 @@ public boolean isSubsequence(String s, String t) {
 
 - 同套路：[115. 不同的子序列](115-distinct-subsequences.md) —— 计数版
 - 进阶：[1143. 最长公共子序列](1143-longest-common-subsequence.md) —— 二维 DP 版
-- 知识点：双指针 vs DP 预处理的场景取舍见[动态规划](动态规划与贪心.md)
+- 知识点：双指针 vs DP 预处理的场景取舍见[动态规划](../动态规划与贪心.md)

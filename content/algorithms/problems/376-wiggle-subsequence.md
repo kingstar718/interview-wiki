@@ -85,4 +85,4 @@ public int wiggleMaxLength(int[] nums) {
 
 - 同套路：[300. 最长递增子序列](300-longest-increasing-subsequence.md) —— DP 版最长子序列
 - 进阶：[324. 摆动排序 II](https://leetcode.cn/problems/wiggle-sort-ii/) —— 构造而非求长度
-- 知识点：序列贪心之"极值点"模板见[贪心](动态规划与贪心.md)
+- 知识点：序列贪心之"极值点"模板见[贪心](../动态规划与贪心.md)

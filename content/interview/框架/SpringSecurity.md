@@ -13,7 +13,7 @@
 | [JWT 资源服务器](#无状态-jwt-api-如何配置) | Bearer Token、签名和声明校验、无服务端会话 | Token 撤销、密钥轮换 |
 | [CSRF/CORS](#前后端分离项目能直接关闭-csrf-吗) | 凭证是否自动携带、预检请求、配置顺序 | Cookie JWT 是否仍有 CSRF |
 
-Spring Security 解决的是应用安全链路的编排；认证协议、JWT 和 OAuth 2.0 的安全边界见[安全认证](安全认证.md)。
+Spring Security 解决的是应用安全链路的编排；认证协议、JWT 和 OAuth 2.0 的安全边界见[安全认证](../分布式与架构/安全认证.md)。
 
 ---
 
@@ -80,7 +80,7 @@ SecurityFilterChain apiChain(HttpSecurity http) throws Exception {
 
 异步任务切换线程后，普通 ThreadLocal 不会自动传递。可使用 `DelegatingSecurityContextExecutor`、`DelegatingSecurityContextRunnable`，或在提交任务时显式捕获并在执行后清理上下文。不要仅切换为 `MODE_INHERITABLETHREADLOCAL` 就交给线程池：线程池线程通常早已创建，不会为每个任务重新继承。
 
-**通用概念**：这与 MDC、事务上下文的传播问题相同，都是“捕获 → 传递 → 恢复 → 清理”的上下文生命周期，底层原理见[并发编程](并发编程.md)的 ThreadLocal。
+**通用概念**：这与 MDC、事务上下文的传播问题相同，都是“捕获 → 传递 → 恢复 → 清理”的上下文生命周期，底层原理见[并发编程](../Java/并发编程.md)的 ThreadLocal。
 
 ---
 
@@ -124,7 +124,7 @@ public void refund(Long orderId, String operatorId) {
 }
 ```
 
-URL 权限只能说明“能否进入接口”，不能证明用户有权操作某个订单。水平越权和对象归属校验见[安全认证](安全认证.md)。
+URL 权限只能说明“能否进入接口”，不能证明用户有权操作某个订单。水平越权和对象归属校验见[安全认证](../分布式与架构/安全认证.md)。
 
 ### `hasRole` 和 `hasAuthority` 有什么区别？
 
@@ -147,7 +147,7 @@ http
     .oauth2ResourceServer(oauth -> oauth.jwt(Customizer.withDefaults()));
 ```
 
-生产配置至少要限制允许的算法、校验 `iss`/`aud`、支持 `kid` 密钥轮换，并控制时钟偏差。Access Token 应短期有效；强制下线可结合短有效期、Refresh Token 轮换和高风险场景黑名单，详见[安全认证](安全认证.md)。
+生产配置至少要限制允许的算法、校验 `iss`/`aud`、支持 `kid` 密钥轮换，并控制时钟偏差。Access Token 应短期有效；强制下线可结合短有效期、Refresh Token 轮换和高风险场景黑名单，详见[安全认证](../分布式与架构/安全认证.md)。
 
 ### 前后端分离项目能直接关闭 CSRF 吗？
 
@@ -167,4 +167,4 @@ http
 
 - [Spring Security Servlet Architecture](https://docs.spring.io/spring-security/reference/servlet/architecture.html)
 - [Spring Security Authentication Architecture](https://docs.spring.io/spring-security/reference/servlet/authentication/architecture.html)
-- [安全认证](安全认证.md)
+- [安全认证](../分布式与架构/安全认证.md)

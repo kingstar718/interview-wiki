@@ -82,4 +82,4 @@ public boolean isPalindrome(int x) {
 - 同套路：[125. 验证回文串](125-valid-palindrome.md)（字符串版回文）
 - 进阶：[5. 最长回文子串](5-longest-palindromic-substring.md)（中心扩展法）
 - 易混：[7. 整数反转](7-reverse-integer.md)（反转全部而非一半，需处理溢出）
-- 知识点：回文通用判定见[双指针与滑动窗口](双指针与滑动窗口.md)
+- 知识点：回文通用判定见[双指针与滑动窗口](../双指针与滑动窗口.md)

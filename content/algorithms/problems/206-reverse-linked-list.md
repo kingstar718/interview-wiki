@@ -88,5 +88,5 @@ public ListNode reverseList(ListNode head) {
 
 - 进阶：[92. 反转链表II](92-reverse-linked-list-ii.md) → [25. K个一组翻转链表](25-reverse-nodes-in-k-group.md) —— 反转族难度链：整条 → 区间 → 分组
 - 同套路：[24. 两两交换链表结点](24-swap-nodes-in-pairs.md) —— 相邻指针改写的最小练习
-- 知识点：递归解法调用栈深度 O(n)，超长链表有栈溢出风险，虚拟机栈结构见[JVM](JVM.md)
+- 知识点：递归解法调用栈深度 O(n)，超长链表有栈溢出风险，虚拟机栈结构见[JVM](../../interview/Java/JVM.md)
 

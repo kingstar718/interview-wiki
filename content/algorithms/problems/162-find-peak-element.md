@@ -77,4 +77,4 @@ public int findPeakElement(int[] nums) {
 
 - 同套路：[153. 寻找旋转排序数组中的最小值](153-find-minimum-in-rotated-sorted-array.md) —— 同样利用局部有序性质二分
 - 进阶：[852. 山脉数组的峰顶索引](https://leetcode.cn/problems/peak-index-in-a-mountain-array/) —— 本题特化版，同模板代码直接复用
-- 知识点：二分查找模板见[二分查找](二分查找.md)
+- 知识点：二分查找模板见[二分查找](../二分查找.md)

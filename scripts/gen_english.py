@@ -25,7 +25,7 @@ import re
 import sys
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-from slug import slugify  # 与 Quartz 同源的 github-slugger 规则
+from slug import slugify
 from outline import parse_headings  # 跳过围栏代码块提取标题
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -120,8 +120,8 @@ def die(msg):
 
 def link(note, section=None):
     if section is None:
-        return f"[{note['title']}]({note['name']})"
-    return f"[{note['title']} · {section}]({note['name']}#{slugify(section)})"
+        return f"[{note['title']}](英语学习/{note['name']})"
+    return f"[{note['title']} · {section}](英语学习/{note['name']}#{slugify(section)})"
 
 
 def levels_of(note):
@@ -141,7 +141,7 @@ def render(notes):
         "> 两个视图:**按等级学**给学习路径(我在哪一级、接下来练什么),**按场景查**给任务速查",
         "> (我现在要写 PR / 开站会,该看哪几处)。同一篇会在多处出现——它们指向同一份内容。",
         ">",
-        "> 等级定义与时间预期见 [英语学习方案](英语学习方案.md),工具与材料见 [英语学习资源](英语学习资源.md)。",
+        "> 等级定义与时间预期见 [英语学习方案](英语学习/英语学习方案.md),工具与材料见 [英语学习资源](英语学习/英语学习资源.md)。",
         "",
         "## 按等级学",
         "",

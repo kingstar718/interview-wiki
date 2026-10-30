@@ -82,5 +82,5 @@ public int evalRPN(String[] tokens) {
 
 - 同套路：[20. 有效的括号](20-valid-parentheses.md)、[394. 字符串解码](394-decode-string.md) —— 栈结构三件套
 - 进阶：224/227. 基本计算器系列 —— 中缀表达式要先处理运算符优先级，逆波兰正是它们转换后的中间产物
-- 知识点：JVM 字节码基于操作数栈求值，与逆波兰完全同构，见[JVM](JVM.md)
+- 知识点：JVM 字节码基于操作数栈求值，与逆波兰完全同构，见[JVM](../../interview/Java/JVM.md)
 

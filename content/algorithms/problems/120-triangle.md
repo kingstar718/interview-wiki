@@ -98,4 +98,4 @@ public int minimumTotal(List<List<Integer>> triangle) {
 
 - 同套路：[64. 最小路径和](64-minimum-path-sum.md)（矩形网格版）、[62. 不同路径](62-unique-paths.md)（方案数版）
 - 基础：[118. 杨辉三角](118-pascals-triangle.md)（三角形结构的构造）
-- 知识点：二维 DP 的滚动数组优化模板见[动态规划与贪心](动态规划与贪心.md)
+- 知识点：二维 DP 的滚动数组优化模板见[动态规划与贪心](../动态规划与贪心.md)

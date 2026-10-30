@@ -74,4 +74,4 @@ public boolean hasPathSum(TreeNode root, int targetSum) {
 
 - 同套路：[113. 路径总和 II](113-path-sum-ii.md) —— 回溯收集所有路径，本题是它的简化版
 - 进阶：[437. 路径总和 III](https://leetcode.cn/problems/path-sum-iii/) —— 任意起点终点，前缀和优化
-- 知识点：DFS 路径搜索模板见[二叉树](二叉树.md)
+- 知识点：DFS 路径搜索模板见[二叉树](../二叉树.md)

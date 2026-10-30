@@ -75,5 +75,5 @@ public int lengthOfLongestSubstring(String s) {
 
 - 同套路：[438. 找到字符串中所有字母异位词](438-find-all-anagrams-in-a-string.md)、[567. 字符串的排列](567-permutation-in-string.md) —— 定长窗口版
 - 进阶：[76. 最小覆盖子串](76-minimum-window-substring.md) —— 从"求最长"变"求最短"，收缩逻辑反转
-- 知识点：滑动窗口 = 双指针 + 窗口状态维护，专题见[滑动窗口](双指针与滑动窗口.md)
+- 知识点：滑动窗口 = 双指针 + 窗口状态维护，专题见[滑动窗口](../双指针与滑动窗口.md)
 
