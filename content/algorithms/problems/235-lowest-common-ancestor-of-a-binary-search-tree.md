@@ -88,6 +88,8 @@ public TreeNode lowestCommonAncestor(TreeNode root, TreeNode p, TreeNode q) {
 - 不要和 236 混淆——236 是普通二叉树，必须用后序遍历找 p、q 位置；235 是 BST，直接用值大小判断方向
 - 迭代版循环条件：`root.val > max` 和 `root.val < min`，注意 `max` 和 `min` 的用法——先确定 p、q 的 min/max 便于判断
 - 分叉条件：`root.val >= min && root.val <= max` 时返回 root——包括 `root.val == p.val` 或 `root.val == q.val` 的情况
+- **递归版可以直接改迭代版，因为它是尾递归**：`return lowestCommonAncestor(root.left, p, q);` 出现在 `return` 里且结果直接交出去，没有后续加工，所以能替换成 `root = root.left;` + 循环。反例是 236——那题的返回值要参与 `if (left != null && right != null)` 合并，必须同时持有左右两个结果，循环变量表达不了
+- 两版写法对照：递归 `return 递归(子);` ↔ 迭代 `root = 子;`，其余三分支完全一样
 
 ## 面试追问
 
