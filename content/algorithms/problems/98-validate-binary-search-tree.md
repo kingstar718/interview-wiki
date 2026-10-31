@@ -74,7 +74,31 @@ private boolean validate(TreeNode node, Integer min, Integer max) {
 
 - **`<` 和 `<=` 的区别**：BST 要求严格小于/大于，相等即非法
 - **不能只检查 `node.left.val < node.val < node.right.val`**：必须保证整棵子树都在范围内——反例: `[10,5,15,null,null,6,20]`，6 在 10 的右子树但 < 10，只检查父节点会漏掉
-- 用 `Integer` 而非 `int` 做参数：`null` 表示没有边界，`int` 初始值 0 会误判含 `Integer.MIN_VALUE` 的树
+- 用 `Integer` 而非 `int` 做参数：`null` 表示没有边界，`int` 初始值 0 会误判含 `Integer.MIN_VALUE` 的树。**也不能用 `Integer.MIN_VALUE`/`MAX_VALUE` 当 ±∞**——`[2147483647]` 这种单节点极值树会被误杀
+- 上下界版的方向：**往左只收窄上界 `high = node.val`，往右只收窄下界 `low = node.val`**，另一个边界原样继承；合并用 `&&`（左右都要合法），不是 `||`
+
+### 中序版的 `prev` 为什么不能当参数传
+
+`prev` 的需求是**跨层共享**：左子树访问完的最后一个值，要能被父节点读到（子→父）；父节点的值又要传给右子树（父→子）。而 Java 参数是**值传递**，`Integer` 不可变，`prev = node.val` 只改本层栈帧里的副本：
+
+```java
+private boolean dfs(TreeNode node, Integer prev) {   // ❌ 错
+    ...
+    prev = node.val;              // 只改本层
+    return dfs(node.right, prev);  // 能往下传，但父层看不到
+}
+```
+典型误判：`[5,6,null]`（左孩子 6 > 5）和 `[1,1]`（相等）都会返回 `true`——因为"当前节点与左子树最大值"的比较丢失了。
+
+**三种可行写法**：
+
+| 写法 | 代码 | 特点 |
+|---|---|---|
+| 成员变量 | `private Integer prev;` + 主方法里 `prev = null` 重置 | 最简洁，**但必须分离 `isValidBST`/`dfs`**，否则自递归每层都会重置 |
+| 数组当容器 | `dfs(node, new long[]{Long.MIN_VALUE})`，内部 `prev[0] = node.val` | 引用传递天然共享，每次调用新建、无残留 |
+| **上下界传参** | 见上 | **信息只往下传，无需共享状态**，纯函数，最优雅 |
+
+**方向铁律**：`prev` 是"中序前一个"，BST 要求升序，所以失败条件是 `node.val <= prev`（不是 `prev < node.val`，写反会把合法树判非法）。注意"漏写 `prev = node.val`"和"方向写反"这两个 bug **会互相掩盖**——都没暴露时，测试全绿其实是假象。
 
 ## 面试追问
 
