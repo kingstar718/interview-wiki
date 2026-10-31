@@ -9,3 +9,6 @@ private/
 __pycache__/
 .venv/
 .claude/
+.idea/
+*.iml
+/practice/out/
