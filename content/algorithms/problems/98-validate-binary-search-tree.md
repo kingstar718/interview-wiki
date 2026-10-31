@@ -38,19 +38,59 @@ techniques:
 
 ## 代码
 
+### 解法一：上下界传参（推荐，无共享状态）
+
 ```java
 public boolean isValidBST(TreeNode root) {
     return validate(root, null, null);
 }
 
-private boolean validate(TreeNode node, Integer min, Integer max) {
+private boolean validate(TreeNode node, Integer low, Integer high) {
     if (node == null) return true;
-    if (min != null && node.val <= min) return false;
-    if (max != null && node.val >= max) return false;
-    return validate(node.left, min, node.val)
-        && validate(node.right, node.val, max);
+    if (low  != null && node.val <= low)  return false;   // 越下界
+    if (high != null && node.val >= high) return false;   // 越上界
+    return validate(node.left,  low,  node.val)           // 往左：只收窄上界
+        && validate(node.right, node.val, high);          // 往右：只收窄下界
 }
 ```
+
+`low`/`high` 是**开区间**（不含端点），`null` 代表 ±∞。信息只向下流，纯参数传递。
+
+### 解法二：中序遍历（利用「中序 = 升序」）
+
+```java
+private Integer prev = null;
+
+public boolean isValidBST(TreeNode root) {
+    prev = null;                 // 每次调用必须重置
+    return dfs(root);
+}
+
+private boolean dfs(TreeNode node) {
+    if (node == null) return true;
+
+    if (!dfs(node.left)) return false;                     // ① 走左
+
+    if (prev != null && node.val <= prev) return false;    // ② 访问根：检查
+    prev = node.val;                                       // ③ 访问根：更新
+
+    return dfs(node.right);                                // ④ 走右
+}
+```
+
+**必须拆成 `isValidBST` + `dfs` 两段**：重置只能发生在最外层调用一次；如果写成自递归并在方法开头 `prev = null`，每一层都会被重置，检查直接失效。
+
+### 两版对比
+
+| | 上下界传参 | 中序遍历 |
+|---|---|---|
+| 信息流 | **只往下传**（参数） | `prev` 需**跨层共享**（子→父、父→子） |
+| 共享状态 | 无 | 成员变量 / 数组容器 |
+| 重置问题 | 无 | 有（每次调用要重置） |
+| 额外参数 | `low`、`high` | 无 |
+| 纯函数性 | ✅ | ❌ |
+| 代码量 | 略多（两个参数） | 略少 |
+| 适合讲 | **面试首选**，不依赖全局状态 | 展示「BST ↔ 中序升序」的双向理解 |
 
 ## 复杂度
 
