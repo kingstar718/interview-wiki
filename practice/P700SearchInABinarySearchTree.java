@@ -1,4 +1,7 @@
 import java.util.ArrayDeque;
+import java.util.ArrayList;
+import java.util.Deque;
+import java.util.List;
 import java.util.Queue;
 
 /**
@@ -6,32 +9,32 @@ import java.util.Queue;
  * https://leetcode.cn/problems/search-in-a-binary-search-tree/
  *
  * <p>【难度】Easy
- * <p>【标签】二叉搜索树(BST) · 二叉树(Binary Tree)
- * <p>【题型】利用 BST 有序性，沿一条路径搜索目标节点
- * <p>【考点】终止条件；递归返回值；递归与迭代对照
- * <p>【关联】P235 BST 最近公共祖先；P98 验证 BST
+ * <p>【标签】二叉搜索树(BST) · 二叉树(Binary Tree) · 深度优先搜索(DFS)
+ * <p>【题型】BST 方向搜索的基线题：比大小决定往左还是往右
+ * <p>【考点】返回值是"以该节点为根的整棵子树"，不是单个节点；用 BST 性质而非全遍历
+ * <p>【关联】P235 BST 的 LCA（同一套方向判断）；P98 验证 BST；P701 插入
  *
- * <p>给定二叉搜索树的根节点 root 和整数 val，返回值为 val 的节点，
- * 即以该节点为根的子树；不存在则返回 null。返回原树中的节点，无需复制。
- * <p>树中节点数为 [1, 5000]；节点值和 val 为 [1, 10^7]；保证输入为 BST。
- * 自测额外包含空树，练习边界处理。
+ * <p>给定二叉搜索树（BST）的根节点 root 和一个整数值 val。
+ * 你需要在 BST 中找到节点值等于 val 的节点，返回以该节点为根的【子树】。
+ * 如果节点不存在，则返回 null。
  *
+ * <p>约束：树中节点数在 [1, 5000] 范围内；1 &lt;= Node.val &lt;= 10^7；
+ * root 是二叉搜索树；1 &lt;= val &lt;= 10^7。
+ *
+ * <p>示例：root=[4,2,7,1,3], val=2
  * <pre>
- *       4
- *      / \
- *     2   7
+ *       4                 2
+ *      / \       →       / \
+ *     2   7             1   3
  *    / \
  *   1   3
- *
- * val=2 → 返回以 2 为根的子树 [2,1,3]
- * val=5 → null
  * </pre>
- * <p>── 思路引导 ──
- * <p>1. 终止条件：当前节点为空，或当前节点的值恰好等于目标值。
- * <p>2. 方向判断：根据目标值与当前值的大小关系，选择下一棵子树。
- * <p>3. 两种写法：递归版把子问题的结果返回；迭代版维护当前搜索节点。
- * <p>4. 复杂度：用树高 h 表达时间复杂度，分别考虑平衡树与退化链；
- *    空间复杂度区分递归调用栈和迭代变量。
+ *
+ * <p>── BST 搜索 vs 全遍历 ──
+ * <p>val &lt; root.val → 一定在左子树（右子树全比 root 大，不可能有 val）
+ * <p>val &gt; root.val → 一定在右子树
+ * <p>val == root.val → 命中
+ * <p>每一步排除一半，O(h)；全遍历则 O(n)，没有利用 BST 性质。
  */
 public class P700SearchInABinarySearchTree {
 
@@ -59,13 +62,6 @@ public class P700SearchInABinarySearchTree {
     }
 
     public TreeNode searchBST(TreeNode root, int val) {
-        if (root == null) return null;
-        if (root.val > val) return searchBST(root.left, val);
-        if (root.val < val) return searchBST(root.right, val);
-        return root;
-    }
-
-    public TreeNode searchBSTIterative(TreeNode root, int val) {
         while (root != null) {
             if (root.val > val) {
                 root = root.left;
@@ -75,91 +71,89 @@ public class P700SearchInABinarySearchTree {
                 return root;
             }
         }
+        return null;
+    }
+
+    public TreeNode searchBSTRecursive(TreeNode root, int val) {
+        if (root == null) return null;
+        if (root.val > val) return searchBSTRecursive(root.left, val);
+        if (root.val < val) return searchBSTRecursive(root.right, val);
         return root;
     }
 
     public static void main(String[] args) {
         P700SearchInABinarySearchTree solver = new P700SearchInABinarySearchTree();
-        Integer[] example = {4, 2, 7, 1, 3};
-        run(solver, example, 2, "示例1：命中内部节点");
-        run(solver, example, 5, "示例2：值不存在");
-        run(solver, example, 4, "命中根节点");
-        run(solver, example, 1, "命中最左叶子");
-        run(solver, example, 7, "命中右侧叶子");
-        run(solver, example, 0, "小于所有节点");
-        run(solver, example, 8, "大于所有节点");
-        run(solver, new Integer[]{}, 1, "空树");
-        run(solver, new Integer[]{1}, 1, "单节点命中");
-        run(solver, new Integer[]{1}, 2, "单节点未命中");
-        run(solver, new Integer[]{4, 3, null, 2, null, 1}, 1, "左链");
-        run(solver, new Integer[]{1, null, 2, null, 3, null, 4}, 4, "右链");
-        run(solver, new Integer[]{5000000, 1, 10000000}, 10000000, "节点值上界");
+
+        Integer[] t = {4, 2, 7, 1, 3};
+        run(solver, t, 2, "2 1 3", "示例1 命中中间");
+        run(solver, t, 1, "1", "叶子节点");
+        run(solver, t, 7, "7", "右子树单节点");
+        run(solver, t, 4, "4 2 7 1 3", "命中根 → 返回整棵树");
+        run(solver, t, 5, "", "不存在 → null");
+        run(solver, new Integer[]{1}, 1, "1", "单节点命中");
+        run(solver, new Integer[]{1}, 2, "", "单节点未命中");
+        run(solver, new Integer[]{8, 3, 10, 1, 6, null, 14, null, null, 4, 7, 13},
+                6, "6 4 7", "深层命中");
     }
 
-    private static void run(P700SearchInABinarySearchTree solver, Integer[] tree,
-                            int val, String name) {
+    private static String serialize(TreeNode root) {
+        if (root == null) return "";
+        List<String> out = new ArrayList<>();
+        Deque<TreeNode> q = new java.util.LinkedList<>();
+        q.offer(root);
+        while (!q.isEmpty()) {
+            TreeNode n = q.poll();
+            if (n == null) {
+                out.add("null");
+                continue;
+            }
+            out.add(String.valueOf(n.val));
+            q.offer(n.left);
+            q.offer(n.right);
+        }
+        int end = out.size();
+        while (end > 0 && out.get(end - 1).equals("null")) end--;
+        return String.join(" ", out.subList(0, end));
+    }
+
+    private static TreeNode build(Integer[] arr) {
+        if (arr == null || arr.length == 0 || arr[0] == null) return null;
+        TreeNode root = new TreeNode(arr[0]);
+        Queue<TreeNode> q = new ArrayDeque<>();
+        q.offer(root);
+        int i = 1;
+        while (!q.isEmpty() && i < arr.length) {
+            TreeNode cur = q.poll();
+            if (i < arr.length && arr[i] != null) {
+                cur.left = new TreeNode(arr[i]);
+                q.offer(cur.left);
+            }
+            i++;
+            if (i < arr.length && arr[i] != null) {
+                cur.right = new TreeNode(arr[i]);
+                q.offer(cur.right);
+            }
+            i++;
+        }
+        return root;
+    }
+
+    private static void run(P700SearchInABinarySearchTree solver, Integer[] tree, int val,
+                            String expected, String name) {
         String label = name + " val=" + val;
-        TreeNode recursiveRoot = build(tree);
-        runOne(label + " [递归]", findForTest(recursiveRoot, val),
-                () -> solver.searchBST(recursiveRoot, val));
-        TreeNode iterativeRoot = build(tree);
-        runOne(label + " [迭代]", findForTest(iterativeRoot, val),
-                () -> solver.searchBSTIterative(iterativeRoot, val));
+        runOne(label + " [迭代]", expected, () -> solver.searchBST(build(tree), val));
+        runOne(label + " [递归]", expected, () -> solver.searchBSTRecursive(build(tree), val));
     }
 
-    private static void runOne(String label, TreeNode expected,
-                               java.util.function.Supplier<TreeNode> call) {
+    private static void runOne(String label, String expected, java.util.function.Supplier<TreeNode> call) {
         try {
-            TreeNode got = call.get();
-            // 比较引用：返回原树中的子树，不能只新建同值节点。
-            boolean ok = got == expected;
-            System.out.println((ok ? "[PASS] " : "[FAIL] ") + label
-                    + " | got=" + valueOf(got) + " exp=" + valueOf(expected)
-                    + " | same reference=" + ok);
+            String got = serialize(call.get());
+            System.out.println((expected.equals(got) ? "[PASS] " : "[FAIL] ") + label
+                    + " | got=[" + got + "] exp=[" + expected + "]");
         } catch (UnsupportedOperationException e) {
             System.out.println("[FAIL] " + label + " | UnsupportedOperationException: 未实现");
         } catch (Exception e) {
             System.out.println("[FAIL] " + label + " | 抛异常: " + e);
         }
-    }
-
-    private static String valueOf(TreeNode node) {
-        return node == null ? "null" : String.valueOf(node.val);
-    }
-
-    /** 测试辅助：全树查找预期节点，不提供待练习的 BST 搜索实现。 */
-    private static TreeNode findForTest(TreeNode root, int val) {
-        if (root == null) return null;
-        Queue<TreeNode> queue = new ArrayDeque<>();
-        queue.offer(root);
-        while (!queue.isEmpty()) {
-            TreeNode node = queue.poll();
-            if (node.val == val) return node;
-            if (node.left != null) queue.offer(node.left);
-            if (node.right != null) queue.offer(node.right);
-        }
-        return null;
-    }
-
-    private static TreeNode build(Integer[] values) {
-        if (values == null || values.length == 0 || values[0] == null) return null;
-        TreeNode root = new TreeNode(values[0]);
-        Queue<TreeNode> queue = new ArrayDeque<>();
-        queue.offer(root);
-        int i = 1;
-        while (!queue.isEmpty() && i < values.length) {
-            TreeNode node = queue.poll();
-            if (values[i] != null) {
-                node.left = new TreeNode(values[i]);
-                queue.offer(node.left);
-            }
-            i++;
-            if (i < values.length && values[i] != null) {
-                node.right = new TreeNode(values[i]);
-                queue.offer(node.right);
-            }
-            i++;
-        }
-        return root;
     }
 }
