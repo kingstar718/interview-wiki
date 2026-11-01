@@ -71,6 +71,57 @@ private TreeNode build(int[] pre, int preL, int preR, int inL) {
 - **[889. 从前序与后序构造二叉树](https://leetcode.cn/problems/construct-binary-tree-from-preorder-and-postorder-traversal/)**：前序定根、后序定左子树大小，但结果可能不唯一
 - **数组转 BST（108/109）**：有序数组/链表取中间做根，递归建树
 
+## 参数形式的三种等价写法
+
+信息量相同，任给 3 个下标就能推出第 4 个（不变量：`preR - preL == inR - inL`，两个窗口装同一批节点、长度必等）。
+
+| 形式 | 参数 | 来源 | 说明 |
+|---|---|---|---|
+| **四参数** | `preStart, preEnd, inStart, inEnd` | walkccc.me 等主流参考实现 | 最易懂，边界全显式写出 |
+| **三参数（len）** | `preL, inL, len` | LeetCode Wiki（doocs 镜像官方题解） | `preEnd`、`inEnd` 由 `len` 隐含 |
+| **三参数（丢 inEnd）** | `preL, preR, inL` | 本仓库 wiki 原版 | `inEnd = inL + (preR - preL)` |
+
+**四参数版（推荐，边界显式）**：
+
+```java
+private TreeNode build(int[] pre, int preStart, int preEnd,
+                       int[] in,  int inStart,  int inEnd,
+                       Map<Integer, Integer> inToIndex) {
+    if (preStart > preEnd) return null;
+    int rootVal = pre[preStart];
+    int rootInIndex = inToIndex.get(rootVal);
+    int leftSize = rootInIndex - inStart;            // ★ 左子树节点数
+    TreeNode root = new TreeNode(rootVal);
+    root.left  = build(pre, preStart + 1,            preStart + leftSize,
+                       in,  inStart,                 rootInIndex - 1, inToIndex);
+    root.right = build(pre, preStart + leftSize + 1, preEnd,
+                       in,  rootInIndex + 1,         inEnd,           inToIndex);
+    return root;
+}
+```
+
+**三参数（len）版与上一版一一对应**，`k` 即 `rootInIndex`：
+
+```java
+private TreeNode dfs(int i, int j, int n) {
+    if (n <= 0) return null;
+    int v = pre[i];
+    int k = inToIndex.get(v);
+    TreeNode l = dfs(i + 1,         j,     k - j);            // leftSize
+    TreeNode r = dfs(i + 1 + k - j, k + 1, n - 1 - (k - j));  // rightSize
+    return new TreeNode(v, l, r);
+}
+```
+
+**两条不变量（写对就必然满足）**：
+
+```
+preEnd - preStart == inEnd - inStart        两个窗口长度恒等
+leftSize + 1 + rightSize == inEnd - inStart + 1
+```
+
+**为什么 preorder 侧必须借 inorder 的数**：仅凭 `preStart/preEnd` 无法确定切分点——`preorder = [2,3]` 既可能是「2 有左孩子 3」也可能是「2 有右孩子 3」，两种情况前序完全相同（`in` 分别为 `[3,2]` 和 `[2,3]`）。切分点信息只存在于中序。
+
 ## 易错点
 
 - **`pix`（根在中序的下标）不能直接当前序的右边界**。inorder 侧的区间可以直接用 `pix` 切（`[inL, pix-1]` / `[pix+1, inR]`），但 preorder 侧必须先换算成「左子树节点数」`leftLen = pix - inL`：左块 `[preL+1, preL+leftLen]`、右块 `[preL+leftLen+1, preR]`。写成 `[preL+1, pix]` / `[pix+1, preR]` 只在**根节点那一层**（`preL == inL`）碰巧正确，深层会重复包含根节点导致**无限递归 / StackOverflow**
