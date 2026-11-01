@@ -74,6 +74,7 @@ private TreeNode build(int[] nums, int left, int right) {
 - mid 计算用 `left + (right - left) / 2` 防溢出，不要用 `(left + right) / 2`
 - 左子树范围 `[left, mid - 1]`，右子树范围 `[mid + 1, right]`——mid 作为根不参与子树递归
 - 题目要求高度平衡但**不要求答案唯一**——中间元素取左中位数或右中位数都能通过，别被示例输出带偏
+- **三个坑会连锁反应，一次就 StackOverflow**：① 终止条件写 `left == right`（应为 `left > right`，否则单元素建不出来、区间收不拢）；② mid 写成 `left + (right + left) / 2`（应为 `left + (right - left) / 2`，前者 mid 会偏出走界）；③ 子树区间没排除 mid（`build(left, mid)`／`build(mid, right)`）。**mid 是根，左右各让一步**：左 `[left, mid-1]`、右 `[mid+1, right]`
 
 ## 面试追问
 
