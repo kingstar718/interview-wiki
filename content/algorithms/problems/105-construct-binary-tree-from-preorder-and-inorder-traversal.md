@@ -127,6 +127,8 @@ leftSize + 1 + rightSize == inEnd - inStart + 1
 - **`pix`（根在中序的下标）不能直接当前序的右边界**。inorder 侧的区间可以直接用 `pix` 切（`[inL, pix-1]` / `[pix+1, inR]`），但 preorder 侧必须先换算成「左子树节点数」`leftLen = pix - inL`：左块 `[preL+1, preL+leftLen]`、右块 `[preL+leftLen+1, preR]`。写成 `[preL+1, pix]` / `[pix+1, preR]` 只在**根节点那一层**（`preL == inL`）碰巧正确，深层会重复包含根节点导致**无限递归 / StackOverflow**
 - **测试用例必须包含 `preL != inL` 的树**：`pre=[1,2,3], in=[2,3,1]` 就能立刻暴露上述 bug；只有满二叉树、单链等对称用例会误判为「全过」
 - 用 `Map<值, 中序下标>` 预处理，把每层「找根位置」从 O(n) 降到 O(1)，总复杂度 O(n)；不预处理则最坏 O(n²)
+- **左子树前序终点写成 `preL + leftSize + 1`（多 1）也能 AC**，实测 20000 次随机用例 0 失败、LeetCode 203/203。原因是：多出的那个位置在窗口**末尾**，而递归永远从 `pre[preL]`（头部）读根，读不到它；且每个调用消耗的位置数 `1+leftSize+rightSize` 恰好等于 inorder 窗口长度，所以 `preL` 走不到虚位。**但**这条正确性依赖 `inL > inR` 守卫——若只保留 `preL > preR`，实测立刻 `ArrayIndexOutOfBoundsException`。习惯上写 `preL + leftSize`，两个窗口长度自洽，单判 `preL > preR` 即可
+- **自查式**：任何时候都应满足 `preR - preL == inR - inL`（两窗口长度相等）。左右子调用写完后代入验算，不等就说明边界写错
 
 - **前序中左子树范围的边界计算**：`preL + 1`（左子树前序起点）到 `preL + leftSize`（左子树前序终点），`preL + leftSize + 1`（右子树前序起点）。多一个少一个都错
 - 中序的边界用 `inL` 和 `inIdx`，不要引入 `inR`，因为可以从 `leftSize` 反推

@@ -198,7 +198,7 @@ class TreeNode { ... }               // ❌ 包级类：同目录多个文件各
 - ✅ [101. 对称二叉树](P101SymmetricTree.java) · 🟢 · ★★★★
 - ⬜ 103. 二叉树的锯齿形层序遍历 · 🟡 · ★★★★
 - ✅ [104. 二叉树的最大深度](P104MaximumDepthOfBinaryTree.java) · 🟢 · ★★★★
-- ⬜ 105. 从前序与中序遍历序列构造二叉树 · 🟡 · ★★★★
+- ✅ [105. 从前序与中序遍历序列构造二叉树](P105ConstructBinaryTreeFromPreorderAndInorderTraversal.java) · 🟡 · ★★★★
 - ✅ [108. 将有序数组转换为二叉搜索树](P108ConvertSortedArrayToBinarySearchTree.java) · 🟢 · ★★★★
 - ✅ [110. 平衡二叉树](P110BalancedBinaryTree.java) · 🟢 · ★★★★
 - ✅ [112. 路径总和](P112PathSum.java) · 🟢 · ★★★★
