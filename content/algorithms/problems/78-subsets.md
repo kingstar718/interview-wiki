@@ -54,6 +54,12 @@ private void backtrack(int[] nums, int start, List<Integer> path, List<List<Inte
 - 空数组：返回 `[[]]`
 - 单元素：返回 `[[],[1]]`
 
+## 收账位置：答案住在决策树的哪里
+
+组合型（77/216/39/40/131）答案住在**叶子**（选满/切完才成立）→ `if (条件) 收账 + return`。
+子集型（78/90）答案住在**每个节点**（任意前缀都是子集）→ **无条件 `res.add` 放方法第一行，for 天然终止就是出口**。
+若写成 77 惯性的"先 if 出口再 add"，最深的前缀（如 [1]）住在 start==n 那层，**在 add 前就 return 了 → 漏收叶子子集**。
+
 ## 变式
 
 - **[90. 子集 II](90-subsets-ii.md)**：含重复元素，排序 + 剪枝 `i > start && nums[i] == nums[i-1]`
