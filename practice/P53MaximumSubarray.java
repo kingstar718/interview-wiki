@@ -1,53 +1,77 @@
+import java.util.Arrays;
+
 /**
  * LeetCode 53: 最大子数组和 (Maximum Subarray)
  * https://leetcode.cn/problems/maximum-subarray/
  *
- * <p>【难度】Easy
- * <p>【标签】数组(Array) · 动态规划(DP) · 分治(Divide and Conquer)
- * <p>【题型】线性扫描维护状态（Kadane）：只维护「以当前元素结尾的最大子数组和」
- * <p>【考点】能否想到「前面的累积和若为负就该丢弃」，用 O(1) 状态一趟求解；DP 视角与贪心视角的统一
- * <p>【关联】{@link P121BestTimeToBuyAndSellStock} —— 同为「一趟扫描维护一个最优状态」的线性 DP
+ * <p>【难度】Medium
+ * <p>【标签】贪心(Greedy) · 动态规划(DP) · 数组（一鱼两吃：DP 章第一块地基）
+ * <p>【题型】Kadane：cur = max(nums[i], cur + nums[i])，历史 max 单独记账
+ * <p>【考点】子数组至少一个元素（全负返回 max 单值，不能空躲 0）；贪心"负前缀丢弃"= dp 正装说法
+ * <p>【关联】贪心入门三件套之三；DP 章后续 152 乘积最大子数组（负负得正的孪生变体）
  *
- * <p>给定整数数组 nums，找出一个具有最大和的连续子数组（至少含一个元素），返回其最大和。
+ * <p>给定整数数组 nums，找到和最大的【连续】子数组（至少一个元素），返回其最大和。
  *
- * <p>── 思路引导 ──
- * <p>1. 朴素想法：枚举所有子数组求和，O(n²)（或 O(n³)）。
+ * <p>示例：[-2,1,-3,4,-1,2,1,-5,4] → 6（子数组 [4,-1,2,1]）；[-1] → -1；[-2,1] → 1
+ * <p>约束：1 &lt;= nums.length &lt;= 10^5；-10^4 &lt;= nums[i] &lt;= 10^4
  *
- * <p>2. 关键观察（Kadane）：设 cur 为「以 nums[i] 结尾的最大子数组和」。
- *    到 nums[i] 时，要么接在前一段后（cur + nums[i]），要么自己另起一段（nums[i]），取较大者。
- *    若前一段的 cur 已是负数，接上只会拖累，不如丢弃另起。
- *
- * <p>3. 核心技巧：一趟扫描，cur = max(nums[i], cur + nums[i])，同时用 best 记录全局最大。
- *    只维护两个变量，无需额外数组。
- *
- * <p>4. 复杂度：时间 O(n)，空间 O(1)。
- *    边界：全为负数时答案是「最大的那个负数」（至少取一个元素），故 best、cur 初值应设 nums[0] 而非 0。
+ * <p>进阶（可选思考）：用 O(n) 一趟解决（贪心/DP 即是）；分治 O(n log n) 另一种写法。
  */
 public class P53MaximumSubarray {
 
+    /** 你的实现（Kadane：cur 续/重启二选一，maxSum 记历史巅峰）。 */
     public int maxSubArray(int[] nums) {
-        // 实现时请按 CLAUDE.md 约定，补上与「思路引导」编号对应的 // Step N 注释
-        throw new UnsupportedOperationException("TODO: 待实现");
+        int curSum = nums[0];
+        int maxSum = nums[0];
+        for (int i = 1; i < nums.length; i++) {
+            curSum = Math.max(nums[i], curSum + nums[i]);
+            maxSum = Math.max(maxSum, curSum);
+        }
+        return maxSum;
     }
 
     public static void main(String[] args) {
-        P53MaximumSubarray p53 = new P53MaximumSubarray();
+        P53MaximumSubarray solver = new P53MaximumSubarray();
 
-        assertEqual(6, p53.maxSubArray(new int[]{-2, 1, -3, 4, -1, 2, 1, -5, 4}), "Example 1");  // [4,-1,2,1]
-        assertEqual(1, p53.maxSubArray(new int[]{1}), "Single element");
-        assertEqual(23, p53.maxSubArray(new int[]{5, 4, -1, 7, 8}), "Mostly positive");
-        assertEqual(-1, p53.maxSubArray(new int[]{-2, -1, -3}), "All negative → largest single");
-        assertEqual(-5, p53.maxSubArray(new int[]{-5}), "Single negative");
-        assertEqual(4, p53.maxSubArray(new int[]{-1, 3, -2, 3, -5}), "Middle segment [3,-2,3]");
-
-        System.out.println("All tests passed!");
+        run(solver, new int[]{-2, 1, -3, 4, -1, 2, 1, -5, 4}, "示例1 官方 → 6");
+        run(solver, new int[]{1}, "单元素 → 1");
+        run(solver, new int[]{-1}, "全负单元素 → -1（不能空躲 0）");
+        run(solver, new int[]{-3, -1, -2}, "全负多元素 → -1（找最不负的那个）");
+        run(solver, new int[]{-2, 1}, "先负后正 → 1");
+        run(solver, new int[]{5, 4, -1, 7, 8}, "全正 → 全加 23");
+        run(solver, new int[]{8, -19, 5, -4, 20}, "负断点重组 → 21 [5,-4,20]");
+        run(solver, new int[]{-5, 8, -2, 3, -1, 6, -9}, "多段峰谷 → 14 [8,-2,3,-1,6]");
+        run(solver, new int[]{0, 0, 0, -3, 0}, "零与负 → 0（全零子数组）");
+        run(solver, new int[]{100, -100, 100}, "峰谷往返 → 100 还是 200？暴力定");
     }
 
-    private static void assertEqual(int expected, int actual, String testName) {
-        if (expected != actual) {
-            throw new AssertionError(String.format("[FAIL] %s: expected %d, but got %d",
-                testName, expected, actual));
+    // ---------- 测试辅助（提交 LeetCode 时删除） ----------
+
+    /** 独立暴力参考：枚举全部子数组 [l..r] 求最大和（O(n²)，循环累加不重算）。 */
+    private static int bruteForce(int[] nums) {
+        int best = Integer.MIN_VALUE;
+        for (int l = 0; l < nums.length; l++) {
+            int sum = 0;
+            for (int r = l; r < nums.length; r++) {
+                sum += nums[r];
+                best = Math.max(best, sum);
+            }
         }
-        System.out.println("[PASS] " + testName);
+        return best;
+    }
+
+    private static void run(P53MaximumSubarray solver, int[] nums, String label) {
+        try {
+            int got = solver.maxSubArray(Arrays.copyOf(nums, nums.length));
+            int bf = bruteForce(Arrays.copyOf(nums, nums.length));
+            boolean ok = got == bf;
+
+            System.out.printf("[%s] %-30s nums=%-34s | 暴力=%d 实得=%d%n",
+                    ok ? "PASS" : "FAIL", label, Arrays.toString(nums), bf, got);
+        } catch (UnsupportedOperationException e) {
+            System.out.printf("[FAIL] %-30s nums=%-34s | TODO 未实现%n", label, Arrays.toString(nums));
+        } catch (Exception e) {
+            System.out.printf("[FAIL] %-30s nums=%-34s | 异常: %s%n", label, Arrays.toString(nums), e);
+        }
     }
 }
