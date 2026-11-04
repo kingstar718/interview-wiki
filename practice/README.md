@@ -73,7 +73,9 @@ class TreeNode { ... }               // ❌ 包级类：同目录多个文件各
 - ✅ [1. 两数之和](P1TwoSum.java) · 🟢 · ★★★★★
 - ✅ [15. 三数之和](P15ThreeSum.java) · 🟡 · ★★★★★
 - ⬜ [42. 接雨水](P42TrappingRainWater.java) · 🔴 · ★★★★★
-- ⬜ [53. 最大子数组和](P53MaximumSubarray.java) · 🟢 · ★★★★★
+- ✅ [455. 分发饼干](P455AssignCookies.java) · 🟢 · ★★★（贪心入门）
+- ⬜ 376. 摆动序列 · 🟡 · ★★★
+- - ⬜ [53. 最大子数组和](P53MaximumSubarray.java) · 🟢 · ★★★★★
 - ⬜ 8. 字符串转换整数 (atoi) · 🟡 · ★★★★
 - ⬜ 11. 盛最多水的容器 · 🟡 · ★★★★
 - ⬜ 41. 缺失的第一个正数 · 🔴 · ★★★★
