@@ -39,6 +39,15 @@ public int jump(int[] nums) {
 }
 ```
 
+## BFS 分层公式（45/55 所有的"双边界"结构）
+
+- `maxReach`（全局最远落点，**每格更新** `max(maxReach, i + nums[i])`——量纲是下标不是步数，55/45 通用）
+- `curEnd`（本层边界，**只在 `i == curEnd` 事件节点换血**为 maxReach）
+- `jumps/steps`（边界结算时 +1；换血顺序必须 steps 先、curEnd 后）
+- for 上限 `i < n-1`（最后一格不扫：站终点不用起跳；扫满会在结尾多结一次账）
+- 早退 `curEnd >= n-1` → break（终点在本层射程内就不必真跳）
+- 与 55 的差异：55 单 maxReach（问存在性）；45 双边界（问最优化，层 = 一次跳跃的 BFS 覆盖）
+
 ## 复杂度
 
 - **时间**：O(n)
