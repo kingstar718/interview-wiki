@@ -44,6 +44,16 @@ public List<Integer> partitionLabels(String s) {
 }
 ```
 
+## 事件结算三件套（与 45 同族，两题对照记忆）
+
+| | 45 跳跃 II | 763（本题） |
+|---|---|---|
+| 墙的语义 | `max(maxReach, i+nums[i])`（这格的**射程**） | `max(end, last[c])`（这字符的**末现**） |
+| 收割事件 | `i == curEnd` → `jumps++; curEnd = maxReach` | `i == end` → `res.add(len); start = end+1` |
+| 上限 | `curEnd >= n-1` 早退 | 无（走到底天然收完） |
+
+要点：① 墙用 `max` 保"Historical 最大"——直接赋值会被早结束字符拉回（"abcba" 里 b 的 3 vs a 的 4）；② start 推到 end+1（不是 end）后，end/start **跨段延续不清零**，next 段直接在既有 end 上继续 max；③ 单字符、全不重复（每字符区间 [c,c]）自然得 [1]*n，无需特判。
+
 ## 复杂度
 
 - **时间**：O(n)
