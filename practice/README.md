@@ -270,6 +270,8 @@ class TreeNode { ... }               // ❌ 包级类：同目录多个文件各
 
 - ✅ [53. 最大子数组和](P53MaximumSubarray.java) · 🟢 · ★★★★★
 - ✅ [70. 爬楼梯](P70ClimbingStairs.java) · 🟢 · ★★★★★
+- ✅ [509. 斐波那契数](P509FibonacciNumber.java) · 🟢 · ★★★
+- ✅ [746. 使用最小花费爬楼梯](P746MinCostClimbingStairs.java) · 🟢 · ★★★
 - ⬜ 72. 编辑距离 · 🔴 · ★★★★★
 - ⬜ 198. 打家劫舍 · 🟢 · ★★★★★
 - ⬜ 300. 最长递增子序列 · 🟡 · ★★★★★
