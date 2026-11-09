@@ -44,6 +44,20 @@ public int combinationSum4(int[] nums, int target) {
 }
 ```
 
+## 末步分箱——"外层容量 = 排列"的物理定型（实测 [1,2] target=3）
+
+```
+序列 = 0→target 的一条走路，每 num=一步
+dp[i] = "0 走到 i 站的路条数"；dp[0]=1 原地
+dp[3]（=dp[2]+dp[1]）读作："末步 1"箱（先到 2 的 2 条）+ "末步 2"箱（先到 1 的 1 条）= 3
+(1,2) 落"末步 2"箱、(2,1) 落"末步 1"箱——顺序天然分开数 ← 排列的本质
+518 外层=面额：面额配比相同 → 同箱只数一次 → 组合
+```
+
+- 内层 for-each 无"正/倒序"讲究（num 间互引用不存在）；nums[i] 可能 > i → 必须 `if (i ≥ num)`（[9] target=3 守）
+- **结构换骨架**：外层 i 从 1..target 自增（不是 for-each 物品的滚表模板）——上界 `<=`（首个版 `<` 踩 off-by-one，全 0）
+- LCS 签名以题面为准 `(int[] nums, int target)`（与 518 的 `(int amount, int[] coins)` 不同序——别凭记忆）
+
 ## 复杂度
 
 - **时间**：O(target × n)，n = nums 长度
