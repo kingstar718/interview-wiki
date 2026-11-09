@@ -29,38 +29,45 @@ Redis 题要区分“命令原子”与“业务操作原子”，也要说明�
 **Redis 知识地图**
 
 ```mermaid
-mindmap
+%%{init: {"flowchart": {"curve": "basis", "nodeSpacing": 28, "rankSpacing": 70}}}%%
+flowchart LR
   root((Redis))
-    基础与性能
-      为什么快
-      单线程模型
-      多线程 IO
-    数据结构
-      String
-      Hash
-      List
-      Set
-      ZSet
-      特殊结构
-    持久化
-      RDB
-      AOF
-      混合持久化
-    高可用与分片
-      主从复制
-      哨兵
-      Cluster
-    缓存治理
-      缓存一致性
-      穿透
-      击穿
-      雪崩
-      预热
-    典型场景
-      分布式锁
-      秒杀
-      Stream
-      大 Key 热 Key
+
+  root --- basic([基础与性能])
+  basic --- basic1[为什么快]
+  basic --- basic2[单线程模型]
+  basic --- basic3[多线程 IO]
+
+  root --- ds([数据结构])
+  ds --- ds1[String]
+  ds --- ds2[Hash]
+  ds --- ds3[List]
+  ds --- ds4[Set]
+  ds --- ds5[ZSet]
+  ds --- ds6[特殊结构]
+
+  root --- persistence([持久化])
+  persistence --- p1[RDB]
+  persistence --- p2[AOF]
+  persistence --- p3[混合持久化]
+
+  root --- ha([高可用与分片])
+  ha --- ha1[主从复制]
+  ha --- ha2[哨兵]
+  ha --- ha3[Cluster]
+
+  root --- cache([缓存治理])
+  cache --- c1[缓存一致性]
+  cache --- c2[穿透]
+  cache --- c3[击穿]
+  cache --- c4[雪崩]
+  cache --- c5[预热]
+
+  root --- scene([典型场景])
+  scene --- s1[分布式锁]
+  scene --- s2[秒杀]
+  scene --- s3[Stream]
+  scene --- s4[大 Key 热 Key]
 ```
 
 ---
