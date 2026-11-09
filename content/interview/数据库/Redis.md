@@ -26,6 +26,43 @@
 
 Redis 题要区分“命令原子”与“业务操作原子”，也要说明高可用不等于强一致。
 
+**Redis 知识地图**
+
+```mermaid
+mindmap
+  root((Redis))
+    基础与性能
+      为什么快
+      单线程模型
+      多线程 IO
+    数据结构
+      String
+      Hash
+      List
+      Set
+      ZSet
+      特殊结构
+    持久化
+      RDB
+      AOF
+      混合持久化
+    高可用与分片
+      主从复制
+      哨兵
+      Cluster
+    缓存治理
+      缓存一致性
+      穿透
+      击穿
+      雪崩
+      预热
+    典型场景
+      分布式锁
+      秒杀
+      Stream
+      大 Key 热 Key
+```
+
 ---
 
 ## 一、Redis 基础
