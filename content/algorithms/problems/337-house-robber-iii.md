@@ -51,6 +51,16 @@ private int[] dfs(TreeNode node) {
 }
 ```
 
+## 跳一层 vs 隔一格、pair 流派注记（实测收官）
+
+```
+198：dp[i-2]+nums[i] —— "跳一格"；树形：take = val + left[0]+right[0] —— "隔层是孙不是祖"的大跃迁
+禁令直接烧进 take 腿（孩子必不偷），无需 213 的"拆两段"——环形只是特例某种
+skip = Σ max(孩子 skip, 孩子 take)    ← 自由流（wiki 参照）
+take = val + Σ 孩子 skip              ← 强制流（wiki 同）
+叶子/null 返 [0,0]；LCS 签名 rob(TreeNode)（与 198 int[] 重载同名不同形——签名注册表）
+```
+
 ## 复杂度
 
 - **时间**：O(n)，每个节点访问一次
