@@ -32,11 +32,16 @@ Redis 题要区分“命令原子”与“业务操作原子”，也要说明�
 %%{init: {"flowchart": {"curve": "basis", "nodeSpacing": 28, "rankSpacing": 70}}}%%
 flowchart LR
   root((Redis))
+  click root href "#redis" "Redis：面试追问地图"
 
   root --- basic([基础与性能])
   basic --- basic1[为什么快]
   basic --- basic2[单线程模型]
   basic --- basic3[多线程 IO]
+  click basic href "#一redis-基础" "基础与性能：为什么快、单线程边界、多线程 IO"
+  click basic1 href "#redis-为什么快" "内存 + 单线程事件循环 + 高效数据结构；10–15 万 QPS，P99 约 1ms"
+  click basic2 href "#redis-单线程为什么快" "单线程避免锁竞争和上下文切换；6.0 后引入多线程 IO"
+  click basic3 href "#redis-哪些地方使用了多线程" "多线程 IO、后台线程与命令执行边界"
 
   root --- ds([数据结构])
   ds --- ds1[String]
@@ -45,16 +50,31 @@ flowchart LR
   ds --- ds4[Set]
   ds --- ds5[ZSet]
   ds --- ds6[特殊结构]
+  click ds href "#五数据结构底层" "数据结构底层：SDS、跳表、listpack、渐进式 rehash"
+  click ds1 href "#string-使用-sds-存储" "String：SDS 结构、embstr/raw 编码与扩容"
+  click ds2 href "#redis-数据结构" "Hash：listpack 到 hashtable 的编码转换"
+  click ds3 href "#redis-数据结构" "List：quicklist 与 ziplist 片段"
+  click ds4 href "#redis-数据结构" "Set：intset 到 hashtable 的编码转换"
+  click ds5 href "#zset-底层实现" "ZSet：listpack、跳表与哈希表"
+  click ds6 href "#redis-stream-适合什么场景" "Bitmap、HyperLogLog、GEO、Stream 等特殊结构"
 
   root --- persistence([持久化])
   persistence --- p1[RDB]
   persistence --- p2[AOF]
   persistence --- p3[混合持久化]
+  click persistence href "#二redis-持久化" "持久化：RDB 快照、AOF 日志与混合模式"
+  click p1 href "#持久化的两种方式" "RDB：fork + COW 生成快照；恢复快但可能丢数据"
+  click p2 href "#持久化的两种方式" "AOF：记录写命令；always/everysec/no 三种刷盘策略"
+  click p3 href "#持久化的两种方式" "混合持久化：RDB 前缀 + AOF 增量，兼顾恢复速度和完整性"
 
   root --- ha([高可用与分片])
   ha --- ha1[主从复制]
   ha --- ha2[哨兵]
   ha --- ha3[Cluster]
+  click ha href "#三redis-高可用" "高可用与分片：主从、哨兵、Cluster"
+  click ha1 href "#主从全量同步-vs-增量同步" "全量同步、增量同步与复制积压缓冲区"
+  click ha2 href "#哨兵怎么判定故障怎么选主" "主观下线、客观下线、Raft 选主与故障转移"
+  click ha3 href "#cluster-为什么是-16384-个槽槽迁移时请求怎么路由" "16384 槽、Gossip、MOVED/ASK 与槽迁移"
 
   root --- cache([缓存治理])
   cache --- c1[缓存一致性]
@@ -62,13 +82,26 @@ flowchart LR
   cache --- c3[击穿]
   cache --- c4[雪崩]
   cache --- c5[预热]
+  click cache href "#四缓存三大问题" "缓存治理：一致性、穿透/击穿/雪崩、预热与淘汰"
+  click c1 href "#缓存与-mysql-数据一致性" "Cache Aside、删除缓存、延迟双删与 binlog 订阅"
+  click c2 href "#缓存穿透击穿雪崩如何解决" "穿透：空值缓存、布隆过滤器、参数校验"
+  click c3 href "#缓存穿透击穿雪崩如何解决" "击穿：互斥重建、逻辑过期、热点永不过期"
+  click c4 href "#缓存穿透击穿雪崩如何解决" "雪崩：随机过期、多级缓存、熔断限流与预热"
+  click c5 href "#缓存预热冷启动时怎么避免打挂数据库" "冷启动按热点分批预热；定时任务、双缓存、灰度放量"
 
   root --- scene([典型场景])
   scene --- s1[分布式锁]
   scene --- s2[秒杀]
   scene --- s3[Stream]
   scene --- s4[大 Key 热 Key]
+  click scene href "#九场景问题" "典型场景：锁、秒杀、消息流与大 Key/热 Key"
+  click s1 href "#redis-分布式锁怎么实现" "SET NX PX、唯一值、Lua 释放、续期与 fencing token"
+  click s2 href "#秒杀场景设计" "库存扣减、分段锁、原子操作与数据库兜底"
+  click s3 href "#redis-stream-适合什么场景" "消费者组、PEL、ACK、重投与死信"
+  click s4 href "#大-key-问题" "大 Key 与热 Key：发现、拆分、迁移和单分片压力"
 ```
+
+> 提示：点击节点跳到对应章节，悬停节点查看要点摘要。
 
 ---
 
