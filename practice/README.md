@@ -60,7 +60,7 @@ class TreeNode { ... }               // ❌ 包级类：同目录多个文件各
 | [二叉树](#二叉树)                     | 16 / 30 |
 | [图论](#图论)                         | 0 / 14 |
 | [回溯](#回溯)                         | 10 / 15 |
-| [动态规划与贪心](#动态规划与贪心)     | 27 / 44 |
+| [动态规划与贪心](#动态规划与贪心)     | 27 / 45 |
 | [排序与堆](#排序与堆)                 | 2 / 10 |
 | [字典树](#字典树)                     | 0 / 4  |
 | [位运算](#位运算)                     | 1 / 6  |
@@ -293,6 +293,7 @@ class TreeNode { ... }               // ❌ 包级类：同目录多个文件各
 - ✅ [121. 买卖股票的最佳时机](P121BestTimeToBuyAndSellStock.java) · 🟢 · ★★★★★
 - ✅ [123. 买卖股票的最佳时机 III](P123BestTimeToBuyAndSellStockIII.java) · 🔴 · ★★★★
 - ✅ [188. 买卖股票的最佳时机 IV](P188BestTimeToBuyAndSellStockIV.java) · 🔴 · ★★★
+- ⬜ [300. 最长递增子序列](P300LongestIncreasingSubsequence.java) · 🟡 · ★★★★★
 - ✅ [435. 无重叠区间](P435NonOverlappingIntervals.java) · 🟡 · ★★★★
 - ✅ [518. 零钱兑换 II](P518CoinChangeII.java) · 🟡 · ★★★★
 - ✅ [377. 组合总和 IV](P377CombinationSumIV.java) · 🟡 · ★★★
