@@ -50,6 +50,17 @@ public int longestCommonSubsequence(String text1, String text2) {
 }
 ```
 
+## 前缀对语义与值的流向（实测）
+
+```
+dp[i][j] = "(text1 前 i 个, text2 前 j 个) 子问题的 LCS"——双重身份：本格答案 ∧ 下游建材
+不匹配继承的语义拆解：末尾字符不能同列 → 最优解必属 A（跳 text1 末尾=dp[i-1][j]）
+                       或 B（跳 text2 末尾=dp[i][j-1]）→ max 谁大谁是本格答案
+vs 718：语义从"双锚结尾"变"前缀对"→ 不匹配从归零变继承 → answer 从全表 max 变 dp[m][n]
+匹配必吃（dp[i-1][j-1]+1）的依据：LCS 交换论证——不吃匹配不劣于任何继承（面试口答点）
+漏一方向的灾难：bl/yby 的 b 藏在 text2 中段——必须跳 text2 末尾才收得进（双向缺一不可）
+```
+
 ## 复杂度
 
 - **时间**：O(m × n)
