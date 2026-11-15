@@ -1,87 +1,147 @@
+import java.util.ArrayDeque;
+import java.util.Arrays;
+import java.util.Deque;
+
 /**
  * LeetCode 42: 接雨水 (Trapping Rain Water)
  * https://leetcode.cn/problems/trapping-rain-water/
  *
- * <p>【难度】Hard
- * <p>【标签】双指针(Two Pointers) · 栈(Stack) · 动态规划(DP) · 单调栈(Monotonic Stack)
- * <p>【题型】按列计算「可蓄水 = min(左max, 右max) − 自身高度」；同一思路有 DP / 双指针 / 单调栈三套实现
- * <p>【考点】能否看出每列蓄水量只取决于「两侧最高柱的较小值」，以及双指针如何把空间压到 O(1)
- * <p>【关联】{@link P11ContainerWithMostWater} —— 同用双指针，但 11 求「两线夹的最大容积」（容量=短线×距离），42 求「柱间蓄水」（每柱水位由两侧更高者定），方向相反，对照记
- * <p>{@link P84LargestRectangleInHistogram} —— 同用单调栈，但 84 求「柱围成的最大矩形面积」（找两侧更矮边界），42 求「柱间凹槽蓄水」（找两侧更高边界），单调栈方向相反的经典对照
+ * <p>═══════════════════════════════════════════════════════════════════
+ * <p>【完整题面·自足】（单调栈 3/3 收官——🔴 Top6 硬题）
  *
- * <p>给定 n 个非负整数表示每根柱子的高度图，计算下雨后该图能接住多少雨水。
+ * <p>■ 题目描述
+ *   给 n 个非负整数表示每个宽度为 1 的柱子的高度图
+ *   （height[i] 是第 i 根柱子的高度，0 表示该位置没有柱子）。
+ *   计算按此排列的柱子，下雨之后【能接多少雨水】（每格水宽 1、
+ *   水位由两侧更高的柱子拦住；单位为 1×1 的格子数）。
  *
- * <p>── 思路引导 ──
- * <p>1. 朴素想法：按列枚举，对每个 i 求它上方蓄水 = max(0, min(左侧最高, 右侧最高) − height[i])。
- *    每列左右各扫一遍求 max → O(n²)。
+ * <p>■ 输入输出
+ *   输入：int[] height（0 ≤ length ≤ 2×10^4；0 ≤ height[i] ≤ 10^5）
+ *   输出：int（接水总量）
  *
- * <p>2. 关键观察：min(左max, 右max) 里的左max、右max 是固定结构，可预处理：
- *    leftMax[i] = max(leftMax[i-1], height[i])，rightMax[i] = max(rightMax[i+1], height[i])，
- *    两个 DP 数组一趟填好，之后每列蓄水量 O(1) 得到 → 整体 O(n) 时间，O(n) 空间。
+ * <p>■ 示例逐条
+ * <pre>
+ * height=[0,1,0,2,1,0,1,3,2,1,2,1] → 6（官方：洼地在 2/4/5/6/9/10 各格积水）
+ * height=[4,2,0,3,2,5]             → 9（官方例2：左侧 4 拦、右侧 5 拦）
+ * height=[3,0,3]                   → 3（单洼地：底 0，两侧 3 → 3 格）
+ * height=[1,2,3,4]                 → 0（单调增不存水）
+ * height=[4,3,2,1]                 → 0（单调减不存水）
+ * height=[2,0,2]                   → 2（最简单洼地）
+ * height=[5,4,1,2]                 → 1（只有 1 上方 1 格：min(5,2)−1=1）
+ * </pre>
  *
- * <p>3. 核心技巧 —— 双指针 O(1) 空间：
- *    用 left、right 两指针从两端向中间收窄，维护 leftMax、rightMax。
- *    哪边的 max 更小，就处理哪边——因为较小的一侧决定了该列水位（另一侧更高，min 由小的一侧拍板）：
- *      - 若 leftMax < rightMax：处理 left，蓄水 = max(0, leftMax − height[left])，再 left++；
- *      - 否则：处理 right，蓄水 = max(0, rightMax − height[right])，再 right--。
- *    每步 O(1)，总 O(n)。
- *    （另有单调栈解法：栈存下标，遇比栈顶高者就弹出并累加弹出柱的蓄水。）
+ * <p>═══════════════════════════════════════════════════════════════════
  *
- * <p>⚠️ 易错点：双指针的分支条件比的是「两侧已知 max 的大小」(leftMax vs rightMax)，
- *    不是 height[left] vs height[right]，更不是 left vs right。
- *    初学常把条件写反，导致某些用例少算或多算。
+ * <p>【难度】Hard（页频 ★★★★★——Top6 硬题）
+ * <p>【标签】单调栈 · 双指针 · 动态规划预处理 · 数组
+ * <p>【题型】"按列积水"= min(左最高, 右最高) − 自身高（短板原理）；
+ * <p>　　　　双解：①单调递减栈（四空第 3 列最重的一空：弹时算"洼地面积"）②双指针（短板提前锁死）
+ * <p>【考点】水的归属判定（哪侧 max 小，哪侧水位已定）；单调栈弹时三要素（左边界/宽度/水深）；
+ * <p>　　　　双指针"矮侧先行"的正确性（水不高于短边——对侧再高也由本侧 max 决定）
+ * <p>【关联】P739/496（单调栈三题前两空）；P84（柱状图最大矩形——同族延伸被砍）；P11 盛水容器（双指针同族不同题）
  *
- * <p>4. 复杂度：DP 解法 O(n) 时间 O(n) 空间；双指针 O(n) 时间 O(1) 空间；单调栈 O(n) 时间 O(n) 空间。
- *    边界：长度 < 3 不可能蓄水（中间无槽）返回 0；单调递增/递减/全等数组都蓄 0。
+ * <p>LCS 签名：trap(int[] height)。
  */
 public class P42TrappingRainWater {
 
+    /** 你的实现（双指针流：矮侧先行——leftMax<rightMax 时左格水位已锁死）。 */
     public int trap(int[] height) {
-        // 实现时请按 CLAUDE.md 约定，补上与「思路引导」编号对应的 // Step N 注释
-        throw new UnsupportedOperationException("TODO: 待实现");
+        int l = 0, r = height.length - 1;
+        int leftMax = 0, rightMax = 0;
+        int water = 0;
+        while (l < r) {
+            leftMax = Math.max(leftMax, height[l]);
+            rightMax = Math.max(rightMax, height[r]);
+            if (leftMax < rightMax) {
+                water += leftMax - height[l];
+                l++;
+            } else {
+                water += rightMax - height[r];
+                r--;
+            }
+        }
+        return water;
     }
 
     public static void main(String[] args) {
-        P42TrappingRainWater p42 = new P42TrappingRainWater();
+        P42TrappingRainWater solver = new P42TrappingRainWater();
 
-        // 示例 1
-        assertEqual(6, p42.trap(new int[]{0, 1, 0, 2, 1, 0, 1, 3, 2, 1, 2, 1}), "Example 1");
-
-        // 示例 2
-        assertEqual(9, p42.trap(new int[]{4, 2, 0, 3, 2, 5}), "Example 2");
-
-        // 单根柱
-        assertEqual(0, p42.trap(new int[]{5}), "Single bar");
-
-        // 两根柱
-        assertEqual(0, p42.trap(new int[]{1, 1}), "Two bars");
-
-        // 单调递增
-        assertEqual(0, p42.trap(new int[]{1, 2, 3, 4}), "Ascending");
-
-        // 单调递减
-        assertEqual(0, p42.trap(new int[]{4, 3, 2, 1}), "Descending");
-
-        // 全等
-        assertEqual(0, p42.trap(new int[]{0, 0, 0}), "All zero");
-
-        // 单槽
-        assertEqual(3, p42.trap(new int[]{3, 0, 3}), "Single dip");
-
-        // 平底槽
-        assertEqual(6, p42.trap(new int[]{3, 0, 0, 3}), "Plateau dip");
-
-        // 双槽
-        assertEqual(12, p42.trap(new int[]{4, 2, 0, 2, 0, 4}), "Two dips");
-
-        System.out.println("All tests passed!");
+        run(solver, new int[]{0, 1, 0, 2, 1, 0, 1, 3, 2, 1, 2, 1}, "官方例1 → 6");
+        run(solver, new int[]{4, 2, 0, 3, 2, 5}, "官方例2 → 9");
+        run(solver, new int[]{3, 0, 3}, "单洼地 → 3");
+        run(solver, new int[]{1, 2, 3, 4}, "单调增 → 0");
+        run(solver, new int[]{4, 3, 2, 1}, "单调减 → 0");
+        run(solver, new int[]{2, 0, 2}, "最简洼地 → 2");
+        run(solver, new int[]{5, 4, 1, 2}, "右矮墙 → 1（min(5,2)−1）");
+        run(solver, new int[]{}, "空数组 → 0");
     }
 
-    private static void assertEqual(int expected, int actual, String testName) {
-        if (expected != actual) {
-            throw new AssertionError(String.format("[FAIL] %s: expected %d, but got %d",
-                testName, expected, actual));
+    // ---------- 测试辅助（提交 LeetCode 时删除） ----------
+
+    /** 独立暴力参考：按列积水公式 + 每列向两边线性扫最高——O(n²)，机制与双解全不同。 */
+    private static int bruteForce(int[] height) {
+        int total = 0;
+        for (int i = 0; i < height.length; i++) {
+            int leftMax = 0, rightMax = 0;
+            for (int j = 0; j <= i; j++) leftMax = Math.max(leftMax, height[j]);
+            for (int j = i; j < height.length; j++) rightMax = Math.max(rightMax, height[j]);
+            total += Math.min(leftMax, rightMax) - height[i];
         }
-        System.out.println("[PASS] " + testName);
+        return total;
+    }
+
+    /** 你的实现【单调栈流】（修正版：depth=min(两墙)−底——"min 里只能放墙不能放减法"）。 */
+    public int trapStack(int[] height) {
+        Deque<Integer> stack = new ArrayDeque<>();
+        int water = 0;
+        for (int i = 0; i < height.length; i++) {
+            while (!stack.isEmpty() && height[stack.peek()] < height[i]) {
+                int bottom = stack.pop();
+                if (stack.isEmpty()) {
+                    break;
+                }
+                int left = stack.peek();
+                int width = i - left - 1;
+                int depth = Math.min(height[left], height[i]) - height[bottom];
+                water += width * depth;
+            }
+            stack.push(i);
+        }
+        return water;
+    }
+
+    /** 参考二（单调栈流——四空第 3 列最重一空的完整形态，对照用）。 */
+    private static int refStack(int[] height) {
+        Deque<Integer> stack = new ArrayDeque<>();   // 递减栈存下标
+        int water = 0;
+        for (int i = 0; i < height.length; i++) {
+            while (!stack.isEmpty() && height[i] > height[stack.peek()]) {
+                int bottom = stack.pop();            // 洼地底
+                if (stack.isEmpty()) break;          // 左边没墙 → 积不住
+                int left = stack.peek();
+                int width = i - left - 1;
+                int depth = Math.min(height[left], height[i]) - height[bottom];
+                water += width * depth;
+            }
+            stack.push(i);
+        }
+        return water;
+    }
+
+    private static void run(P42TrappingRainWater solver, int[] height, String label) {
+        try {
+            int got = solver.trap(Arrays.copyOf(height, height.length));
+            int want = bruteForce(Arrays.copyOf(height, height.length));
+            int ref2 = solver.trapStack(Arrays.copyOf(height, height.length));
+            boolean ok = got == want && got == ref2;
+            String extra = (got != ref2) ? "（你的单调栈版与暴力参考不一致！）" : "";
+
+            System.out.printf("[%s] %-20s height=%-34s | 参考=%d 你的栈=%d 实得=%d %s%n",
+                    ok ? "PASS" : "FAIL", label, Arrays.toString(height), want, ref2, got, extra);
+        } catch (UnsupportedOperationException e) {
+            System.out.printf("[FAIL] %-20s height=%-34s | TODO 未实现%n", label, Arrays.toString(height));
+        } catch (Exception e) {
+            System.out.printf("[FAIL] %-20s height=%-34s | 异常: %s%n", label, Arrays.toString(height), e);
+        }
     }
 }
