@@ -8,117 +8,127 @@ import java.util.Map;
  * LeetCode 49: 字母异位词分组 (Group Anagrams)
  * https://leetcode.cn/problems/group-anagrams/
  *
- * <p>【难度】Medium
- * <p>【标签】哈希表(Hash Map) · 字符串(String) · 排序(Sorting)
- * <p>【题型】**设计哈希键**做分组；把「判断两两是否等价」转成「计算同一个代表元」
- * <p>【考点】能否想到给每组构造唯一「指纹」作为 key，以及能否分析出计数法优于排序法
- * <p>【关联】{@link P1TwoSum} —— 哈希表基础：那题用哈希「查值」，本题用哈希「分组」
+ * <p>═══════════════════════════════════════════════════════════════════
+ * <p>【完整题面·自足】（二阶段 Hot100 验收 1/50）
  *
- * <p>给定一个字符串数组 strs，把「字母异位词」分到同一组，返回分组结果（组的顺序不限）。
- * 字母异位词：由相同字母以不同顺序重排而成，如 "eat" / "tea" / "ate"。
+ * <p>■ 题目描述
+ *   给一个字符串数组 strs，把【字母异位词】分组——异位词 = 字母相同、
+ *   排列不同（如 eat/tea/ate）。返回分组结果（每组内、组间顺序不限）。
  *
- * <p>── 思路引导 ──
- * <p>1. 朴素想法：两两比较是否互为异位词，把同组的并起来。
- *    比较一对是 O(k)，两两比较是 O(n²k)，还要额外处理「已归组」标记，很笨重。
+ * <p>■ 输入输出
+ *   输入：String[] strs（1 ≤ length ≤ 10^4；0 ≤ strs[i].length ≤ 100；全小写字母，可含空串）
+ *   输出：List<List<String>>（异位词组列表）
  *
- * <p>2. 关键观察：分组问题不该用「两两比较」，而该用「**给每个元素算一个代表元(指纹)**」——
- *    只要指纹相同就是一组，一次遍历用哈希表按指纹归堆即可，从 O(n²) 降到 O(n)。
- *    那么异位词的指纹是什么？它们的共性是「字母组成完全相同，只是顺序不同」。
+ * <p>■ 示例逐条
+ * <pre>
+ * strs=["eat","tea","tan","ate","nat","bat"] → [[bat],[nat,tan],[ate,eat,tea]]（顺序不限）
+ * strs=[""] → [[""]]（空串组）
+ * strs=["a"] → [["a"]]
+ * strs=["abc","cba","bca","abd"] → [[abc,cba,bca],[abd]]（前三互为异位词）
+ * strs=["aaa","aaa"] → [[aaa,aaa]]（重复词同组）
+ * strs=["ab","ba","cd","dc"] → [[ab,ba],[cd,dc]]（两组平行）
+ * </pre>
  *
- * <p>3. 核心技巧 —— 构造哈希键（两种经典做法）：
- *    a) 排序法：把字符串内部字符排序，"eat"/"tea"/"ate" 都变成 "aet"，用它当 key。
- *       直观好写，单次排序 O(k log k)。
- *    b) 计数法（本文实现，进阶最优）：统计 26 个字母出现次数，拼成 "#1#0#1…" 这样的 key，
- *       单次 O(k)，总复杂度 O(nk)，在 k 很大时更优。面试说出这条能加分。
- *       注意计数间要加分隔符（本文用 '#'），否则 [1,11] 与 [11,1] 会拼成同一个 key 而撞键。
- *    随后按 key 把同组字符串塞进同一个 List，即完成分组。
+ * <p>═════════════════════════════════════════════════════════════════════
  *
- * <p>4. 复杂度（计数法）：时间 O(n·k)，空间 O(n·k)；n 为字符串个数，k 为平均长度。
- *    边界：空数组返回空列表；空串 "" 自成一组（其计数键就是 26 个 "#0"）。
+ * <p>【难度】Medium（页频 ★★★★· Hot100）
+ * <p>【标签】哈希表 · 字符串 · 排序
+ * <p>【题型】分组哈希：为每个词算一个"组标识 key"（异位词共享同一 key）→ map 分桶
+ * <p>【考点】key 设计两流派：排序串（O(k log k)/词）vs 字符计数串（O(k)/词）；
+ * <p>　　　　map.computeIfAbsent；分组题的"key 归一化"思想（49 是模板首题）
+ * <p>【关联】P128（Set 扩展链）；P242（异位词判定——key 的单点版）；P347（分组哈希兄弟）
+ *
+ * <p>LCS 签名：groupAnagrams(String[] strs)。
  */
 public class P49GroupAnagrams {
 
+    /** 你的实现（排序串 key 分桶：JDK8 合规版 new ArrayList<>(map.values())）。 */
     public List<List<String>> groupAnagrams(String[] strs) {
-        // 指纹 → 同组字符串
-        Map<String, List<String>> groups = new HashMap<>();
+        Map<String, List<String>> map = new HashMap<>();
         for (String s : strs) {
-            // Step 3：给每个字符串算指纹（异位词指纹必相同）
-            String key = build(s);
-            // Step 2：按指纹归堆 —— 同 key 塞进同一个 List，无则新建
-            groups.computeIfAbsent(key, k -> new ArrayList<>()).add(s);
+            char[] chars = s.toCharArray();
+            Arrays.sort(chars);
+            String newKey = new String(chars);
+            if (map.containsKey(newKey)) {
+                map.get(newKey).add(s);
+            } else {
+                List<String> r = new ArrayList<>();
+                r.add(s);
+                map.put(newKey, r);
+            }
         }
-        return new ArrayList<>(groups.values());
-    }
-
-    /** 计算字符串的「计数指纹」：字母组成相同则指纹相同（Step 3b 计数法）。 */
-    public String build(String s) {
-        // Step 3b-1：统计 26 个字母各自出现次数（异位词的计数完全一致）
-        int[] count = new int[26];
-        for (char c : s.toCharArray()) {
-            count[c - 'a']++;
-        }
-        // Step 3b-2：把计数数组拼成 key，用 '#' 分隔避免多位数相邻撞键
-        StringBuilder sb = new StringBuilder();
-        for (int c : count) {
-            sb.append('#').append(c);
-        }
-        return sb.toString();
+        return new ArrayList<>(map.values());
     }
 
     public static void main(String[] args) {
-        P49GroupAnagrams p49 = new P49GroupAnagrams();
+        P49GroupAnagrams solver = new P49GroupAnagrams();
 
-        // 示例 1
-        assertGroupsEqual("[[ate,eat,tea],[bat],[nat,tan]]",
-            p49.groupAnagrams(new String[]{"eat", "tea", "tan", "ate", "nat", "bat"}),
-            "Example 1");
-
-        // 空串输入
-        assertGroupsEqual("[[]]", p49.groupAnagrams(new String[]{""}), "Empty string");
-
-        // 单个字符串
-        assertGroupsEqual("[[a]]", p49.groupAnagrams(new String[]{"a"}), "Single string");
-
-        // 空数组
-        assertGroupsEqual("[]", p49.groupAnagrams(new String[]{}), "Empty array");
-
-        // 全部互为异位词
-        assertGroupsEqual("[[abc,bca,cab]]",
-            p49.groupAnagrams(new String[]{"abc", "bca", "cab"}), "All anagrams");
-
-        // 无任何异位词
-        assertGroupsEqual("[[a],[b],[c]]",
-            p49.groupAnagrams(new String[]{"a", "b", "c"}), "No anagrams");
-
-        // 完全重复的字符串应留在同一组内
-        assertGroupsEqual("[[ab,ab]]",
-            p49.groupAnagrams(new String[]{"ab", "ab"}), "Identical strings");
-
-        // 长度相同但字母不同，不能混为一组
-        assertGroupsEqual("[[aab],[abb]]",
-            p49.groupAnagrams(new String[]{"aab", "abb"}), "Same length, different letters");
-
-        System.out.println("All tests passed!");
+        run(solver, new String[]{"eat", "tea", "tan", "ate", "nat", "bat"}, "官方例1 → 3 组");
+        run(solver, new String[]{""}, "空串 → 1 组");
+        run(solver, new String[]{"a"}, "单词 → 1 组");
+        run(solver, new String[]{"abc", "cba", "bca", "abd"}, "三连异位+独行 → 2 组");
+        run(solver, new String[]{"aaa", "aaa"}, "重复词 → 同组 2 元");
+        run(solver, new String[]{"ab", "ba", "cd", "dc"}, "平行两组 → 2 组");
+        run(solver, new String[]{"eat", "tea", "tan", "ate", "nat", "bat", "tab", "tan"}, "官方例+延伸 → 3 组（tan 出现两次）");
     }
 
-    /**
-     * 分组结果的组间顺序、组内顺序都不确定，
-     * 故先归一化成「组内排序 + 组间排序」的字符串再比较。
-     */
-    private static void assertGroupsEqual(String expected, List<List<String>> actual, String testName) {
-        List<String> normalized = new ArrayList<>();
-        for (List<String> group : actual) {
-            List<String> sortedGroup = new ArrayList<>(group);
-            java.util.Collections.sort(sortedGroup);
-            normalized.add("[" + String.join(",", sortedGroup) + "]");
-        }
-        java.util.Collections.sort(normalized);
-        String actualStr = "[" + String.join(",", normalized) + "]";
+    // ---------- 测试辅助（提交 LeetCode 时删除） ----------
 
-        if (!expected.equals(actualStr)) {
-            throw new AssertionError(String.format("[FAIL] %s: expected %s, but got %s",
-                testName, expected, actualStr));
+    /** 独立暴力参考：两两判异位（26 计数比对）O(n²·k)——机制与"排序 key 哈希"完全不同。 */
+    private static List<List<String>> bruteForce(String[] strs) {
+        List<List<String>> groups = new ArrayList<>();
+        for (String s : strs) {
+            boolean placed = false;
+            for (List<String> g : groups) {
+                if (sameChars(g.get(0), s)) { g.add(s); placed = true; break; }
+            }
+            if (!placed) {
+                List<String> g = new ArrayList<>();
+                g.add(s);
+                groups.add(g);
+            }
         }
-        System.out.println("[PASS] " + testName);
+        return groups;
+    }
+
+    private static boolean sameChars(String a, String b) {
+        if (a.length() != b.length()) return false;
+        int[] c1 = new int[26], c2 = new int[26];
+        for (int i = 0; i < a.length(); i++) { c1[a.charAt(i) - 'a']++; c2[b.charAt(i) - 'a']++; }
+        return Arrays.equals(c1, c2);
+    }
+
+    /** 组间/组内排序成规范形再比较（LeetCode 允许任意顺序）。 */
+    private static List<List<String>> canonical(List<List<String>> groups) {
+        List<List<String>> out = new ArrayList<>();
+        for (List<String> g : groups) {
+            List<String> c = new ArrayList<>(g);
+            java.util.Collections.sort(c);
+            out.add(c);
+        }
+        out.sort((x, y) -> x.get(0).compareTo(y.get(0)));
+        return out;
+    }
+
+    private static void run(P49GroupAnagrams solver, String[] strs, String label) {
+        try {
+            List<List<String>> got = canonical(solver.groupAnagrams(Arrays.copyOf(strs, strs.length)));
+            List<List<String>> want = canonical(bruteForce(Arrays.copyOf(strs, strs.length)));
+            boolean ok = got.equals(want);
+
+            System.out.printf("[%s] %-30s strs=%-52s | 参考=%s%n",
+                    ok ? "PASS" : "FAIL", label, Arrays.toString(strs), fmt(want));
+            if (!ok) System.out.printf("       实得=%s%n", fmt(got));
+        } catch (UnsupportedOperationException e) {
+            System.out.printf("[FAIL] %-30s strs=%-52s | TODO 未实现%n", label, Arrays.toString(strs));
+        } catch (Exception e) {
+            System.out.printf("[FAIL] %-30s strs=%-52s | 异常: %s%n", label, Arrays.toString(strs), e);
+        }
+    }
+
+    private static String fmt(List<List<String>> groups) {
+        StringBuilder sb = new StringBuilder();
+        for (List<String> g : groups) sb.append(g);
+        return sb.toString();
     }
 }

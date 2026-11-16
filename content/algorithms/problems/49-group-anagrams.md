@@ -41,6 +41,16 @@ public List<List<String>> groupAnagrams(String[] strs) {
 }
 ```
 
+## key 归一化模型（二阶段首题实测）
+
+```
+分组哈希首题：异位词=字母多重集合相同 → 排序串做 key（eat/tea/ate→"aet"）→ map 分桶
+key 两流派：排序串 O(k log k)/词（主解）vs 计数串 int[26] 拼串 O(k)/词（追问再掏）
+借内置函数正当性：核心工作量是分组结构设计时，sort 只是 key 实现细节——不是作弊
+JDK8 卫生实录：stream().toList() 是 JDK16 API（Stream 接口默认方法≠Collectors.toList）
+  ——本地新 JDK 编译过≠LeetCode Java8 能跑（337 自带节点同款"本地绿≠平台绿"）
+```
+
 ## 复杂度
 
 - **时间**：O(n·k log k)，n 为字符串个数，k 为最大长度；计数键版为 O(n·k)
