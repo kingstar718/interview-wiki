@@ -4,74 +4,129 @@ import java.util.Arrays;
  * LeetCode 189: 轮转数组 (Rotate Array)
  * https://leetcode.cn/problems/rotate-array/
  *
- * <p>【难度】Medium
- * <p>【标签】数组(Array) · 双指针(Two Pointers) · 原地读写(In-place)
- * <p>【题型】原地读写指针：用「三次反转」在 O(1) 空间内把数组整体右移 k 位
- * <p>【考点】能否想到先 k%=n 去掉多余整圈，再用三段反转规避额外数组；理解「右移 k = 把后 k 个搬到最前」
- * <p>【关联】{@link P31NextPermutation} —— 同为原地读写指针，都靠「区间反转」这一子操作在 O(1) 空间内重排
+ * <p>═══════════════════════════════════════════════════════════════════
+ * <p>【完整题面·自足】（二阶段 Hot100 验收 3/50——三次反转）
  *
- * <p>给定数组 nums，将其中元素向右轮转 k 个位置（k 非负，可能大于数组长度）。
- * 要求**原地**修改、尽量用 O(1) 额外空间；方法无返回值。
- * 例：nums=[1,2,3,4,5,6,7], k=3 → [5,6,7,1,2,3,4]。
+ * <p>■ 题目描述
+ *   给一个数组 nums，把元素**向右轮转 k 个位置**（尾部元素绕回首部），**原地修改**。
  *
- * <p>── 思路引导 ──
- * <p>1. 朴素想法：每次整体右移一位、做 k 次，O(n·k)；或开一个新数组按 (i+k)%n 落位，O(n) 额外空间。
+ * <p>■ 输入输出
+ *   输入：int[] nums（1 ≤ length ≤ 10^5）、int k（0 ≤ k ≤ 10^5，**可能大于 n**）
+ *   输出：无（原地修改）
  *
- * <p>2. 关键观察：
- *    - k 可能大于 n，右移 n 位等于没动，所以先 **k %= n**；
- *    - 「右移 k」本质是把**后 k 个元素整体搬到最前面**，前 n-k 个顺延到后面，相对顺序都不变。
+ * <p>■ 示例逐条
+ * <pre>
+ * nums=[1,2,3,4,5,6,7], k=3 → [5,6,7,1,2,3,4]
+ * nums=[-1,-100,3,99], k=2 → [3,99,-1,-100]
+ * nums=[1,2], k=5 → [2,1]（k>n → 实际移 1 位）★ 取模哨兵
+ * nums=[1], k=0 → [1]
+ * nums=[1,2,3], k=3 → [1,2,3]（k==n → 原地不动）★
+ * nums=[1,1,1], k=2 → [1,1,1]（全等元素）
+ * nums=[1,2,3,4,5], k=4 → [2,3,4,5,1]
+ * </pre>
  *
- * <p>3. 核心技巧 —— 三次反转（O(1) 空间）：
- *    a) 反转整个数组：后 k 个被翻到最前（但内部逆序）；
- *    b) 反转前 k 个：恢复这一段的正序；
- *    c) 反转后 n-k 个：恢复那一段的正序。
- *    三步之后即为右移 k 的结果。（另一思路是「环状替换」，但反转法最好写、最不易错。）
+ * <p>═════════════════════════════════════════════════════════════════════
  *
- * <p>4. 复杂度：时间 O(n)，空间 O(1)。
- *    边界：k%n==0（含 k=0、k 为 n 的倍数）时数组不变；单元素恒不变；k 远大于 n 由取模统一处理。
+ * <p>【难度】Medium（页频 ★★★·美团/京东）
+ * <p>【标签】数组 · 双指针 · 数学
+ * <p>【题型】解法演进叙事题：O(n) 拼接（简单版）→ 三次反转（O(n)/O(1) 主解）→ 环形替换（gcd 圈）
+ * <p>【考点】k %= n（k 可能 > n——忘取模全错）；三次反转分解（整体→前 k→后 n-k）；
+ * <p>　　　　反转双指针（头尾相向交换）；k==n/k==0 不动（取模后自然归一）
+ * <p>【关联】P151（反转单词——同构：整体反转+局部扶正）
+ *
+ * <p>LCS 签名：rotate(int[] nums, int k)。
  */
 public class P189RotateArray {
 
+    /** 你的实现（拼接版 O(n)/O(n)：下标映射 (i+k)%n 搬 temp 再拷回——k==n 特判+取模守卫）。 */
     public void rotate(int[] nums, int k) {
-        // 实现时请按 CLAUDE.md 约定，补上与「思路引导」编号对应的 // Step N 注释
-        throw new UnsupportedOperationException("TODO: 待实现");
+        int n = nums.length;
+        if (n == k) {
+            return;
+        }
+        if (k > n) {
+            k = k % n;
+        }
+        int[] temp = new int[n];
+        for (int i = 0; i < n; i++) {
+            int newI = (i + k) % n;
+            temp[newI] = nums[i];
+        }
+        for (int i = 0; i < n; i++) {
+            nums[i] = temp[i];
+        }
     }
 
     public static void main(String[] args) {
-        P189RotateArray p189 = new P189RotateArray();
+        P189RotateArray solver = new P189RotateArray();
 
-        // 示例 1
-        assertRotate(new int[]{5, 6, 7, 1, 2, 3, 4}, new int[]{1, 2, 3, 4, 5, 6, 7}, 3, p189, "Example 1");
-
-        // 示例 2：含负数
-        assertRotate(new int[]{3, 99, -1, -100}, new int[]{-1, -100, 3, 99}, 2, p189, "Example 2 (negatives)");
-
-        // k = 0：不变
-        assertRotate(new int[]{1, 2, 3}, new int[]{1, 2, 3}, 0, p189, "k = 0");
-
-        // k = n：整圈，不变
-        assertRotate(new int[]{1, 2, 3}, new int[]{1, 2, 3}, 3, p189, "k = n");
-
-        // k > n：需取模，等价于 k=1
-        assertRotate(new int[]{3, 1, 2}, new int[]{1, 2, 3}, 4, p189, "k > n (mod)");
-
-        // 单元素：恒不变
-        assertRotate(new int[]{7}, new int[]{7}, 100, p189, "Single element");
-
-        // 两元素右移 1
-        assertRotate(new int[]{2, 1}, new int[]{1, 2}, 1, p189, "Two elements");
-
-        System.out.println("All tests passed!");
+        run(solver, new int[]{1, 2, 3, 4, 5, 6, 7}, 3, "官方例1 → [5,6,7,1,2,3,4]");
+        run(solver, new int[]{-1, -100, 3, 99}, 2, "官方例2 → [3,99,-1,-100]");
+        run(solver, new int[]{1, 2}, 5, "k>n → [2,1] ★ 取模哨兵");
+        run(solver, new int[]{1}, 0, "单元素 k=0 → 不变");
+        run(solver, new int[]{1, 2, 3}, 3, "k==n → 不变 ★");
+        run(solver, new int[]{1, 1, 1}, 2, "全等 → 不变");
+        run(solver, new int[]{1, 2, 3, 4, 5}, 4, "k=n-1 → [2,3,4,5,1]");
     }
 
-    /** 调用 rotate 后，按 nums 的最终内容与期望比较。 */
-    private static void assertRotate(int[] expected, int[] input, int k,
-                                     P189RotateArray solver, String testName) {
-        solver.rotate(input, k);
-        if (!Arrays.equals(expected, input)) {
-            throw new AssertionError(String.format("[FAIL] %s: expected %s, but got %s",
-                testName, Arrays.toString(expected), Arrays.toString(input)));
+    // ---------- 测试辅助（提交 LeetCode 时删除） ----------
+
+    /** 你的实现【三次反转版】（自逆性代数：整体反转调段序，再各段扶正）。 */
+    public void rotateReverse(int[] nums, int k) {
+        int n = nums.length;
+        k %= n;
+        reverse(nums, 0, n - 1);
+        reverse(nums, 0, k - 1);
+        reverse(nums, k, n - 1);
+    }
+
+    private void reverse(int[] nums, int start, int end) {
+        while (start < end) {
+            int temp = nums[start];
+            nums[start] = nums[end];
+            nums[end] = temp;
+            start++;
+            end--;
         }
-        System.out.println("[PASS] " + testName);
+    }
+
+    /** 独立暴力参考：逐次右移一位（k % n 次 × 全体挪动）——机制与三次反转完全不同。 */
+    private static int[] bruteForce(int[] nums, int k) {
+        int n = nums.length;
+        k %= n;
+        int[] out = nums.clone();
+        for (int step = 0; step < k; step++) {
+            int last = out[n - 1];
+            for (int i = n - 1; i > 0; i--) out[i] = out[i - 1];
+            out[0] = last;
+        }
+        return out;
+    }
+
+    private static void run(P189RotateArray solver, int[] nums, int k, String label) {
+        try {
+            int[] want = bruteForce(nums, k);
+            int[] gotA = nums.clone();
+            solver.rotate(gotA, k);
+            int[] gotB = nums.clone();
+            solver.rotateReverse(gotB, k);
+            boolean ok = Arrays.equals(gotA, want) && Arrays.equals(gotB, want);
+            String extra;
+            if (ok) {
+                extra = "（拼接版+三反版双过）";
+            } else if (!Arrays.equals(gotB, want)) {
+                extra = "（三反版不一致：实得=" + Arrays.toString(gotB) + "）";
+            } else {
+                extra = "（拼接版不一致）";
+            }
+
+            System.out.printf("[%s] %-30s nums=%-22s k=%-3d | 参考=%s 实得=%s%s%n",
+                    ok ? "PASS" : "FAIL", label, Arrays.toString(nums), k,
+                    Arrays.toString(want), Arrays.toString(gotA), extra);
+        } catch (UnsupportedOperationException e) {
+            System.out.printf("[FAIL] %-30s nums=%-22s k=%-3d | TODO 未实现%n", label, Arrays.toString(nums), k);
+        } catch (Exception e) {
+            System.out.printf("[FAIL] %-30s nums=%-22s k=%-3d | 异常: %s%n", label, Arrays.toString(nums), k, e);
+        }
     }
 }
