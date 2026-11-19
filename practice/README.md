@@ -81,7 +81,7 @@ class TreeNode { ... }               // ❌ 包级类：同目录多个文件各
 - ✅ [189. 轮转数组](P189RotateArray.java) · 🟡 · ★★★（二阶段 3/50·双版）
 - ✅ [238. 除自身以外数组的乘积](P238ProductOfArrayExceptSelf.java) · 🟡 · ★★★★（二阶段 4/50）
 - ✅ [136. 只出现一次的数字](P136SingleNumber.java) · 🟢 · ★★★★（二阶段 5/50）
-- ✅ [169. 多数元素](P169MajorityElement.java) · 🟢 · ★★★（二阶段 6/50·Map版，摩尔待补）
+- ✅ [169. 多数元素](P169MajorityElement.java) · 🟢 · ★★★（二阶段 6/50·Map+摩尔双版）
 - ✅ [455. 分发饼干](P455AssignCookies.java) · 🟢 · ★★★（贪心入门）
 - ✅ [376. 摆动序列](P376WiggleSubsequence.java) · 🟡 · ★★★
 - - ✅ [53. 最大子数组和](P53MaximumSubarray.java) · 🟢 · ★★★★★

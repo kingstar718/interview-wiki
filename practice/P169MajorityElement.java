@@ -77,6 +77,22 @@ public class P169MajorityElement {
 
     // ---------- 测试辅助（提交 LeetCode 时删除） ----------
 
+    /** 你的实现【摩尔投票版】（相异湮灭：count==0 换候选——与 Map 版双版对照，三机制互验）。 */
+    public int majorityVote(int[] nums) {
+        int cur = nums[0], count = 1;
+        for (int i = 1; i < nums.length; i++) {
+            if (count == 0) {
+                cur = nums[i];
+                count = 1;
+            } else if (cur == nums[i]) {
+                count++;
+            } else {
+                count--;
+            }
+        }
+        return cur;
+    }
+
     /** 独立暴力参考：Map 计数取 > n/2 者——机制与摩尔投票完全不同。 */
     private static int bruteForce(int[] nums) {
         java.util.Map<Integer, Integer> cnt = new java.util.HashMap<>();
@@ -90,12 +106,14 @@ public class P169MajorityElement {
 
     private static void run(P169MajorityElement solver, int[] nums, String label) {
         try {
-            int got = solver.majorityElement(Arrays.copyOf(nums, nums.length));
             int want = bruteForce(nums);
-            boolean ok = got == want;
+            int gotA = solver.majorityElement(Arrays.copyOf(nums, nums.length));
+            int gotB = solver.majorityVote(Arrays.copyOf(nums, nums.length));
+            boolean ok = gotA == want && gotB == want;
+            String extra = (gotB != want) ? "（摩尔版不一致！）" : "（Map版+摩尔版双过）";
 
-            System.out.printf("[%s] %-22s nums=%-28s | 参考=%d 实得=%d%n",
-                    ok ? "PASS" : "FAIL", label, Arrays.toString(nums), want, got);
+            System.out.printf("[%s] %-22s nums=%-28s | 参考=%d 实得=%d%s%n",
+                    ok ? "PASS" : "FAIL", label, Arrays.toString(nums), want, gotA, extra);
         } catch (UnsupportedOperationException e) {
             System.out.printf("[FAIL] %-22s nums=%-28s | TODO 未实现%n", label, Arrays.toString(nums));
         } catch (Exception e) {
