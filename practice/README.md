@@ -90,7 +90,7 @@ class TreeNode { ... }               // ❌ 包级类：同目录多个文件各
 - ⬜ 8. 字符串转换整数 (atoi) · 🟡 · ★★★★
 - ⬜ 11. 盛最多水的容器 · 🟡 · ★★★★
 - ⬜ 41. 缺失的第一个正数 · 🔴 · ★★★★
-- ✅ [56. 合并区间](P56MergeIntervals.java) · 🟡 · ★★★★
+- ✅ [56. 合并区间](P56MergeIntervals.java) · 🟡 · ★★★★（二阶段复习重刷 9·AC172/172）
 - ✅ [121. 买卖股票的最佳时机](P121BestTimeToBuyAndSellStock.java) · 🟢 · ★★★★
 - ✅ [151. 反转字符串中的单词](P151ReverseWordsInAString.java) · 🟡 · ★★★★
 - ✅ 169. 多数元素 · 🟢 · ★★★★
