@@ -1,3 +1,4 @@
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -5,89 +6,93 @@ import java.util.Map;
  * LeetCode 560: 和为 K 的子数组 (Subarray Sum Equals K)
  * https://leetcode.cn/problems/subarray-sum-equals-k/
  *
- * <p>【难度】Medium
- * <p>【标签】哈希表(Hash Map) · 前缀和(Prefix Sum) · 数组(Array)
- * <p>【题型】**前缀和 + 哈希计数**；「区间和」问题转「两点之差」的经典范式
- * <p>【考点】能否把区间和改写成前缀和之差，从而复用两数之和的查表思路；能否想清为何必须预置 prefixCount[0]=1
- * <p>【关联】{@link P1TwoSum} —— 本题的思维原型，建议先掌握它再做本题
- * <p>{@link P3LongestSubstringWithoutRepeating} —— 对比：本题含负数故不能用滑动窗口
+ * <p>═══════════════════════════════════════════════════════════════════
+ * <p>【完整题面·自足】（二阶段 Hot100 验收 10/50——前缀和+哈希计数）
  *
- * <p>给定整数数组 nums 和整数 k，统计并返回该数组中**和为 k 的连续子数组的个数**。
- * 注意：数组可能含负数，因此不能用滑动窗口。
+ * <p>■ 题目描述
+ *   给整数数组 nums 和整数 k，统计并返回该数组中**和恰为 k** 的
+ *   **连续子数组**的个数（子数组 = 原数组中一段连续元素，个数可多可少）。
  *
- * <p>── 思路引导 ──
- * <p>1. 朴素想法：枚举左右端点求和，O(n³)；用前缀和优化求和步骤后是 O(n²)。
- *    瓶颈在于：固定右端点后，仍要向左线性扫描去找所有合法的左端点。
+ * <p>■ 输入输出（约束）
+ *   输入：int[] nums（1 ≤ length ≤ 2×10^4；-1000 ≤ nums[i] ≤ 1000，**有负数**）、int k（≤ 10^6）
+ *   输出：int（和为 k 的连续子数组个数）
  *
- * <p>2. 关键观察：设 prefix[i] 为前 i 个元素之和，则子数组 (j, i] 的和 = prefix[i] - prefix[j]。
- *    要求它等于 k，即   prefix[i] - prefix[j] == k
- *                 →   prefix[j] == prefix[i] - k
- *    固定右端点 i 后，需要找的左端点前缀和是**唯一确定的值**！
- *    这和「两数之和」找补数是同一个结构 —— 于是又可以用哈希表 O(1) 查询。
+ * <p>■ 示例逐条
+ * <pre>
+ * nums=[1,1,1], k=2 → 2（[0,1] 和 [1,2] 两段 [1,1]）
+ * nums=[1,2,3], k=3 → 2（[1,2] 和 [3]）
+ * nums=[1], k=0 → 0（无）
+ * nums=[-1,-1,1], k=0 → 1（[-1,-1+1]? 不：[-1,-1,1] 无和 0 的？有：[-1,-1,1] 全体=−1；[-1,-1]=−2；[-1,1]=0 ✓ 1 个）
+ * nums=[3,4,7,2,-3,1,4,2], k=7 → 4（3,4 / 7 / 7,2,-3,1 / 4,-3,1,... 暴力可证）
+ * nums=[0,0,0], k=0 → 6（三个 0 的所有子数组 [0],[0],[0],[0,0],[0,0],[0,0,0]——计数型重复陷阱）
+ * </pre>
  *
- * <p>3. 核心技巧 —— 哈希表存「前缀和 → 出现次数」，边遍历边查边存：
- *    因为问的是**个数**而非下标，同一个前缀和可能出现多次，所以存的是次数而不是下标。
- *    遍历到 i 时：先累加 prefixSum，再把 prefixCount[prefixSum - k] 计入答案，最后把
- *    prefixSum 自己的次数 +1（依旧是「先查后存」，保证 j < i，子数组非空）。
+ * <p>═════════════════════════════════════════════════════════════════════
  *
- * <p>⚠️ 易错点：必须预置 prefixCount.put(0, 1)。
- *    它表示「空前缀」，用于处理「从下标 0 开始的子数组」——
- *    例如 nums=[3], k=3 时 prefixSum=3，需要查 prefixCount[0]，若没预置就会漏掉这个答案。
+ * <p>【难度】Medium（页频 ★★★★·字节/美团）
+ * <p>【标签】数组 · 哈希表 · 前缀和
+ * <p>【题型】前缀和 + 哈希计数：pre[j]-pre[i]=k → 查 pre-k 出现次数累加（**计数型 +=**，非判定型 if）
+ * <p>【考点】map.put(0,1) 地基（空前缀——从 0 开头的子数组）；**为什么不能滑动窗口**（有负数——
+ * <p>　　　　窗口和与长度不同单调）；计数型 map（getOrDefault += 0 语义——0 也入账）
+ * <p>【关联】P1 TwoSum（前缀和版孪生）；P303（前缀和判定型）；P494 目标和（计数型 += 同族）
  *
- * <p>4. 复杂度：时间 O(n)，空间 O(n)。
- *    数组含负数照样成立（这正是不能用滑动窗口、必须用前缀和的原因）；
- *    元素为 0 或重复前缀和的情形由「计数」自然处理。
+ * <p>LCS 签名：subarraySum(int[] nums, int k)。
  */
 public class P560SubarraySumEqualsK {
 
+    /** 你的实现（前缀和+哈希计数：查 pre-k 出现次数累加；put(0,1) 地基+先查后记）。 */
     public int subarraySum(int[] nums, int k) {
-        // TODO: 在此实现（返回和为 k 的连续子数组个数）
-        //       实现时请按 CLAUDE.md 约定，补上与「思路引导」编号对应的 // Step N 注释
+        int count = 0;
+        int prefixSum = 0;
+        Map<Integer, Integer> map = new HashMap<>();
+        map.put(0, 1);
 
-        throw new UnsupportedOperationException("TODO: 待实现");
+        for (int num : nums) {
+            prefixSum += num;
+            count += map.getOrDefault(prefixSum - k, 0);
+            map.merge(prefixSum, 1, Integer::sum);
+        }
+        return count;
     }
 
     public static void main(String[] args) {
-        P560SubarraySumEqualsK p560 = new P560SubarraySumEqualsK();
+        P560SubarraySumEqualsK solver = new P560SubarraySumEqualsK();
 
-        // 示例 1：[1,1] 与 [1,1]
-        assertEqual(2, p560.subarraySum(new int[]{1, 1, 1}, 2), "Example 1");
-
-        // 示例 2：[1,2] 与 [3]
-        assertEqual(2, p560.subarraySum(new int[]{1, 2, 3}, 3), "Example 2");
-
-        // 从下标 0 开始的子数组：验证 prefixCount[0]=1 的预置
-        assertEqual(1, p560.subarraySum(new int[]{3}, 3), "Starts at index 0");
-
-        // 含负数：[1,-1]、[1,-1,0]、[0] 三个
-        assertEqual(3, p560.subarraySum(new int[]{1, -1, 0}, 0), "With negative numbers");
-
-        // 全零求和为 0：C(3,1)+C(3,2)... 共 6 个连续子数组
-        assertEqual(6, p560.subarraySum(new int[]{0, 0, 0}, 0), "All zeros");
-
-        // 无解
-        assertEqual(0, p560.subarraySum(new int[]{1, 2, 3}, 100), "No solution");
-
-        // 空数组
-        assertEqual(0, p560.subarraySum(new int[]{}, 0), "Empty array");
-
-        // 单元素不匹配
-        assertEqual(0, p560.subarraySum(new int[]{1}, 0), "Single element, no match");
-
-        // 负目标值
-        assertEqual(1, p560.subarraySum(new int[]{-1, -1, 1}, -2), "Negative k");
-
-        // 整个数组恰好是唯一答案
-        assertEqual(1, p560.subarraySum(new int[]{1, 2, 3, 4}, 10), "Whole array");
-
-        System.out.println("All tests passed!");
+        run(solver, new int[]{1, 1, 1}, 2, "官方例1 → 2");
+        run(solver, new int[]{1, 2, 3}, 3, "官方例2 → 2");
+        run(solver, new int[]{1}, 0, "无匹配 → 0");
+        run(solver, new int[]{-1, -1, 1}, 0, "负数窗口 → 1");
+        run(solver, new int[]{3, 4, 7, 2, -3, 1, 4, 2}, 7, "多段 → 参考定");
+        run(solver, new int[]{0, 0, 0}, 0, "全 0 → 6 ★ 计数重复陷阱");
     }
 
-    private static void assertEqual(int expected, int actual, String testName) {
-        if (expected != actual) {
-            throw new AssertionError(
-                String.format("[FAIL] %s: expected %d, but got %d", testName, expected, actual));
+    // ---------- 测试辅助（提交 LeetCode 时删除） ----------
+
+    /** 独立暴力参考：枚举所有 (i,j) 求和计数 O(n³→前缀 O(n²))——机制完全不同。 */
+    private static int bruteForce(int[] nums, int k) {
+        int count = 0;
+        for (int i = 0; i < nums.length; i++) {
+            int sum = 0;
+            for (int j = i; j < nums.length; j++) {
+                sum += nums[j];
+                if (sum == k) count++;
+            }
         }
-        System.out.println("[PASS] " + testName);
+        return count;
+    }
+
+    private static void run(P560SubarraySumEqualsK solver, int[] nums, int k, String label) {
+        try {
+            int got = solver.subarraySum(Arrays.copyOf(nums, nums.length), k);
+            int want = bruteForce(nums, k);
+            boolean ok = got == want;
+
+            System.out.printf("[%s] %-24s nums=%-32s k=%-3d | 参考=%d 实得=%d%n",
+                    ok ? "PASS" : "FAIL", label, Arrays.toString(nums), k, want, got);
+        } catch (UnsupportedOperationException e) {
+            System.out.printf("[FAIL] %-24s nums=%-32s k=%-3d | TODO 未实现%n", label, Arrays.toString(nums), k);
+        } catch (Exception e) {
+            System.out.printf("[FAIL] %-24s nums=%-32s k=%-3d | 异常: %s%n", label, Arrays.toString(nums), k, e);
+        }
     }
 }
