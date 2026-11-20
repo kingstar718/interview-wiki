@@ -1,0 +1,53 @@
+# equals() 右侧字面量 —— 防 NPE 风格规则
+# 等同 Checkstyle EqualsAvoidNull / Sonar java:S1132 的意图：
+#   param.equals("const") 在 param 为 null 时抛 NPE；"const".equals(param) 永远安全。
+id: equals-literal-right-side
+name: Literal on Right Side of equals()
+severity: warning
+category: correctness
+defect_class: null-safety
+inline_tier: warning
+language: java
+
+message: "变量.equals(\"常量\") 在变量为 null 时抛 NPE —— 把字面量放左侧：\"常量\".equals(变量)"
+
+description: |
+  调用 `param.equals("const")` 时，若 `param` 为 null 会直接抛
+  NullPointerException；`"const".equals(param)` 则永远安全。
+  与 Checkstyle `EqualsAvoidNull`、Sonar `java:S1132` 同一意图。
+
+  ✅ FIX: `"active".equals(status)`（字面量放左侧）
+  ❌ BAD: `status.equals("active")`（变量放左侧）
+
+query: |
+  (method_invocation
+    object: (_) @RECEIVER
+    name: (identifier) @METHOD
+    arguments: (argument_list
+      (string_literal) @LITERAL))
+
+metavars:
+  - RECEIVER
+  - LITERAL
+
+predicates:
+  - type: eq
+    var: "@METHOD"
+    value: "equals"
+  - type: match
+    var: "@RECEIVER"
+    regex: '^(?!.*")'    # receiver 文本不含引号 => 不是字面量（字面量本身是安全写法）
+
+tags:
+  - java
+  - correctness
+  - null-safety
+  - checkstyle
+  - sonar
+
+examples:
+  bad: |
+    if (status.equals("active")) { ... }        // status 为 null 时抛 NPE
+
+  good: |
+    if ("active".equals(status)) { ... }        // 永远安全
