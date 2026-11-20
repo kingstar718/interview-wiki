@@ -4,111 +4,98 @@ import java.util.Arrays;
  * LeetCode 283: 移动零 (Move Zeroes)
  * https://leetcode.cn/problems/move-zeroes/
  *
- * <p>【难度】Easy
- * <p>【标签】数组(Array) · 双指针(Two Pointers) · 原地读写(In-place)
- * <p>【题型】原地读写指针：慢指针写「非零元素」，保持相对顺序，末尾自然留给 0
- * <p>【考点】能否原地 O(1) 完成且**保持非零元素的相对顺序**；理解为何「写完非零再补零」与「交换」两种写法都对
- * <p>【关联】{@link P27RemoveElement} —— 几乎同构：把「移除 val」换成「把 0 移到末尾」，本题多了「保持顺序」的约束
- * <p>{@link P26RemoveDuplicatesFromSortedArray} —— 同为慢指针写该留的元素，只是判定条件不同
+ * <p>═══════════════════════════════════════════════════════════════════
+ * <p>【完整题面·自足】（二阶段 Hot100 验收 15/50——快慢指针热身）
  *
- * <p>给定数组 nums，将所有 0 移动到数组末尾，同时保持非零元素的相对顺序。
- * 必须**原地**操作，不能拷贝到额外数组；方法无返回值，直接修改 nums。
+ * <p>■ 题目描述
+ *   给数组 nums，把所有 **0 移动到末尾**，同时**保持非零元素的相对顺序**。
+ *   必须**原地**操作（不复制数组），尽量减少操作次数。
  *
- * <p>── 思路引导 ──
- * <p>1. 朴素想法：遇到 0 就把后面元素整体前移一格，末尾补 0，单次移动 O(n)，最坏 O(n²)。
+ * <p>■ 输入输出（约束）
+ *   输入：int[] nums（1 ≤ length ≤ 10^4；-2^31 ≤ nums[i] ≤ 2^31-1——**负数也是非零**）
+ *   输出：无（原地修改）
  *
- * <p>2. 关键观察：真正要保序的只有**非零元素**，0 全部堆到末尾即可。
- *    于是问题变成「把非零元素按原顺序依次写到数组前段」，剩下的位置补 0。
+ * <p>■ 示例逐条
+ * <pre>
+ * nums=[0,1,0,3,12] → [1,3,12,0,0]
+ * nums=[0] → [0]
+ * nums=[1,2,3] → [1,2,3]（无零不动）
+ * nums=[0,0,0] → [0,0,0]（全零不动）
+ * nums=[-1,0,2] → [-1,2,0]（负数非零哨兵）
+ * nums=[0,0,1] → [1,0,0]
+ * nums=[4,0,5,0,6] → [4,5,6,0,0]
+ * </pre>
  *
- * <p>3. 核心技巧 —— 快慢双指针（同向）：
- *    慢指针 slow 指向下一个应写入非零值的位置，快指针扫描；
- *    遇到非零就写到 slow 并让 slow 前进。扫完后，[slow, n) 全部置 0。
- *    等价写法：遇到非零时直接 swap(nums[slow], nums[fast])，省掉最后补零那步。
+ * <p>═════════════════════════════════════════════════════════════════════
  *
- * <p>4. 复杂度：时间 O(n)，空间 O(1)。
- *    边界：无 0 时数组不变；全 0 时不变；单元素直接返回。
+ * <p>【难度】Easy（页频 ★★★·美团/快手）
+ * <p>【标签】数组 · 双指针（快慢）
+ * <p>【题型】快慢指针原地重排：slow=下一个非零应放位，fast 扫描，非零就放过来；尾部补 0
+ * <p>【考点】**稳定序**（非零元素相对顺序不变——不能用两分区交换）；两流派：
+ * <p>　　　　补零版（两趟：先搬非零再补 0）vs 交换版（一趟：非零与 slow 交换）；
+ * <p>　　　　slow 语义 = "已处理前缀的边界"（[0,slow) 全非零且保序）
+ * <p>【关联】P27 移除元素（同模板换判据）；P26 删除有序重复项（同族）；P75（三指针重排——进阶）
+ *
+ * <p>LCS 签名：moveZeroes(int[] nums)。
  */
 public class P283MoveZeroes {
 
-    /**
-     * 变体写法（等价，非主解，仅作对照）：slow 指向「最靠左的待填 0」，遇非零则交换前移。
-     * 逻辑不如主解 {@link #moveZeroes} 直观，正确性曾以 10 万组随机对拍验证；测试统一调用主解。
-     */
-    public void moveZeros2(int[] nums) {
-        // 边界：空数组 / 单元素无需移动（主循环对二者也天然不执行）
-        if (nums.length <= 1) {
-            return;
-        }
-        // Step 3：slow 指向「最靠左的待填 0」，fast 向右扫（Step 2：只需把非零按序前移，0 自然堆到末尾）
-        int slow = 0;
-        for (int fast = slow + 1; fast < nums.length; fast++) {
-            if (nums[slow] != 0) {
-                // slow 尚未落在 0 上，先推进到第一个 0
-                slow++;
-            } else if (nums[fast] != 0) {
-                // slow 是 0、fast 是非零：交换把非零前移、0 后移，slow 前进
+    /** 你的实现（交换版一趟：非零与 slow 交换——slow==fast 自换无害；需 swap 助手）。 */
+    public void moveZeroes(int[] nums) {
+        int slow = 0, fast = 0;
+        while (fast < nums.length) {
+            if (nums[fast] != 0) {
                 swap(nums, slow, fast);
                 slow++;
             }
-            // 两者都是 0：不动，等 fast 继续找下一个非零
+            fast++;
         }
     }
 
-    /**
-     * 主解 · 标准快慢指针。优点：只有「遇非零就写」这一个判定分支，
-     * l 恒为「下一个非零的写入位」，语义唯一、一眼可证，与上方思路引导 Step 3 完全对应，可读性最好。
-     */
-    public void moveZeroes(int[] nums) {
-        // Step 3：l 指向下一个非零的写入位，r 向右扫描
-        int n = nums.length, l = 0, r = 0;
-        while (r < n) {
-            // Step 3：遇到非零就交换到写入位 l 并让 l 前进（Step 2：非零按序前移，0 自然堆到末尾）
-            if (nums[r] != 0) {
-                swap(nums, l, r);
-                l++;
-            }
-            r++;
-        }
-    }
-
-    static void swap(int[] nums, int i, int j) {
-        int temp = nums[i];
+    private void swap(int[] nums, int i, int j) {
+        int t = nums[i];
         nums[i] = nums[j];
-        nums[j] = temp;
+        nums[j] = t;
     }
 
     public static void main(String[] args) {
-        P283MoveZeroes p283 = new P283MoveZeroes();
+        P283MoveZeroes solver = new P283MoveZeroes();
 
-        // 示例 1
-        assertMoveZeroes(new int[]{1, 3, 12, 0, 0}, new int[]{0, 1, 0, 3, 12}, p283, "Example 1");
-
-        // 示例 2：单个 0
-        assertMoveZeroes(new int[]{0}, new int[]{0}, p283, "Single zero");
-
-        // 无 0：保持不变
-        assertMoveZeroes(new int[]{1, 2, 3}, new int[]{1, 2, 3}, p283, "No zeros");
-
-        // 全 0
-        assertMoveZeroes(new int[]{0, 0, 0}, new int[]{0, 0, 0}, p283, "All zeros");
-
-        // 0 已在末尾
-        assertMoveZeroes(new int[]{4, 5, 0, 0}, new int[]{4, 5, 0, 0}, p283, "Zeros already at end");
-
-        // 验证保持相对顺序 + 含负数
-        assertMoveZeroes(new int[]{-1, 2, -3, 0, 0}, new int[]{-1, 0, 2, 0, -3}, p283, "Keep order with negatives");
-
-        System.out.println("All tests passed!");
+        run(solver, new int[]{0, 1, 0, 3, 12}, "官方例 → [1,3,12,0,0]");
+        run(solver, new int[]{0}, "单零 → [0]");
+        run(solver, new int[]{1, 2, 3}, "无零 → 不变");
+        run(solver, new int[]{0, 0, 0}, "全零 → 不变");
+        run(solver, new int[]{-1, 0, 2}, "负数非零 → [-1,2,0] ★ 哨兵");
+        run(solver, new int[]{0, 0, 1}, "零在前 → [1,0,0]");
+        run(solver, new int[]{4, 0, 5, 0, 6}, "散布 → [4,5,6,0,0]");
     }
 
-    /** 调用 moveZeroes 后，按 nums 的最终内容与期望比较。 */
-    private static void assertMoveZeroes(int[] expected, int[] input,
-                                         P283MoveZeroes solver, String testName) {
-        solver.moveZeroes(input);
-        if (!Arrays.equals(expected, input)) {
-            throw new AssertionError(String.format("[FAIL] %s: expected %s, but got %s",
-                testName, Arrays.toString(expected), Arrays.toString(input)));
+    // ---------- 测试辅助（提交 LeetCode 时删除） ----------
+
+    /** 独立暴力参考：收集非零到新数组再按原序回填+补零——机制与原地指针完全不同。 */
+    private static int[] bruteForce(int[] nums) {
+        int[] out = new int[nums.length];
+        int k = 0;
+        for (int n : nums) {
+            if (n != 0) out[k++] = n;
         }
-        System.out.println("[PASS] " + testName);
+        return out;   // 其余位默认 0 = 补零
+    }
+
+    private static void run(P283MoveZeroes solver, int[] nums, String label) {
+        try {
+            int[] got = nums.clone();
+            solver.moveZeroes(got);
+            int[] want = bruteForce(nums);
+            boolean ok = Arrays.equals(got, want);
+
+            System.out.printf("[%s] %-28s nums=%-24s | 参考=%s 实得=%s%n",
+                    ok ? "PASS" : "FAIL", label, Arrays.toString(nums),
+                    Arrays.toString(want), Arrays.toString(got));
+        } catch (UnsupportedOperationException e) {
+            System.out.printf("[FAIL] %-28s nums=%-24s | TODO 未实现%n", label, Arrays.toString(nums));
+        } catch (Exception e) {
+            System.out.printf("[FAIL] %-28s nums=%-24s | 异常: %s%n", label, Arrays.toString(nums), e);
+        }
     }
 }
