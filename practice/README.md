@@ -94,6 +94,7 @@ class TreeNode { ... }               // ❌ 包级类：同目录多个文件各
 - ✅ [560. 和为K的子数组](P560SubarraySumEqualsK.java) · 🟡 · ★★★★（二阶段 10/50）
 - ✅ [438. 找到字符串中所有字母异位词](P438FindAllAnagrams.java) · 🟡 · ★★★（二阶段 11/50·灵神模板）
 - ⬜ [567. 字符串的排列](P567PermutationInString.java) · 🟡 · ★★★（438 孪生·不占额·AC111/111）
+- ✅ [76. 最小覆盖子串](P76MinimumWindowSubstring.java) · 🔴 · ★★★★★（二阶段 13/50·滑窗家族压轴）
 - ✅ [121. 买卖股票的最佳时机](P121BestTimeToBuyAndSellStock.java) · 🟢 · ★★★★
 - ✅ [151. 反转字符串中的单词](P151ReverseWordsInAString.java) · 🟡 · ★★★★
 - ✅ 169. 多数元素 · 🟢 · ★★★★
