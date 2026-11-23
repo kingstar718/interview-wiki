@@ -69,6 +69,20 @@ private int findRight(int[] nums, int target) {
 > 本页注记撰写时以为"LeetCode 判题不计时"——**错误**。实际提交该版终态为 **Restrictions Failed**：线性尾扫最坏 O(n)，违反题目 O(log n) 红线。
 > 题目声明的复杂度红线由判题机异步复核（正确性判过 ≠ 终态 AC）。待合规版再记 AC。
 
+## Restrictions Failed → 双二分 0ms 对账（二分组 3/5）
+
+```
+首版（左边界二分+线性尾扫）：正确性 88/88 但终态 Restrictions Failed
+  ——题目 O(log n) 红线由判题机异步复核（此前"判题不计时"认知作废）
+  成绩对账：线性尾扫 1ms 击败 0.7% → 双二分 0ms 击败 100%（复杂度红线放行+耗时地板）
+二分版（用户重写，右边界换二分）：
+  左边界：target <= value → r=mid-1（退出 l=第一个≥target）
+  右边界：target >= value → l=mid+1（退出 r=最后一个≤target）
+  ——与"找第一个>target 再减一"是同一不变式的方向对偶；复用同一对 l,r 变量更紧凑
+  校验链 nums.length>0 && length>l && target==nums[l] 判存在，再进右边界
+教训（错题本）：复杂度承诺=判题红线，混搭线性段=Restrictions Failed（34/74 双实录）
+```
+
 ## 复杂度
 
 - **时间**：O(log n)

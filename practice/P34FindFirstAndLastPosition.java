@@ -40,7 +40,7 @@ import java.util.Arrays;
  */
 public class P34FindFirstAndLastPosition {
 
-    /** 你的实现（左边界二分 + 从左边界线性右扫找末位——判定层二分+尾段线性）。 */
+    /** 你的实现（双二分：左边界找第一个 >= target；右边界同款二分找最后一个 <= target）。 */
     public int[] searchRange(int[] nums, int target) {
         int l = 0, r = nums.length - 1;
         while (l <= r) {
@@ -54,14 +54,18 @@ public class P34FindFirstAndLastPosition {
         }
         int[] res = new int[]{-1, -1};
         if (nums.length > 0 && nums.length > l && target == nums[l]) {
-            int max = l;
-            for (int i = l + 1; i < nums.length; i++) {
-                if (nums[i] == nums[l]) {
-                    max = i;
+            res[0] = l;
+            r = nums.length - 1;
+            while (l <= r) {
+                int mid = l + (r - l) / 2;
+                int value = nums[mid];
+                if (target >= value) {
+                    l = mid + 1;
+                } else {
+                    r = mid - 1;
                 }
             }
-            res[0] = l;
-            res[1] = max;
+            res[1] = r;
         }
         return res;
     }
