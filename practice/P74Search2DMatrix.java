@@ -39,24 +39,23 @@ import java.util.Arrays;
  */
 public class P74Search2DMatrix {
 
-    /** 你的实现（先定行过滤 matrix[i][0]<=t<=matrix[i][n-1]，再行内 l<=r 二分）。 */
+    /** 你的实现（拉平一维二分：mid/n 取行、mid%n 取列，O(log(mn)) 合规）。 */
     public boolean searchMatrix(int[][] matrix, int target) {
         int m = matrix.length;
         int n = matrix[0].length;
-        for (int i = 0; i < m; i++) {
-            if (matrix[i][0] <= target && matrix[i][n - 1] >= target) {
-                int l = 0, r = n - 1;
-                while (l <= r) {
-                    int mid = l + (r - l) / 2;
-                    int value = matrix[i][mid];
-                    if (target == value) {
-                        return true;
-                    } else if (target > value) {
-                        l = mid + 1;
-                    } else {
-                        r = mid - 1;
-                    }
-                }
+        int l = 0;
+        int r = m * n - 1;
+        while (l <= r) {
+            int mid = l + (r - l) / 2;
+            int row = mid / n;
+            int col = mid % n;
+            int value = matrix[row][col];
+            if (value == target) {
+                return true;
+            } else if (value > target) {
+                r = mid - 1;
+            } else {
+                l = mid + 1;
             }
         }
         return false;
