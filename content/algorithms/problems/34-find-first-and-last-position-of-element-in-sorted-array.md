@@ -63,6 +63,12 @@ private int findRight(int[] nums, int target) {
 }
 ```
 
+
+## ⚠️ 勘误（Restrictions Failed 实录）
+
+> 本页注记撰写时以为"LeetCode 判题不计时"——**错误**。实际提交该版终态为 **Restrictions Failed**：线性尾扫最坏 O(n)，违反题目 O(log n) 红线。
+> 题目声明的复杂度红线由判题机异步复核（正确性判过 ≠ 终态 AC）。待合规版再记 AC。
+
 ## 复杂度
 
 - **时间**：O(log n)

@@ -57,6 +57,12 @@ public boolean searchMatrix(int[][] matrix, int target) {
 判定题 vs 位置题：74 无"插入位"要返回→退出 return false（35 的退出态语义在此不用）
 ```
 
+
+## ⚠️ 勘误（Restrictions Failed 实录）
+
+> 本页注记撰写时以为"LeetCode 判题不计时"——**错误**。实际提交该版终态为 **Restrictions Failed**：定行线性扫 O(m+log n)，违反题目 O(log(m+n)) 红线。
+> 题目声明的复杂度红线由判题机异步复核（正确性判过 ≠ 终态 AC）。待合规版再记 AC。
+
 ## 复杂度
 
 - **时间**：O(log(mn)) —— 一维二分
