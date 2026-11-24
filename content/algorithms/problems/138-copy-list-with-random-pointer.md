@@ -51,6 +51,22 @@ public Node copyRandomList(Node head) {
 }
 ```
 
+## 双线接线纪律与"本子"机制（链表组 5/7）
+
+```
+用户路径：题意卡住 → 画官方例吃透双线结构 → 独立写两遍法 → 接线错 → NPE 定位 → 修正
+接线错病灶：map.get(cur).random = map.get(cur.next).random
+  两层错：读错源头（隔壁节点的缆绳）+ 链尾 cur.next=null → map.get(null)=null → .random NPE
+  就算无 null，①语义也错（random 全串到邻居头上）——NPE 只是提前暴露
+纪律（双线链表通用）：B.next ← map.get(A.next)；B.random ← map.get(A.random)
+  ——同一条线名查表套同一条线名，逐字镜像
+"本子"机制（用户追问"怎么控制住 random"）：
+  第一批 map.put(原,新) 存全对应关系；第二批照原缆绳查表誊抄——
+  random 多乱都无所谓，乱的只是飞向，本子对每个落点都有登记
+  map.get(null)=null 天然复刻"无缆绳"；返回 map.get(head) 非 head
+插花法对照（O(1) 空间）：A 后插 B，用 A.next 物理位置当本子（A.random.next=A.random 的副本）
+```
+
 ## 复杂度
 
 - **时间**：O(n) — 两次遍历
