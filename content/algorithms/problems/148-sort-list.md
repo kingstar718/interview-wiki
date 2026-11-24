@@ -66,6 +66,22 @@ private ListNode merge(ListNode a, ListNode b) {
 }
 ```
 
+## 归并递归安全三律（链表组 6/7）
+
+```
+用户首版 StackOverflow——三个洞同属一个失败模式："递归没有让问题变小"
+  洞① 出口只有 null，单节点没挡 → sortList(单节点) 递归自己
+  洞② 断开动作没做（slow.next 未置 null）→ sortList(head) 还是整条链
+  洞③ 循环单层判空（fast.next!=null）→ fast 出界后 NPE 潜伏
+归并递归安全三律（自查表）：
+  ① 出口让更小的问题成立（null+单节点）
+  ② 每次切分必须真把链变短（slow.next=null）
+  ③ 两个子问题必须无重叠（共享节点=切了个寂寞）
+fast 从 head.next 起步的意义：两节点时 slow 停左半最后，断开点天然居中，
+  避免左半还是两节点导致切不动（143 递归版防死循环关键）
+零件合体：merge=21 逐字复用；找中点=234 快慢；用户 merge 零缺陷
+```
+
 ## 复杂度
 
 - **时间**：O(n log n) — 归并排序，log n 层，每层合并共 O(n)
