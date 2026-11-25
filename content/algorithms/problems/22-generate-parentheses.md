@@ -54,6 +54,21 @@ private void backtrack(int n, int left, int right, StringBuilder sb, List<String
 }
 ```
 
+## 两计数器剪枝 + 复杂度锚=答案个数（回溯家族收官）
+
+```
+46 家族→22 的三处换装（其余骨架一字不变）：
+  for+used → 两个 if 各管一支（每位置恰好两种选择，非互斥可双开）
+  used/排序去重墙 → 两计数器（open<n 放'('；close<open 放')'——严格小于，
+    close<n 砍不出"前缀合法"；close<=open 会在 (0,0) 放出非法 ')' 开头）
+  撤销 → deleteCharAt（或 String 拼接=不可变对象天然快照免撤销）
+出口/收账/return 纪律原样（216：外层管停内层管收 return 无条件）
+复杂度锚=答案个数（用户"这题复杂度会高一点"）：输出本身=Catalan 数
+  ≈4^n/n^1.5 指数——剪枝只砍非法枚举（2^(2n)→Catalan 条路径），
+  砍不动合法解；回溯题复杂度对齐答案数，不是对齐 n
+Catalan 对照：1,2,5,14,42（n=1..5）
+```
+
 ## 复杂度
 
 - **时间**：O(4^n / √n) —— 第 n 个卡特兰数
