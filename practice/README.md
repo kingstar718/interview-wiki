@@ -57,7 +57,7 @@ class TreeNode { ... }               // ❌ 包级类：同目录多个文件各
 | [哈希表](#哈希表)                     | 8 / 12 |
 | [双指针与滑动窗口](#双指针与滑动窗口) | 10 / 13 |
 | [二分查找](#二分查找)                 | 5 / 9 |
-| [二叉树](#二叉树)                     | 21 / 30 |
+| [二叉树](#二叉树)                     | 22 / 31 |
 | [图论](#图论)                         | 2 / 14 |
 | [回溯](#回溯)                         | 10 / 15 |
 | [动态规划与贪心](#动态规划与贪心)     | 39 / 53 |
@@ -248,6 +248,7 @@ class TreeNode { ... }               // ❌ 包级类：同目录多个文件各
 - ✅ 199. 二叉树的右视图 · 🟡 · ★★★ · [P199BinaryTreeRightSideView.java](P199BinaryTreeRightSideView.java)（二叉树组 4/6·BFS 首秀+分层锚）
 - ✅ [226. 翻转二叉树](P226InvertBinaryTree.java) · 🟢 · ★★★
 - ✅ 230. 二叉搜索树中第 K 小的元素 · 🟡 · ★★★ · [P230KthSmallestElementInABST.java](P230KthSmallestElementInABST.java)（二叉树组 3/6·中序复用+提前终止）
+- ✅ 437. 路径总和 III · 🟡 · ★★★★ · [P437PathSumIII.java](P437PathSumIII.java)（二叉树组 6/6 收官🎉·树上版560·AC130/130）
 - ⬜ 662. 二叉树最大宽度 · 🟡 · ★★★
 - ✅ [111. 二叉树的最小深度](P111MinimumDepthOfBinaryTree.java) · 🟢 · ★★★
 - ✅ [257. 二叉树的所有路径](P257BinaryTreePaths.java) · 🟢 · ★★★
