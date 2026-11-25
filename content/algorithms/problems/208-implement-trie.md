@@ -54,6 +54,20 @@ class Trie {
 }
 ```
 
+## 26 叉的由来 + search/startsWith 一行之差（字典树组 2/2 收官）
+
+```
+用户零提示直落（灵神同款确认）：Node[26] 槽位 + isEnd；三方法共用 walk，差异收敛最后一句
+  insert：缺路铺路→走完立 isEnd；search：路在+isEnd 双条件；startsWith：路在单条件
+26 的含义（用户追问）：小写字母集大小=分支因子；c-'a' 把字母换槽位下标；
+  只有走过的槽位才建节点（banana 的 'b' 槽 null → startsWith 一步返回 false）
+数组 vs Map 孩子的判据：字符集小且固定用数组（O(1) 常数小，稀疏浪费可忍）；
+  Unicode/稀疏集用 Map（省内存换速度）——面试口头加分句
+isEnd 的灵魂：路径存在≠完整单词存在（app/apple 案例：存 apple 时 app 路在但 isEnd 假）
+骨架口径：操作序列型骨架 lint 适配（RefBrute 参考类+步数校验+逐步对账输出）——
+  146/155 手工适配先例的通用化（本次改 skeleton_lint.py 本体）
+```
+
 ## 复杂度
 
 - **时间**：O(L) —— 单词长度
