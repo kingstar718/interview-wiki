@@ -53,6 +53,18 @@ public int[] findOrder(int numCourses, int[][] prerequisites) {
 }
 ```
 
+## 207→210 三处改 + 收集时刻教训（挂账第三笔）
+
+```
+207→210 三处：返回 boolean→int[]；弹队时 order[count++]（收集与 count++ 同位）；
+  有环返 new int[0]（三元方向别反——用户 v1 成功返空/失败返序颠倒）
+用户 v1 收集时刻错位：res.add(next) 放在"邻居减到 0 入队"处——
+  初始入度 0 的课（无前置、直接可修）全部漏收（[1,0] 返回 [1] 少元素）
+  ⟹ 弹队才是"修完"时刻（207 的 count++ 就是弹队收的，收集跟它站同一行）
+List<Integer>→int[] 无 toArray 捷径（装箱类型无 toArray(int[])——直接 int[]+idx 填）
+多答案对账口径：任意合法序都对——want 空时 got 也空即过，非空则验合法性+全覆盖
+```
+
 ## 复杂度
 
 - **时间**：O(n + m)
