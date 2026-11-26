@@ -60,6 +60,18 @@ public boolean canFinish(int numCourses, int[][] prerequisites) {
 }
 ```
 
+## Kahn 消元四步 + add(index) 陷阱（挂账第二笔）
+
+```
+Kahn 四步：建图(b→a)+入度表 → 入度0入队 → 弹队收账/减邻居入度/减到0入队 → count==n
+自环天然处理（[0,0]：indegree[0]=1 永不归零 → count<n → false，无需特判）
+边方向坑：[a,b]=修a先修b=有向边 b→a（adj[b].add(a)、indegree[a]++）
+用户实录：graph.add(p[1], l) 是【插入语义】（第 p[1] 位置插入挤开别人）——
+  邻接表必须先备 n 个空表再 graph.get(b).add(a)（取表追加）；
+  菱形哨兵专杀（错位到 poll 时 get 越界）
+List<List<Integer>> 标准姿势：init n 空表 → get(b).add(a)
+```
+
 ## 复杂度
 
 - **时间**：O(n + m) —— n 个节点、m 条边，建图 + 遍历

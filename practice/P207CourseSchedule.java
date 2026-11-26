@@ -1,6 +1,8 @@
 import java.util.ArrayDeque;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Deque;
+import java.util.List;
 import java.util.Queue;
 
 /**
@@ -44,9 +46,35 @@ import java.util.Queue;
  */
 public class P207CourseSchedule {
 
-    // TODO: 实现 canFinish（本题唯一入口）
+    /** 你的实现（Kahn 消元：b→a 建图+入度表，入度0入队，弹队收账，count<n 即环）。 */
     public boolean canFinish(int numCourses, int[][] prerequisites) {
-        throw new UnsupportedOperationException("TODO: 待实现");
+        List<List<Integer>> graph = new ArrayList<>();
+        for (int i = 0; i < numCourses; i++) {
+            graph.add(new ArrayList<>());
+        }
+        int[] indegree = new int[numCourses];
+        for (int[] p : prerequisites) {
+            graph.get(p[1]).add(p[0]);
+            indegree[p[0]]++;
+        }
+
+        Deque<Integer> queue = new ArrayDeque<>();
+        for (int i = 0; i < numCourses; i++) {
+            if (indegree[i] == 0) queue.offer(i);
+        }
+
+        int count = 0;
+        while (!queue.isEmpty()) {
+            Integer poll = queue.poll();
+            count++;
+            for (Integer next : graph.get(poll)) {
+                indegree[next]--;
+                if (indegree[next] == 0) {
+                    queue.offer(next);
+                }
+            }
+        }
+        return count == numCourses;
     }
 
     public static void main(String[] args) {
