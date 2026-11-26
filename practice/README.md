@@ -304,6 +304,7 @@ class TreeNode { ... }               // ❌ 包级类：同目录多个文件各
 - ✅ [322. 零钱兑换](P322CoinChange.java) · 🟡 · ★★★★★
 - ✅ 1143. 最长公共子序列 · 🟡 · ★★★★★
 - ✅ 5. 最长回文子串 · 🟡 · ★★★★ · [P5LongestPalindromicSubstring.java](P5LongestPalindromicSubstring.java)（中心扩展主AC+区间DP对照·双版）
+- ✅ 516. 最长回文子序列 · 🟡 · ★★★ · [P516LongestPalindromicSubsequence.java](P516LongestPalindromicSubsequence.java)（挂账还账·区间DP AC86/86）
 - ⬜ 32. 最长有效括号 · 🔴 · ★★★★
 - ✅ [45. 跳跃游戏 II](P45JumpGameII.java) · 🟡 · ★★★★
 - ✅ [55. 跳跃游戏](P55JumpGame.java) · 🟡 · ★★★★
