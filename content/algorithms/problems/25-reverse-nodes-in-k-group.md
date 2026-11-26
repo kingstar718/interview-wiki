@@ -58,6 +58,20 @@ public ListNode reverseKGroup(ListNode head, int k) {
 }
 ```
 
+## 探资格+一物三用组后继 + 自查 206 双 bug（链表 Hard 压轴）
+
+```
+四步帧分工：探资格（走 k 步）→ 翻 [head,p) → 接缝（head.next=递归子链头）→ 报新头
+一物三用：试探 k 步后的 p=【下一组的头】——兼任 reverse 的墙 end、下一组起点、
+  （本组新尾的接缝目标是递归返回值）
+206 基础自查（用户提问"这个反转写的对吗"抓出自己两 bug）：
+  ① cur.next=cur 自环（应为 cur.next=prev——"抄变量抄错目标"与 347 heap[j]=heap[i] 同族）
+  ② return prev.next（应为 return prev——prev 循环末=新头）
+  25 的 reverse 变体：终止条件 cur!=end（墙=下一组头，不是 null——end 绝不卷入）
+不足 k 组：探资格失败直接 return head（链上什么都不动）
+复杂度 O(n) 每节点进出 reverse 恰一次；迭代版（dummy+prevTail）面试同源可提
+```
+
 ## 复杂度
 
 - **时间**：O(n) — 每个节点被访问常数次
